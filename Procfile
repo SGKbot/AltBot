@@ -1,1 +1,1 @@
-worker: sgk_espace.py
+worker: bot.py
