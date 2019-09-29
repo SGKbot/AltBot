@@ -1,1 +1,1 @@
-worker: bot.py
+worker: python SGKbot/AltBot/bot.py
