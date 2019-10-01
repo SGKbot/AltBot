@@ -1,8 +1,8 @@
 import telebot;
 bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s');
 keyboard1 = telebot.types.ReplyKeyboardMarkup(True, True)
-keyboard1.row('Привет', 'Пока', '#Проба'
-              'Привет', 'Пока', '#Проба')
+keyboard1.row(['Привет', 'Пока', '#Проба']
+              ['Привет', 'Пока', '#Проба'])
 @bot.message_handler(commands=['start'])
 def start_message(message):
     bot.send_message(message.chat.id, 'Привет, ты написал мне /start', reply_markup=keyboard1)
