@@ -1,6 +1,6 @@
 import telebot;
 bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s');
-keyboard1 = telebot.types.ReplyKeyboardMarkup()
+keyboard1 = telebot.types.ReplyKeyboardMarkup(True, True)
 keyboard1.row('Привет', 'Пока', '#Проба')
 
 @bot.message_handler(commands=['start'])
