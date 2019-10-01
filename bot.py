@@ -1,7 +1,7 @@
 import telebot;
 bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s');
 keyboard1 = telebot.types.ReplyKeyboardMarkup()
-keyboard1.row('Привет', 'Пока')
+keyboard1.row('Привет', 'Пока', '#Проба')
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
@@ -15,6 +15,8 @@ def send_text(message):
         bot.send_message(message.chat.id, 'Прощай, создатель')
     elif message.text.lower() == 'я тебя люблю':
         bot.send_sticker(message.chat.id, 'CAADAgADZgkAAnlc4gmfCor5YbYYRAI')
+    elif message.text.lower() == '#Проба':
+        bot.send_sticker(message.chat.id, '#Проба(https://t.me/sgk_proba)')
 
 @bot.message_handler(content_types=['sticker'])
 def sticker_id(message):
