@@ -1,5 +1,6 @@
 import telebot;
 bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s');
+from telebot import types
 
 markup = types.ReplyKeyboardMarkup()
 itembtnPrivet  = types.KeyboardButton('Привет')
