@@ -8,6 +8,7 @@ itembtndAmour  = telebot.types.KeyboardButton('Я тебя люблю')
 itembtneEmpty  = telebot.types.KeyboardButton('Empty')
 markup.row(itembtnPrivet, itembtnPoka, itembtncProba)
 markup.row(itembtndAmour, itembtneEmpty)
+markup = types.ReplyKeyboardRemove(selective=False)
 @bot.message_handler(commands=['start'])
 def start_message(message):
     bot.send_message(message.chat.id, 'Привет, ты написал мне /start', reply_markup=keyboard1)
