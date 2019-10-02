@@ -1,11 +1,12 @@
 import telebot;
 bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s');
-markup = telebot.types.ReplyKeyboardMarkup(row_width=2)
-itembtnPrivet  = telebot.types.KeyboardButton('Привет')
-itembtnPoka    = telebot.types.KeyboardButton('Пока')
-itembtncProba  = telebot.types.KeyboardButton('#Проба')
-itembtndAmour  = telebot.types.KeyboardButton('Я тебя люблю')
-itembtneEmpty  = telebot.types.KeyboardButton('Empty')
+from telebot import types
+markup = types.ReplyKeyboardMarkup()
+itembtnPrivet  = types.KeyboardButton('Привет')
+itembtnPoka    = types.KeyboardButton('Пока')
+itembtncProba  = types.KeyboardButton('#Проба')
+itembtndAmour  = types.KeyboardButton('Я тебя люблю')
+itembtneEmpty  = types.KeyboardButton('Empty')
 markup.row(itembtnPrivet, itembtnPoka, itembtncProba)
 markup.row(itembtndAmour, itembtneEmpty)
 markup = types.ReplyKeyboardRemove(selective=False)
@@ -22,9 +23,7 @@ def send_text(message):
         bot.send_sticker(message.chat.id, 'CAADAgADZgkAAnlc4gmfCor5YbYYRAI')
     elif message.text.lower() == '#Проба':
         bot.send_sticker(message.chat.id, '#Проба(https://t.me/sgk_proba)')
-
 @bot.message_handler(content_types=['sticker'])
 def sticker_id(message):
     print(message)
-
 bot.polling()
