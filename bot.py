@@ -1,6 +1,6 @@
 import telebot;
 bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s');
-from telebot import types
+
 markup = types.ReplyKeyboardMarkup()
 itembtnPrivet  = types.KeyboardButton('Привет')
 itembtnPoka    = types.KeyboardButton('Пока')
@@ -9,7 +9,7 @@ itembtndAmour  = types.KeyboardButton('Я тебя люблю')
 itembtneEmpty  = types.KeyboardButton('Empty')
 markup.row(itembtnPrivet, itembtnPoka, itembtncProba)
 markup.row(itembtndAmour, itembtneEmpty)
-markup = types.ReplyKeyboardRemove(selective=False)
+
 @bot.message_handler(commands=['start'])
 def start_message(message):
     bot.send_message(message.chat.id, 'Привет, ты написал мне /start', reply_markup=keyboard1)
