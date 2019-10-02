@@ -1,12 +1,16 @@
 import telebot;
 bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s');
-keyboard1 = telebot.types.ReplyKeyboardMarkup(True, True)
-keyboard1.row('Привет', 'Пока', '#Проба'
-              'Привет', 'Пока', '#Проба')
+markup = telebot.types.ReplyKeyboardMarkup(True, True)
+itembtnPrivet  = types.KeyboardButton('Привет')
+itembtnPoka    = types.KeyboardButton('Пока')
+itembtncProba  = types.KeyboardButton('#Проба')
+itembtndAmour  = types.KeyboardButton('Я тебя люблю')
+itembtneEmpty  = types.KeyboardButton('Empty')
+markup.row(itembtnPrivet, itembtnPoka, itembtncProba)
+markup.row(itembtndAmour, itembtneEmpty)
 @bot.message_handler(commands=['start'])
 def start_message(message):
     bot.send_message(message.chat.id, 'Привет, ты написал мне /start', reply_markup=keyboard1)
-
 @bot.message_handler(content_types=['text'])
 def send_text(message):
     if message.text.lower() == 'привет':
