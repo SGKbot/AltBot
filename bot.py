@@ -1,6 +1,6 @@
-import telebot;
-bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s');
-from telebot import types
+import telebot; #  Подключение модуля из стандартной библиотеки
+bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s'); 
+from telebot import types  #  подключаем атрибут
 
 markup = types.ReplyKeyboardMarkup()
 itembtnPrivet  = types.KeyboardButton('Привет')
