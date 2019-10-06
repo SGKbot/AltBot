@@ -1,9 +1,9 @@
-import telebot; #  Подключение модуля из стандартной библиотеки
+import telebot;                                                            #  Подключение модуля из стандартной библиотеки
 bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s'); 
-from telebot import types  #  подключаем атрибут
+from telebot import types                                                  #  подключаем атрибут
 
-markup = types.ReplyKeyboardMarkup()
-itembtnPrivet  = types.KeyboardButton('Привет')
+markup = types.ReplyKeyboardMarkup()                                       #  Создаем объект типа ReplyKeyboardMarkup()
+itembtnPrivet  = types.KeyboardButton('Привет')                            #  добавляем построчно элементы
 itembtnPoka    = types.KeyboardButton('Пока')
 itembtncProba  = types.KeyboardButton('#Проба')
 itembtndAmour  = types.KeyboardButton('Я тебя люблю')
