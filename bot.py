@@ -3,19 +3,21 @@ bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s');
 from telebot import types                                                  #  подключаем атрибут
 
 markup = types.ReplyKeyboardMarkup()                                       #  Создаем объект типа ReplyKeyboardMarkup()
-itembtnPrivet  = types.KeyboardButton('Привет')                            #  добавляем построчно элементы
+
+itembtnPrivet  = types.KeyboardButton('Привет')                            
 itembtnPoka    = types.KeyboardButton('Пока')
 itembtncProba  = types.KeyboardButton('#Проба')
 itembtndAmour  = types.KeyboardButton('Я тебя люблю')
 itembtneEmpty  = types.KeyboardButton('Empty')
-markup.row(itembtnPrivet, itembtnPoka, itembtncProba)
+markup.row(itembtnPrivet, itembtnPoka, itembtncProba)                      #  добавляем построчно элементы
 markup.row(itembtndAmour, itembtneEmpty)
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
     bot.send_message(message.chat.id, 'Привет, ты написал мне /start', reply_markup=markup)
 @bot.message_handler(content_types=['text'])
-def send_text(message):
+
+def send_text(message):                                                     # Определим функцию
     if message.text.lower() == 'привет':
         bot.send_message(message.chat.id, 'Привет, мой создатель')
     elif message.text.lower() == 'пока':
@@ -24,7 +26,7 @@ def send_text(message):
         bot.send_sticker(message.chat.id, 'CAADAgADZgkAAnlc4gmfCor5YbYYRAI')
     elif message.text.lower() == '#Проба':
         bot.send_sticker(message.chat.id, '#Проба(https://t.me/sgk_proba)')
-@bot.message_handler(content_types=['sticker'])
+        @bot.message_handler(content_types=['sticker'])
 def sticker_id(message):
     print(message)
 bot.polling()
