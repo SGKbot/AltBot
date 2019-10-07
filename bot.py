@@ -6,11 +6,16 @@ markup = types.ReplyKeyboardMarkup(True,True)
 
 itembtnPrivet  = types.KeyboardButton('Привет')                            
 itembtnPoka    = types.KeyboardButton('Пока')
-itembtncProba  = types.KeyboardButton('#Проба')
+itembtnСomb  = types.KeyboardButton('Объединить')
 itembtndAmour  = types.KeyboardButton('Я тебя люблю')
-itembtneEmpty  = types.KeyboardButton('Empty')
-markup.row(itembtnPrivet, itembtnPoka, itembtncProba)                      
-markup.row(itembtndAmour, itembtneEmpty)
+itembtnSend  = types.KeyboardButton('Отправить')
+itembtnRead  = types.KeyboardButton('Читать далее...')
+itembtnIt  = types.KeyboardButton('#IT')
+itembtnBla  = types.KeyboardButton('#Мои рассуждения')
+
+
+markup.row(itembtnPrivet, itembtnIt, itembtnPoka, itembtnСomb)                      
+markup.row(itembtndAmour,itembtnBla , itembtnRead, itembtnSend)
 
 @bot.message_handler(commands=['start'])                                   
 def start_message(message):
