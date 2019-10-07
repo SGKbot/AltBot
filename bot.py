@@ -27,7 +27,7 @@ def send_text(message):
     elif message.text.lower() == '#Проба':
         bot.send_sticker(message.chat.id, '#Проба(https://t.me/sgk_proba)')
         @bot.message_handler(content_types=['sticker'])
-
         def sticker_id(message):
-    print(message)
-bot.polling()
+        print(message)
+
+    bot.polling()
