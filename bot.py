@@ -4,10 +4,10 @@ from telebot import types
 
 markup = types.ReplyKeyboardMarkup(True,True)                                       
 
-itembtnPrivet  = types.KeyboardButton('Привет')                            
-itembtnPoka    = types.KeyboardButton('Пока')
+itembtnPrivet  = types.KeyboardButton('Привет')  #  Новости                          
+itembtnPoka    = types.KeyboardButton('Пока')    #  Дача
 itembtnСomb  = types.KeyboardButton('Объединить')
-itembtndAmour  = types.KeyboardButton('Я тебя люблю')
+itembtndAmour  = types.KeyboardButton('Я тебя люблю') #  Юмор
 itembtnSend  = types.KeyboardButton('Отправить')
 itembtnRead  = types.KeyboardButton('Читать далее...')
 itembtnIt  = types.KeyboardButton('#IT')
