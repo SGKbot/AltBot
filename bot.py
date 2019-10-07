@@ -2,7 +2,7 @@ import telebot;                                                            #  П
 bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s'); 
 from telebot import types                                                  #  подключаем атрибут
 
-markup = types.ReplyKeyboardMarkup(True, True)                             #  Создаем объект типа ReplyKeyboardMarkup()
+markup = types.ReplyKeyboardMarkup()                                       #  Создаем объект типа ReplyKeyboardMarkup()
 
 itembtnPrivet  = types.KeyboardButton('Привет')                            
 itembtnPoka    = types.KeyboardButton('Пока')
