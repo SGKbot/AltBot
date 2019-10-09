@@ -35,7 +35,7 @@ def send_text(message):
     elif message.text.lower() == 'объединить':
         bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)')
     elif message.text.lower() == 'мнение':
-        bot.send_message(message.chat.id, print(message_id))
+        bot.send_message(message.chat.id, 'кому оно интересно')
     elif message.text.lower() == 'юмор':
         bot.send_sticker(message.chat.id, 'CAADAgADZgkAAnlc4gmfCor5YbYYRAI')
 
