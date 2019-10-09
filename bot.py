@@ -2,20 +2,20 @@ import telebot;
 bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s'); 
 from telebot import types                                                  
 
-markup = types.ReplyKeyboardMarkup(True, True)
+markup = types.ReplyKeyboardMarkup(True)
 
 itembtnNews = types.KeyboardButton('Новости')
+itembtnIt = types.KeyboardButton('Прогресс')
+itembtnBla = types.KeyboardButton('Мнение')
 itembtnDa = types.KeyboardButton('Дача')
 itembtnСomb = types.KeyboardButton('Объединить')
-itembtndAmour = types.KeyboardButton('Я тебя люблю') #  Юмор
-itembtnSend = types.KeyboardButton('Send')
-itembtnRead = types.KeyboardButton('Читать далее...')
-itembtnIt = types.KeyboardButton('#IT')
-itembtnBla = types.KeyboardButton('#Мои рассуждения')
+itembtndHum = types.KeyboardButton('Юмор')
+itembtnSend = types.KeyboardButton('Отправить')
+itembtnRead = types.KeyboardButton('Далее...')
 
 
 markup.row(itembtnNews, itembtnIt, itembtnDa, itembtnСomb)
-markup.row(itembtndAmour, itembtnBla, itembtnRead, itembtnSend)
+markup.row(itembtndHum, itembtnBla, itembtnRead, itembtnSend)
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
@@ -27,10 +27,19 @@ def send_text(message):
         bot.send_message(message.chat.id, 'Привет, мой создатель, давно пургу не копипастил')
     elif message.text.lower() == 'Дача':
         bot.send_message(message.chat.id, 'Прощай, создатель')
-    elif message.text.lower() == 'я тебя люблю':
+    elif message.text.lower() == 'Юмор':
         bot.send_sticker(message.chat.id, 'CAADAgADZgkAAnlc4gmfCor5YbYYRAI')
-    elif message.text.lower() == 'Send':
+    elif message.text.lower() == 'Отправить':
         bot.send_sticker(message.chat.id, '#Проба(https://t.me/sgk_proba)')
+    elif message.text.lower() == 'Прогресс':
+        bot.send_sticker(message.chat.id, '#Проба(https://t.me/sgk_proba)')
+    elif message.text.lower() == 'Далее...':
+        bot.send_sticker(message.chat.id, '#Проба(https://t.me/sgk_proba)')
+    elif message.text.lower() == 'Объединить':
+        bot.send_sticker(message.chat.id, '#Проба(https://t.me/sgk_proba)')
+    elif message.text.lower() == 'Мнение':
+        bot.send_sticker(message.chat.id, '#Проба(https://t.me/sgk_proba)')
+
 
 @bot.message_handler(content_types=['sticker'])
 def sticker_id(message):
