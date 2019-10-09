@@ -19,7 +19,6 @@ markup.row(itembtndHum, itembtnBla, itembtnRead, itembtnSend)
 @bot.message_handler(commands=['start'])
 def start_message(message):
     bot.send_message(message.chat.id, 'Привет, ты написал мне /start', reply_markup=markup)
-    print(message_id)
 
 @bot.message_handler(content_types=['text'])
 def send_text(message):
@@ -36,7 +35,7 @@ def send_text(message):
     elif message.text.lower() == 'объединить':
         bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)')
     elif message.text.lower() == 'мнение':
-        bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)')
+        bot.send_message(message.chat.id, message_id)
     elif message.text.lower() == 'юмор':
         bot.send_sticker(message.chat.id, 'CAADAgADZgkAAnlc4gmfCor5YbYYRAI')
 
