@@ -30,15 +30,15 @@ def send_text(message):
     elif message.text.lower() == 'Юмор':
         bot.send_sticker(message.chat.id, 'CAADAgADZgkAAnlc4gmfCor5YbYYRAI')
     elif message.text.lower() == 'Отправить':
-        bot.send_sticker(message.chat.id, '#Проба(https://t.me/sgk_proba)')
+        bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)')
     elif message.text.lower() == 'Прогресс':
-        bot.send_sticker(message.chat.id, '#Проба(https://t.me/sgk_proba)')
+        bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)')
     elif message.text.lower() == 'Далее...':
-        bot.send_sticker(message.chat.id, '#Проба(https://t.me/sgk_proba)')
+        bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)')
     elif message.text.lower() == 'Объединить':
-        bot.send_sticker(message.chat.id, '#Проба(https://t.me/sgk_proba)')
+        bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)')
     elif message.text.lower() == 'Мнение':
-        bot.send_sticker(message.chat.id, '#Проба(https://t.me/sgk_proba)')
+        bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)')
 
 
 @bot.message_handler(content_types=['sticker'])
