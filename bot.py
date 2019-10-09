@@ -1,5 +1,5 @@
-import telebot;                                                            
-bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s'); 
+import telebot
+bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s')
 from telebot import types                                                  
 
 markup = types.ReplyKeyboardMarkup(True)
@@ -8,11 +8,10 @@ itembtnNews = types.KeyboardButton('Новости')
 itembtnIt = types.KeyboardButton('Прогресс')
 itembtnBla = types.KeyboardButton('Мнение')
 itembtnDa = types.KeyboardButton('Дача')
-itembtnСomb = types.KeyboardButton('Объединить')
+itembtnComb = types.KeyboardButton('Объединить')
 itembtndHum = types.KeyboardButton('Юмор')
 itembtnSend = types.KeyboardButton('Отправить')
 itembtnRead = types.KeyboardButton('Далее...')
-
 
 markup.row(itembtnNews, itembtnIt, itembtnDa, itembtnСomb)
 markup.row(itembtndHum, itembtnBla, itembtnRead, itembtnSend)
@@ -27,8 +26,6 @@ def send_text(message):
         bot.send_message(message.chat.id, 'Привет, мой создатель, давно пургу не копипастил')
     elif message.text.lower() == 'Дача':
         bot.send_message(message.chat.id, 'Прощай, создатель')
-    elif message.text.lower() == 'Юмор':
-        bot.send_sticker(message.chat.id, 'CAADAgADZgkAAnlc4gmfCor5YbYYRAI')
     elif message.text.lower() == 'Отправить':
         bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)')
     elif message.text.lower() == 'Прогресс':
@@ -39,6 +36,8 @@ def send_text(message):
         bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)')
     elif message.text.lower() == 'Мнение':
         bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)')
+    elif message.text.lower() == 'Юмор':
+        bot.send_sticker(message.chat.id, 'CAADAgADZgkAAnlc4gmfCor5YbYYRAI')
 
 
 @bot.message_handler(content_types=['sticker'])
