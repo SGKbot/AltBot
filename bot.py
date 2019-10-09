@@ -13,7 +13,7 @@ itembtndHum = types.KeyboardButton('Юмор')
 itembtnSend = types.KeyboardButton('Отправить')
 itembtnRead = types.KeyboardButton('Далее...')
 
-markup.row(itembtnNews, itembtnIt, itembtnDa, itembtnСomb)
+markup.row(itembtnNews, itembtnIt, itembtnDa, itembtnComb)
 markup.row(itembtndHum, itembtnBla, itembtnRead, itembtnSend)
 
 @bot.message_handler(commands=['start'])
