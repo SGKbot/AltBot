@@ -8,12 +8,12 @@ itembtnNews = types.KeyboardButton('Новости')
 itembtnIt = types.KeyboardButton('Прогресс')
 itembtnBla = types.KeyboardButton('Мнение')
 itembtnDa = types.KeyboardButton('Дача')
-itembtnComb = types.KeyboardButton('Объединить')
+itembtnKomb = types.KeyboardButton('Объединить')
 itembtndHum = types.KeyboardButton('Юмор')
 itembtnSend = types.KeyboardButton('Отправить')
 itembtnRead = types.KeyboardButton('Далее...')
 
-markup.row(itembtnNews, itembtnIt, itembtnDa, itembtnComb)
+markup.row(itembtnNews, itembtnIt, itembtnDa, itembtnKomb)
 markup.row(itembtndHum, itembtnBla, itembtnRead, itembtnSend)
 
 @bot.message_handler(commands=['start'])
@@ -23,21 +23,21 @@ def start_message(message):
 
 @bot.message_handler(content_types=['text'])
 def send_text(message):
-    if message.text.lower() == 'Новости':
+    if message.text.lower() == 'новости':
         bot.send_message(message.chat.id, 'Привет, мой создатель, давно пургу не копипастил')
-    elif message.text.lower() == 'Дача':
+    elif message.text.lower() == 'дача':
         bot.send_message(message.chat.id, 'Прощай, создатель')
-    elif message.text.lower() == 'Отправить':
+    elif message.text.lower() == 'отправить':
         bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)')
-    elif message.text.lower() == 'Прогресс':
+    elif message.text.lower() == 'прогресс':
         bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)')
-    elif message.text.lower() == 'Далее...':
+    elif message.text.lower() == 'далее...':
         bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)')
-    elif message.text.lower() == 'Объединить':
+    elif message.text.lower() == 'объединить':
         bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)')
-    elif message.text.lower() == 'Мнение':
+    elif message.text.lower() == 'мнение':
         bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)')
-    elif message.text.lower() == 'Юмор':
+    elif message.text.lower() == 'юмор':
         bot.send_sticker(message.chat.id, 'CAADAgADZgkAAnlc4gmfCor5YbYYRAI')
 
 
