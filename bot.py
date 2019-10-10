@@ -1,6 +1,7 @@
 import telebot
 bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s')
 from telebot import types                                                  
+from telebot import apihelper
 
 markup = types.ReplyKeyboardMarkup(True)
 
@@ -31,7 +32,7 @@ def send_text(message):
     elif message.text.lower() == 'прогресс':
         bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)')
     elif message.text.lower() == 'далее...':
-        bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)')
+        bot.delete_message(message.id)
     elif message.text.lower() == 'объединить':
         bot.send_message(message.chat.id, message.message_id)
     elif message.text.lower() == 'мнение':
