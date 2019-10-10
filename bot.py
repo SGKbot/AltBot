@@ -32,8 +32,7 @@ def send_text(message):
     elif message.text.lower() == 'прогресс':
         bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)')
     elif message.text.lower() == 'далее...':
-        def delete_message(self, chat_id, message_id):
-            return apihelper.delete_message(self.token, chat_id, message_id)
+        bot.delete_message(message.chat_id, message.message_id)
     elif message.text.lower() == 'объединить':
         bot.send_message(message.chat.id, message.message_id)
     elif message.text.lower() == 'мнение':
