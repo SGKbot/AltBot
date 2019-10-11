@@ -1,6 +1,7 @@
 import telebot
 bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s')
-from telebot import types                                                  
+from telebot import types
+from telebot import __init__
 
 markup = types.ReplyKeyboardMarkup(True)
 
