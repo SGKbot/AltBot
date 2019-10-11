@@ -2,8 +2,6 @@ import telebot
 
 bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s')
 from telebot import types
-from telebot import
-
 
 markup = types.ReplyKeyboardMarkup(True)
 
@@ -47,6 +45,5 @@ def send_text(message):
 @bot.message_handler(content_types=['sticker'])
 def sticker_id(message):
     print(message)
-
 
 bot.polling()
