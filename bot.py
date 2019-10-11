@@ -1,6 +1,9 @@
 import telebot
+
 bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s')
 from telebot import types
+from telebot import
+
 
 markup = types.ReplyKeyboardMarkup(True)
 
@@ -15,6 +18,7 @@ itembtnRead = types.KeyboardButton('Далее...')
 
 markup.row(itembtnNews, itembtnIt, itembtnDa, itembtnKomb)
 markup.row(itembtndHum, itembtnBla, itembtnRead, itembtnSend)
+
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
@@ -31,7 +35,7 @@ def send_text(message):
     elif message.text.lower() == 'прогресс':
         bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)')
     elif message.text.lower() == 'далее...':
-        bot.delete_message(message.chat.id, message.message_id-1)
+        bot.delete_message(message.chat.id, message.message_id - 1)
     elif message.text.lower() == 'объединить':
         bot.send_message(message.chat.id, message.message_id)
     elif message.text.lower() == 'мнение':
@@ -43,5 +47,6 @@ def send_text(message):
 @bot.message_handler(content_types=['sticker'])
 def sticker_id(message):
     print(message)
+
 
 bot.polling()
