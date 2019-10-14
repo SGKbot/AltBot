@@ -22,6 +22,17 @@ markup.row(itembtndHum, itembtnBla, itembtnRead, itembtnSend)
 def start_message(message):
     bot.send_message(message.chat.id, 'Привет, ты написал мне /start', reply_markup=markup)
 
+def comb_del_message(message):
+    if message.text:
+       message.message_id = message.message_id - 1
+       telo = message.text + ' '
+       message.message_id = message.message_id + 1
+       telo = telo + message.text
+       bot.delete_message(message.chat.id, message.message_id - 1)
+       bot.delete_message(message.chat.id, message.message_id)
+       bot.send_message(message.chat.id, telo)
+
+
 @bot.message_handler(content_types=['text'])
 def send_text(message):
     if message.text.lower() == 'новости':
@@ -31,7 +42,7 @@ def send_text(message):
     elif message.text.lower() == 'отправить':
         bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)')
     elif message.text.lower() == 'прогресс':
-        bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)')
+        bot.send_message(message.chat.id, comb_del_message(message))
     elif message.text.lower() == 'далее...':
         bot.delete_message(message.chat.id, message.message_id - 2)
     elif message.text.lower() == 'объединить':
