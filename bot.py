@@ -25,7 +25,7 @@ def start_message(message):
 def comb_del_message(message):
     if message.text:
        message.message_id = message.message_id - 1
-       telo = message.text + ' '
+       telo = message.text + '\n'
        message.message_id = message.message_id + 1
        telo = telo + message.text
        bot.delete_message(message.chat.id, message.message_id - 1)
@@ -42,7 +42,7 @@ def send_text(message):
     elif message.text.lower() == 'отправить':
         bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)')
     elif message.text.lower() == 'прогресс':
-        bot.send_message(message.chat.id, comb_del_message(message))
+        comb_del_message(message)
     elif message.text.lower() == 'далее...':
         bot.delete_message(message.chat.id, message.message_id - 2)
     elif message.text.lower() == 'объединить':
