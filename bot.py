@@ -4,6 +4,7 @@ bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s')
 from telebot import types
 
 markup = types.ReplyKeyboardMarkup(True)
+telo={}
 
 itembtnNews = types.KeyboardButton('Новости')
 itembtnIt = types.KeyboardButton('Прогресс')
@@ -34,6 +35,8 @@ def comb_del_message(message):
 
 
 @bot.message_handler(content_types=['text'])
+#  def send_text_telo(message):
+#      return telo == message.text + '\n'
 def send_text(message):
     if message.text.lower() == 'новости':
         bot.send_message(message.chat.id, 'Привет, мой создатель, давно пургу не копипастил')
