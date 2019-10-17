@@ -22,12 +22,11 @@ markup.row(itembtndHum, itembtnBla, itembtnRead, itembtnSend)
 def start_message(message):
     bot.send_message(message.chat.id, 'Привет, ты написал мне /start', reply_markup=markup)
 
-def comb_del_message(message):
-    if message.text:
-       bot.delete_message(message.chat.id, message.message_id-1)
-       telo = telo + message.text
-       bot.delete_message(message.chat.id, message.message_id)
-       bot.send_message(message.chat.id, telo)
+ #  def comb_del_message(message):
+    #  bot.delete_message(message.chat.id, message.message_id-1)
+    #  telo = telo + message.text
+    #  bot.delete_message(message.chat.id, message.message_id)
+    #  bot.send_message(message.chat.id, telo)
 
 
 @bot.message_handler(content_types=['text'])
@@ -43,7 +42,10 @@ def send_text(message):
     elif message.text.lower() == 'отправить':
         bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)')
     elif message.text.lower() == 'прогресс':
-        comb_del_message(message)
+        bot.delete_message(message.chat.id, message.message_id - 1)
+        telo = telo + message.text
+        bot.delete_message(message.chat.id, message.message_id)
+        bot.send_message(message.chat.id, telo)
     elif message.text.lower() == 'далее...':
         bot.delete_message(message.chat.id, message.message_id - 2)
     elif message.text.lower() == 'объединить':
@@ -52,7 +54,8 @@ def send_text(message):
         bot.send_message(message.chat.id, 'кому оно интересно')
     elif message.text.lower() == 'юмор':
         bot.send_sticker(message.chat.id, 'CAADAgADZgkAAnlc4gmfCor5YbYYRAI')
-    telo = message.text + '\n'
+    elif message.text:
+        telo = message.text + '\n'
 
 @bot.message_handler(content_types=['sticker'])
 def sticker_id(message):
