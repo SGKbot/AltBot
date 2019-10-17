@@ -25,8 +25,9 @@ def start_message(message):
     bot.send_message(message.chat.id, 'Привет, ты написал мне /start', reply_markup=markup)
 
 @bot.message_handler(content_types=['text'])
-global telo
+
 def send_text(message):
+    global telo
     if message.text.lower() == 'новости':
         bot.send_message(message.chat.id, 'Привет, мой создатель, давно пургу не копипастил')
     elif message.text.lower() == 'дача':
