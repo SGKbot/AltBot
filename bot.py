@@ -4,7 +4,8 @@ bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s')
 from telebot import types
 #  disable_web_page_preview
 markup = types.ReplyKeyboardMarkup(True)
-telo = {}
+
+telo = ''
 
 itembtnNews = types.KeyboardButton('Новости')
 itembtnIt = types.KeyboardButton('Прогресс')
