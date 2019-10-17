@@ -5,6 +5,7 @@ from telebot import types
 #  disable_web_page_preview
 markup = types.ReplyKeyboardMarkup(True)
 
+
 telo = ''
 
 itembtnNews = types.KeyboardButton('Новости')
@@ -24,7 +25,7 @@ def start_message(message):
     bot.send_message(message.chat.id, 'Привет, ты написал мне /start', reply_markup=markup)
 
 @bot.message_handler(content_types=['text'])
-
+global telo
 def send_text(message):
     if message.text.lower() == 'новости':
         bot.send_message(message.chat.id, 'Привет, мой создатель, давно пургу не копипастил')
