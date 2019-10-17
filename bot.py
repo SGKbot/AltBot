@@ -2,7 +2,7 @@ import telebot
 
 bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s')
 from telebot import types
-
+#  disable_web_page_preview
 markup = types.ReplyKeyboardMarkup(True)
 telo={}
 
@@ -25,18 +25,17 @@ def start_message(message):
 
 def comb_del_message(message):
     if message.text:
-       message.message_id = message.message_id - 1
-       telo = message.text + '\n'
-       message.message_id = message.message_id + 1
+       bot.delete_message(message.chat.id, message.message_id-1)
        telo = telo + message.text
-       bot.delete_message(message.chat.id, message.message_id - 1)
        bot.delete_message(message.chat.id, message.message_id)
        bot.send_message(message.chat.id, telo)
 
 
 @bot.message_handler(content_types=['text'])
-#  def send_text_telo(message):
-#      return telo == message.text + '\n'
+
+
+
+
 def send_text(message):
     if message.text.lower() == 'новости':
         bot.send_message(message.chat.id, 'Привет, мой создатель, давно пургу не копипастил')
@@ -54,7 +53,7 @@ def send_text(message):
         bot.send_message(message.chat.id, 'кому оно интересно')
     elif message.text.lower() == 'юмор':
         bot.send_sticker(message.chat.id, 'CAADAgADZgkAAnlc4gmfCor5YbYYRAI')
-
+    telo = message.text + '\n'
 
 @bot.message_handler(content_types=['sticker'])
 def sticker_id(message):
