@@ -39,6 +39,7 @@ def send_text(message):
         telo = telo + message.text
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo)
+        telo = message.text
     elif message.text.lower() == 'далее...':
         bot.delete_message(message.chat.id, message.message_id - 2)
     elif message.text.lower() == 'объединить':
