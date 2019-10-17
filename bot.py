@@ -17,22 +17,11 @@ itembtnRead = types.KeyboardButton('Далее...')
 markup.row(itembtnNews, itembtnIt, itembtnDa, itembtnKomb)
 markup.row(itembtndHum, itembtnBla, itembtnRead, itembtnSend)
 
-
 @bot.message_handler(commands=['start'])
 def start_message(message):
     bot.send_message(message.chat.id, 'Привет, ты написал мне /start', reply_markup=markup)
 
- #  def comb_del_message(message):
-    #  bot.delete_message(message.chat.id, message.message_id-1)
-    #  telo = telo + message.text
-    #  bot.delete_message(message.chat.id, message.message_id)
-    #  bot.send_message(message.chat.id, telo)
-
-
 @bot.message_handler(content_types=['text'])
-
-
-
 
 def send_text(message):
     if message.text.lower() == 'новости':
