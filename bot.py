@@ -34,7 +34,7 @@ def send_text(message):
     elif message.text.lower() == 'отправить':
         bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)', disable_web_page_preview=True)
     elif message.text.lower() == 'прогресс':
-        telo = telo + message.text
+        telo = telo +"#" + message.text + "(https://t.me/sgk_proba)"
         bot.delete_message(message.chat.id, message.message_id - 1)
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo)
@@ -47,8 +47,8 @@ def send_text(message):
         bot.send_message(message.chat.id, 'кому оно интересно')
     elif message.text.lower() == 'юмор':
         bot.send_sticker(message.chat.id, 'CAADAgADZgkAAnlc4gmfCor5YbYYRAI')
-    elif message.text:
-        telo = message.text + '\n'
+    #  elif message.text:
+    telo = message.text + '\n'
 
 @bot.message_handler(content_types=['sticker'])
 def sticker_id(message):
