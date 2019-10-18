@@ -25,7 +25,6 @@ def start_message(message):
     bot.send_message(message.chat.id, 'Привет, ты написал мне /start', reply_markup=markup)
 
 @bot.message_handler(content_types=['text'])
-
 def send_text(message):
     global telo
     if message.text.lower() == 'новости':
@@ -35,11 +34,11 @@ def send_text(message):
     elif message.text.lower() == 'отправить':
         bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)')
     elif message.text.lower() == 'прогресс':
-        bot.delete_message(message.chat.id, message.message_id - 1)
         telo = telo + message.text
+        bot.delete_message(message.chat.id, message.message_id - 1)
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo)
-        telo = message.text
+        telo = ''
     elif message.text.lower() == 'далее...':
         bot.delete_message(message.chat.id, message.message_id - 2)
     elif message.text.lower() == 'объединить':
