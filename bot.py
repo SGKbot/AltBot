@@ -32,7 +32,8 @@ def send_text(message):
     elif message.text.lower() == 'дача':
         bot.send_message(message.chat.id, 'Прощай, создатель')
     elif message.text.lower() == 'отправить':
-        bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)', disable_web_page_preview=True)
+        #   bot.send_message(message.chat.id, '#Проба(https://t.me/sgk_proba)', disable_web_page_preview=True)
+        bot.send_message(message.chat.id, '<a href="https://t.me/sgk_proba">Отправить</a>', parse_mode='html')
     elif message.text.lower() == 'прогресс':
         telo = telo +"#" + message.text + "(https://t.me/sgk_proba)"
         bot.delete_message(message.chat.id, message.message_id - 1)
