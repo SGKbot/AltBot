@@ -42,11 +42,11 @@ def send_text(message):
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         telo = ''
     elif message.text.lower() == 'отправить':
-       #  bot.send_message(message.chat.id, '<a href="https://t.me/sgk_proba">Отправить</a>', parse_mode='html', disable_web_page_preview=True)
         telo = telo +'<a href="https://t.me/sgk_proba">Сделать отправку в канал</a>'
         bot.delete_message(message.chat.id, message.message_id - 1)
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
+        bot.send_message('@SGK_proba', telo,parse_mode='html', disable_web_page_preview=True)
         telo = ''
     elif message.text.lower() == 'прогресс':
         telo = telo +'<a href="https://t.me/sgk_proba">#Прогресс</a>'
