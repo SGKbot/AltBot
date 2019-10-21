@@ -27,6 +27,7 @@ def start_message(message):
 @bot.message_handler(content_types=['text'])
 def send_text(message):
     global telo
+    global vkanal
     if message.text.lower() == 'новости':
         #  bot.send_message(message.chat.id, 'Привет, мой создатель, давно пургу не копипастил')
         telo = telo +'<a href="https://t.me/sgk_proba">#Новости</a>'
@@ -40,13 +41,15 @@ def send_text(message):
         bot.delete_message(message.chat.id, message.message_id - 1)
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
+        vkanal = telo
         telo = ''
     elif message.text.lower() == 'отправить':
-        telo = telo +'<a href="https://t.me/sgk_proba">Сделать отправку в канал</a>'
+        telo = vkanal
+        bot.send_message('@SGK_proba', telo, parse_mode='html', disable_web_page_preview=True)
         bot.delete_message(message.chat.id, message.message_id - 1)
         bot.delete_message(message.chat.id, message.message_id)
-        bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
-        bot.send_message('@SGK_proba', telo,parse_mode='html', disable_web_page_preview=True)
+        # bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
+
         telo = ''
     elif message.text.lower() == 'прогресс':
         telo = telo +'<a href="https://t.me/sgk_proba">#Прогресс</a>'
@@ -54,9 +57,11 @@ def send_text(message):
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         telo = ''
-    elif message.text.lower() == 'далее...':
+    elif entity.type in ["url"]:
+        #    message.text.lower() == 'далее...':
         # bot.delete_message(message.chat.id, message.message_id - 2)
-        telo = telo +'<a href="https://t.me/sgk_proba">Сделать запрос ссылки</a>'
+        telo = telo + '\n' + '<a href="' + message.text + '">#Читать далее...</a>'
+        # '<a href="https://t.me/sgk_proba">Сделать запрос ссылки</a>'
         bot.delete_message(message.chat.id, message.message_id - 1)
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
@@ -82,7 +87,6 @@ def send_text(message):
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         telo = ''
-
     telo = message.text + '\n'
 
 @bot.message_handler(content_types=['sticker'])
