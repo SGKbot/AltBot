@@ -57,15 +57,15 @@ def send_text(message):
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         telo = ''
-    elif entity.type in ["url"]:
-        #    message.text.lower() == 'далее...':
-        # bot.delete_message(message.chat.id, message.message_id - 2)
-        telo = telo + '\n' + '<a href="' + message.text + '">#Читать далее...</a>'
-        # '<a href="https://t.me/sgk_proba">Сделать запрос ссылки</a>'
-        bot.delete_message(message.chat.id, message.message_id - 1)
-        bot.delete_message(message.chat.id, message.message_id)
-        bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
-        telo = ''
+    elif message.entities:
+             for item in message entities:
+                if item.type == "url":
+                     telo = telo + '\n' + '<a href="' + message.text + '">#Читать далее...</a>'
+                     bot.delete_message(message.chat.id, message.message_id - 1)
+                     bot.delete_message(message.chat.id, message.message_id)
+                     bot.send_message(message.chat.id, telo, parse_mode='html', disable_web_page_preview=True)
+                     telo = ''
+                     do_something()
     elif message.text.lower() == 'объединить':
         # bot.send_message(message.chat.id, message.message_id)
         telo = telo +'<a href="https://t.me/sgk_proba">Этого пункта скорее всего не будет</a>'
