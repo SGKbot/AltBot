@@ -38,6 +38,7 @@ def send_text(message):
     global pkanal
     if message.text.lower() == 'новости':
         if pkanal == 1:
+            pkanal = 10
             telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Новости</a>'
         else:
             telo = telo + '\n' + '<a href="https://t.me/sgk_proba">#Новости</a>'
@@ -47,6 +48,7 @@ def send_text(message):
         telo = ''
     elif message.text.lower() == 'дача':
         if pkanal == 1:
+            pkanal = 10
             telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Дача</a>'
         else:
             telo = telo + '\n' + '<a href="https://t.me/sgk_proba">#Дача</a>'
@@ -61,6 +63,7 @@ def send_text(message):
         telo = ''
     elif message.text.lower() == 'прогресс':
         if pkanal == 1:
+            pkanal = 10
             telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Прогресс</a>'
         else:
             telo = telo + '\n' + '<a href="https://t.me/sgk_proba">#Прогресс</a>'
@@ -88,6 +91,7 @@ def send_text(message):
         telo = ''
     elif message.text.lower() == 'мнение':
         if pkanal == 1:
+            pkanal = 10
             telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Мнение</a>'
         else:
             telo = telo + '\n' + '<a href="https://t.me/sgk_proba">#Мнение</a>'
@@ -98,6 +102,7 @@ def send_text(message):
     elif message.text.lower() == 'юмор':
         #  bot.send_sticker(message.chat.id, 'CAADAgADZgkAAnlc4gmfCor5YbYYRAI')
         if pkanal == 1:
+            pkanal = 10
             telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Юмор</a>'
         else:
             telo = telo + '\n' + '<a href="https://t.me/sgk_proba">#Юмор</a>'
