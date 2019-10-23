@@ -39,7 +39,6 @@ def send_text(message):
     if message.text.lower() == 'новости':
         telo = telo + '<a href="https://t.me/sgk_proba">#Новости</a>'
         vkanal = telo
-       #  bot.delete_message(message.chat.id, message.message_id - 1)
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         telo = ''
@@ -48,7 +47,6 @@ def send_text(message):
             telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Дача</a>'
         else:
             telo = telo + '\n' + '<a href="https://t.me/sgk_proba">#Дача</a>'
-        #  bot.delete_message(message.chat.id, message.message_id - 1)
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
@@ -56,12 +54,10 @@ def send_text(message):
     elif message.text.lower() == 'отправить':
         telo = vkanal
         bot.send_message('@SGK_proba', telo, parse_mode='html', disable_web_page_preview=True)
-        #  bot.delete_message(message.chat.id, message.message_id - 1)
         bot.delete_message(message.chat.id, message.message_id)
         telo = ''
     elif message.text.lower() == 'прогресс':
         telo = telo +'<a href="https://t.me/sgk_proba">#Прогресс</a>'
-        #  bot.delete_message(message.chat.id, message.message_id - 1)
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
@@ -73,25 +69,19 @@ def send_text(message):
                        telo = vkanal + '<a href="' + message.text + '">Читать далее...</a>'
                     else:
                        telo = telo + '<a href="' + message.text + '">Читать далее...</a>'
-              # vkanal = telo
-              # bot.delete_message(message.chat.id, message.message_id - 1)
                 bot.delete_message(message.chat.id, message.message_id)
                 bot.send_message(message.chat.id, telo, parse_mode='html', disable_web_page_preview=True)
                 vkanal = telo + '\n'
                 telo = ''
                 pkanal = 1
     elif message.text.lower() == 'объединить':
-        # bot.send_message(message.chat.id, message.message_id)
         telo = telo +'<a href="https://t.me/sgk_proba">Этого пункта скорее всего не будет</a>'
-        #   bot.delete_message(message.chat.id, message.message_id - 1)
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
         telo = ''
     elif message.text.lower() == 'мнение':
-        # bot.send_message(message.chat.id, 'кому оно интересно')
         telo = telo +'<a href="https://t.me/sgk_proba">#Мнение</a>'
-        #  bot.delete_message(message.chat.id, message.message_id - 1)
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
@@ -99,7 +89,6 @@ def send_text(message):
     elif message.text.lower() == 'юмор':
         #  bot.send_sticker(message.chat.id, 'CAADAgADZgkAAnlc4gmfCor5YbYYRAI')
         telo = telo +'<a href="https://t.me/sgk_proba">#Юмор</a>'
-        #  bot.delete_message(message.chat.id, message.message_id - 1)
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
