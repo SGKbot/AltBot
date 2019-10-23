@@ -13,6 +13,7 @@ markup = types.ReplyKeyboardMarkup(True)
 
 telo = ''
 vkanal = ''
+pkanal = 10
 
 itembtnNews = types.KeyboardButton('Новости')
 itembtnIt = types.KeyboardButton('Прогресс')
@@ -34,6 +35,7 @@ def start_message(message):
 def send_text(message):
     global telo
     global vkanal
+    global pkanal
     if message.text.lower() == 'новости':
         telo = telo + '<a href="https://t.me/sgk_proba">#Новости</a>'
         vkanal = telo
@@ -42,7 +44,10 @@ def send_text(message):
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         telo = ''
     elif message.text.lower() == 'дача':
-        telo = telo +'<a href="https://t.me/sgk_proba">#Дача</a>'
+        if pkanal == 1:
+            telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Дача</a>'
+        else:
+            telo = telo + '\n' + '<a href="https://t.me/sgk_proba">#Дача</a>'
         #  bot.delete_message(message.chat.id, message.message_id - 1)
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
@@ -65,15 +70,16 @@ def send_text(message):
              for item in message.entities:
                 if item.type == "url":
                     if telo == '':
-                       telo = vkanal + '\n' + '<a href="' + message.text + '">#Читать далее...</a>'
+                       telo = vkanal + '<a href="' + message.text + '">Читать далее...</a>'
                     else:
-                       telo = telo + '\n' + '<a href="' + message.text + '">#Читать далее...</a>'
+                       telo = telo + '<a href="' + message.text + '">Читать далее...</a>'
               # vkanal = telo
               # bot.delete_message(message.chat.id, message.message_id - 1)
                 bot.delete_message(message.chat.id, message.message_id)
                 bot.send_message(message.chat.id, telo, parse_mode='html', disable_web_page_preview=True)
-                vkanal = telo
+                vkanal = telo + '\n'
                 telo = ''
+                pkanal = 1
     elif message.text.lower() == 'объединить':
         # bot.send_message(message.chat.id, message.message_id)
         telo = telo +'<a href="https://t.me/sgk_proba">Этого пункта скорее всего не будет</a>'
