@@ -37,10 +37,13 @@ def send_text(message):
     global vkanal
     global pkanal
     if message.text.lower() == 'новости':
-        telo = telo + '<a href="https://t.me/sgk_proba">#Новости</a>'
-        vkanal = telo
+        if pkanal == 1:
+            telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Новости</a>'
+        else:
+            telo = telo + '\n' + '<a href="https://t.me/sgk_proba">#Новости</a>'
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
+        vkanal = telo
         telo = ''
     elif message.text.lower() == 'дача':
         if pkanal == 1:
@@ -57,7 +60,10 @@ def send_text(message):
         bot.delete_message(message.chat.id, message.message_id)
         telo = ''
     elif message.text.lower() == 'прогресс':
-        telo = telo +'<a href="https://t.me/sgk_proba">#Прогресс</a>'
+        if pkanal == 1:
+            telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Прогресс</a>'
+        else:
+            telo = telo + '\n' + '<a href="https://t.me/sgk_proba">#Прогресс</a>'
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
@@ -81,14 +87,20 @@ def send_text(message):
         vkanal = telo
         telo = ''
     elif message.text.lower() == 'мнение':
-        telo = telo +'<a href="https://t.me/sgk_proba">#Мнение</a>'
+        if pkanal == 1:
+            telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Мнение</a>'
+        else:
+            telo = telo + '\n' + '<a href="https://t.me/sgk_proba">#Мнение</a>'
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
         telo = ''
     elif message.text.lower() == 'юмор':
         #  bot.send_sticker(message.chat.id, 'CAADAgADZgkAAnlc4gmfCor5YbYYRAI')
-        telo = telo +'<a href="https://t.me/sgk_proba">#Юмор</a>'
+        if pkanal == 1:
+            telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Юмор</a>'
+        else:
+            telo = telo + '\n' + '<a href="https://t.me/sgk_proba">#Юмор</a>'
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
