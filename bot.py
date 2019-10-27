@@ -1,4 +1,5 @@
 import telebot
+import pillow
 
 bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s')
 
@@ -6,14 +7,18 @@ log = open("output.log","a")
 log.write("test")
 log.close()
 
+from PIL import Image
+from PIL import ImageDraw
+from PIL import ImageFont
+
 from telebot import types
-#  disable_web_page_preview
+
 markup = types.ReplyKeyboardMarkup(True)
 
 
 telo = ''
 vkanal = ''
-pkanal = 10
+pkanal = 100
 
 itembtnNews = types.KeyboardButton('Новости')
 itembtnIt = types.KeyboardButton('Прогресс')
@@ -36,8 +41,9 @@ def send_text(message):
     global telo
     global vkanal
     global pkanal
+
     if message.text.lower() == 'новости':
-        if pkanal == 1:
+        if pkanal == 1 or pkanal == 10:
             pkanal = 10
             telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Новости</a>'
         else:
@@ -47,7 +53,7 @@ def send_text(message):
         vkanal = telo
         telo = ''
     elif message.text.lower() == 'дача':
-        if pkanal == 1:
+        if pkanal == 1 or pkanal == 10:
             pkanal = 10
             telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Дача</a>'
         else:
@@ -62,7 +68,7 @@ def send_text(message):
         bot.delete_message(message.chat.id, message.message_id)
         telo = ''
     elif message.text.lower() == 'прогресс':
-        if pkanal == 1:
+        if pkanal == 1 or pkanal == 10:
             pkanal = 10
             telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Прогресс</a>'
         else:
@@ -90,7 +96,7 @@ def send_text(message):
         vkanal = telo
         telo = ''
     elif message.text.lower() == 'мнение':
-        if pkanal == 1:
+        if pkanal == 1 or pkanal == 10:
             pkanal = 10
             telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Мнение</a>'
         else:
@@ -101,7 +107,7 @@ def send_text(message):
         telo = ''
     elif message.text.lower() == 'юмор':
         #  bot.send_sticker(message.chat.id, 'CAADAgADZgkAAnlc4gmfCor5YbYYRAI')
-        if pkanal == 1:
+        if pkanal == 1 or pkanal == 10:
             pkanal = 10
             telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Юмор</a>'
         else:
@@ -113,8 +119,27 @@ def send_text(message):
     telo = message.text + '\n'
     # vkanal = telo
 
-@bot.message_handler(content_types=['sticker'])
-def sticker_id(message):
-    print(message)
+@bot.message_handler(content_types=['photo'])
+def watermark_text(input_image_path,
+                   output_image_path,
+                   text, pos):
+    photo = Image.open(input_image_path)
+
+    # make the image editable
+    drawing = ImageDraw.Draw(photo)
+
+    black = (3, 8, 12)
+    font = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", 40)
+    drawing.text(pos, text, fill=black, font=font)
+    photo.show()
+    photo.save(output_image_path)
+
+
+if __name__ == '__main__':
+    img = 'lighthouse.jpg'
+    watermark_text(img, 'lighthouse_watermarked.jpg',
+                   text='Телеграм канал SGK_espace',
+                   pos=(0, 0))
+
 
 bot.polling()
