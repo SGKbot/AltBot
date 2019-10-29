@@ -1,5 +1,6 @@
 import telebot
-import pillow
+import PIL
+import tempfile
 
 bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s')
 
@@ -119,27 +120,31 @@ def send_text(message):
     telo = message.text + '\n'
     # vkanal = telo
 
-@bot.message_handler(content_types=['photo'])
-def watermark_text(input_image_path,
-                   output_image_path,
-                   text, pos):
-    photo = Image.open(input_image_path)
 
-    # make the image editable
+
+@bot.message_handler(content_types=['photo'])
+def handle_docs_photo(message):
+    f = tempfile.NamedTemporaryFile(delete=False)
+
+    file_info = bot.get_file(message.photo[0].file_id)
+
+    f.write(bot.download_file(file_info.file_path))
+    f.close()
+
+    photo = Image.open(f.name)
+
     drawing = ImageDraw.Draw(photo)
 
     black = (3, 8, 12)
     font = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", 40)
+    pos = (0, 0)
+    text='Телеграм канал SGK_espace'
+
     drawing.text(pos, text, fill=black, font=font)
-    photo.show()
-    photo.save(output_image_path)
+    photo.save(f.name)
+    bot.send_message(message.chat.id,f )
+    os.unlink(f.name)
 
-
-if __name__ == '__main__':
-    img = 'lighthouse.jpg'
-    watermark_text(img, 'lighthouse_watermarked.jpg',
-                   text='Телеграм канал SGK_espace',
-                   pos=(0, 0))
 
 
 bot.polling()
