@@ -1,6 +1,7 @@
 import telebot
 import PIL
 import tempfile
+import os
 
 bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s')
 
@@ -135,14 +136,14 @@ def handle_docs_photo(message):
 
     drawing = ImageDraw.Draw(photo)
 
-    black = (3, 8, 12)
-    font = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", 40)
-    pos = (0, 0)
-    text = 'Телеграм канал SGK_espace'
+    black = (240, 8, 12)
+    font = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", 16)
+    pos = (50, 290)
+    text = 'Телеграм @SGK_espace'
 
     drawing.text(pos, text, fill=black, font=font)
     photo_path = f'{f.name}.png'
-    photo.save(photo_path)
+    photo.save(photo_path,dpi=[300,300])
 
     with open(photo_path, 'rb') as fi:
         bot.send_photo(message.chat.id, fi)
