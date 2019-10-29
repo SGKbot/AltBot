@@ -138,12 +138,17 @@ def handle_docs_photo(message):
     black = (3, 8, 12)
     font = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", 40)
     pos = (0, 0)
-    text='Телеграм канал SGK_espace'
+    text = 'Телеграм канал SGK_espace'
 
     drawing.text(pos, text, fill=black, font=font)
-    photo.save(f.name)
-    bot.send_message(message.chat.id,f )
-    os.unlink(f.name)
+    photo_path = f'{f.name}.png'
+    photo.save(photo_path)
+
+    with open(photo_path, 'rb') as fi:
+        bot.send_photo(message.chat.id, fi)
+
+    os.remove(f.name)
+    os.remove(photo_path)
 
 
 
