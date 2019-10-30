@@ -127,7 +127,7 @@ def send_text(message):
 def handle_docs_photo(message):
     f = tempfile.NamedTemporaryFile(delete=False)
 
-    file_info = bot.get_file(message.photo[0].file_id)
+    file_info = bot.get_file(message.photo[-1].file_id)
 
     f.write(bot.download_file(file_info.file_path))
     f.close()
@@ -138,12 +138,12 @@ def handle_docs_photo(message):
 
     black = (240, 8, 12)
     font = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", 16)
-    pos = (50, 290)
+    pos = (40, 290)
     text = 'Телеграм @SGK_espace'
 
     drawing.text(pos, text, fill=black, font=font)
-    photo_path = f'{f.name}.png'
-    photo.save(photo_path,dpi=[300,300])
+    photo_path = f'{f.name}.jpeg'
+    photo.save(photo_path, 'JPEG', dpi=[800,600], quality=100)
 
     with open(photo_path, 'rb') as fi:
         bot.send_photo(message.chat.id, fi)
