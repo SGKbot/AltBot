@@ -144,6 +144,12 @@ def handle_docs_photo(message):
     text = 'Телеграм @SGK_espace'
 
     drawing.text(pos, text, fill=black, font=font)
+    pos = (1 + width // 3, 1 + height - height // 10)
+    drawing.text(pos, text, fill=black, font=font)
+    pos = (2 + width // 3, 2 + height - height // 10)
+    drawing.text(pos, text, fill=black, font=font)
+
+
     photo_path = f'{f.name}.jpeg'
     photo.save(photo_path, 'JPEG')
 
