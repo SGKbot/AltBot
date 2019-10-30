@@ -79,6 +79,7 @@ def send_text(message):
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
         telo = ''
+
     elif message.entities:
              for item in message.entities:
                 if item.type == "url":
@@ -91,6 +92,7 @@ def send_text(message):
                 vkanal = telo + '\n'
                 telo = ''
                 pkanal = 1
+
     elif message.text.lower() == 'объединить':
         telo = telo +'<a href="https://t.me/sgk_proba">Этого пункта скорее всего не будет</a>'
         bot.delete_message(message.chat.id, message.message_id)
@@ -135,7 +137,6 @@ def handle_docs_photo(message):
     photo = Image.open(f.name)
     width, height = photo.size
 
-
     drawing = ImageDraw.Draw(photo)
 
     black = (240, 8, 12)
@@ -148,7 +149,6 @@ def handle_docs_photo(message):
     drawing.text(pos, text, fill=black, font=font)
     pos = (2 + width // 3, 2 + height - height // 10)
     drawing.text(pos, text, fill=black, font=font)
-
 
     photo_path = f'{f.name}.jpeg'
     photo.save(photo_path, 'JPEG')
