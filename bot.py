@@ -133,21 +133,24 @@ def handle_docs_photo(message):
     f.close()
 
     photo = Image.open(f.name)
+    width, height = photo.size
+
 
     drawing = ImageDraw.Draw(photo)
 
     black = (240, 8, 12)
-    font = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", 16)
-    pos = (40, 290)
+    font = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", width//22)
+    pos = (width//3, height - height//10)
     text = 'Телеграм @SGK_espace'
 
     drawing.text(pos, text, fill=black, font=font)
     photo_path = f'{f.name}.jpeg'
-    photo.save(photo_path, 'JPEG', dpi=[800,600], quality=100)
+    photo.save(photo_path, 'JPEG')
 
     with open(photo_path, 'rb') as fi:
         bot.send_photo(message.chat.id, fi)
-
+        #  bot.send_message(message.chat.id, width)
+        #  bot.send_message(message.chat.id, height)
     os.remove(f.name)
     os.remove(photo_path)
 
