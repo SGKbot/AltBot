@@ -2,6 +2,7 @@ import telebot
 import PIL
 import tempfile
 import os
+import youtube_dl
 
 bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s')
 
@@ -47,9 +48,9 @@ def send_text(message):
     if message.text.lower() == 'новости':
         if pkanal == 1 or pkanal == 10:
             pkanal = 10
-            telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Новости</a>'
+            telo = vkanal + '\n' + '<a href="https://t.me/SGK_espace">#Новости</a>'
         else:
-            telo = telo + '\n' + '<a href="https://t.me/sgk_proba">#Новости</a>'
+            telo = telo + '\n' + '<a href="https://t.me/SGK_espace">#Новости</a>'
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
@@ -66,7 +67,7 @@ def send_text(message):
         telo = ''
     elif message.text.lower() == 'отправить':
         telo = vkanal
-        bot.send_message('@SGK_proba', telo, parse_mode='html', disable_web_page_preview=True)
+        bot.send_message('@SGK_espace', telo, parse_mode='html', disable_web_page_preview=True)
         bot.delete_message(message.chat.id, message.message_id)
         telo = ''
     elif message.text.lower() == 'прогресс':
@@ -83,15 +84,30 @@ def send_text(message):
     elif message.entities:
              for item in message.entities:
                 if item.type == "url":
-                    if telo == '':
-                       telo = vkanal + '<a href="' + message.text + '">Читать далее...</a>'
-                    else:
-                       telo = telo + '<a href="' + message.text + '">Читать далее...</a>'
-                bot.delete_message(message.chat.id, message.message_id)
-                bot.send_message(message.chat.id, telo, parse_mode='html', disable_web_page_preview=True)
-                vkanal = telo + '\n'
-                telo = ''
-                pkanal = 1
+                    if 'youtube.com' in message.text: #  Загружаем с Ютуб
+
+                        zxt = tempfile.NamedTemporaryFile(delete=False)
+                        ydl_opts = {'outtmpl': 'zxt'}
+                        link_of_the_video = message.text
+
+                        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                            ydl.download([link_of_the_video])
+
+                        bot.send_video(message.chat.id, zxt)
+                        os.remove(zxt.name)
+                        # os.remove(photo_path)
+
+                    else:  # Читать далее
+                      if telo == '':
+                         telo = vkanal + '<a href="' + message.text + '">Читать далее...</a>'
+                      else:
+                         telo = telo + '<a href="' + message.text + '">Читать далее...</a>'
+
+                      bot.delete_message(message.chat.id, message.message_id)
+                      bot.send_message(message.chat.id, telo, parse_mode='html', disable_web_page_preview=True)
+                      vkanal = telo + '\n'
+                      telo = ''
+                      pkanal = 1
 
     elif message.text.lower() == 'объединить':
         telo = telo +'<a href="https://t.me/sgk_proba">Этого пункта скорее всего не будет</a>'
@@ -140,7 +156,7 @@ def handle_docs_photo(message):
     drawing = ImageDraw.Draw(photo)
 
     black = (240, 8, 12)
-    font = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", width//22)
+    font = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", width//20)
     pos = (width//3, height - height//10)
     text = 'Телеграм @SGK_espace'
 
@@ -155,8 +171,7 @@ def handle_docs_photo(message):
 
     with open(photo_path, 'rb') as fi:
         bot.send_photo(message.chat.id, fi)
-        #  bot.send_message(message.chat.id, width)
-        #  bot.send_message(message.chat.id, height)
+
     os.remove(f.name)
     os.remove(photo_path)
 
