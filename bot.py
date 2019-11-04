@@ -86,16 +86,20 @@ def send_text(message):
                 if item.type == "url":
                     if 'youtube.com' in message.text: #  Загружаем с Ютуб
 
-                        zxt = tempfile.NamedTemporaryFile(delete=False)
-                        ydl_opts = {'outtmpl': 'zxt'}
+                        ydl_opts = {'outtmpl': '/tmp/f.mp3', 'preferredcodec': 'mp3'}
                         link_of_the_video = message.text
 
                         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
                             ydl.download([link_of_the_video])
 
-                        bot.send_video(message.chat.id, zxt)
-                        os.remove(zxt.name)
-                        # os.remove(photo_path)
+                        bot.delete_message(message.chat.id, message.message_id)
+                        video = open('/tmp/f.mp3', 'rb')
+                        bot.send_video(message.chat.id, video)
+                        #  bot.send_video(chat_id, "FILEID")
+                        os.remove('/tmp/f.mp3')
+
+
+
 
                     else:  # Читать далее
                       if telo == '':
