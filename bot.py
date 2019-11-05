@@ -22,6 +22,7 @@ markup = types.ReplyKeyboardMarkup(True)
 telo = ''
 vkanal = ''
 pkanal = 100
+skanal = ''
 
 itembtnNews = types.KeyboardButton('News')
 itembtnIt = types.KeyboardButton('IT News')
@@ -52,17 +53,23 @@ def send_text(message):
     global telo
     global vkanal
     global pkanal
+    global skanal
 
     if message.text.lower() == 'news':
         if pkanal == 1 or pkanal == 10:
             pkanal = 10
-            telo = vkanal + '\n' + '<a href="https://t.me/SGK_espace">#Новости</a>'
+            #  telo = vkanal + '\n' + '<a href="https://t.me/SGK_espace">#Новости</a>'
+            telo = vkanal + '\n' + '<a href="' + skanal + '">#Новости</a>'
         else:
-            telo = telo + '\n' + '<a href="https://t.me/SGK_espace">#Новости</a>'
+            #  telo = telo + '\n' + '<a href="https://t.me/SGK_espace">#Новости</a>'
+            telo = telo + '\n' + '<a href="' + skanal + '">#Новости</a>'
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
         telo = ''
+    elif message.text.lower() == 'help':
+        bot.delete_message(message.chat.id, message.message_id)
+        bot.send_message(message.chat.id, HS, parse_mode='html', disable_web_page_preview=True)
     elif message.text.lower() == 'hands':
         if pkanal == 1 or pkanal == 10:
             pkanal = 10
@@ -106,7 +113,9 @@ def send_text(message):
                         #  bot.send_video(chat_id, "FILEID")
                         os.remove('/tmp/f.mp3')
 
-
+                    elif 't.me' in message.text: #  устанавливаем канал пользователя
+                        skanal = message.text
+                        bot.send_message(message.chat.id, skanal, parse_mode='html', disable_web_page_preview=True)
                     else:  # Читать далее
                       if telo == '':
                          telo = vkanal + '<a href="' + message.text + '">Читать далее...</a>'
@@ -166,13 +175,14 @@ def handle_docs_photo(message):
 
     black = (240, 8, 12)
     font = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", width//20)
-    pos = (width//3, height - height//10)
-    text = 'Телеграм @SGK_espace'
+    pos = (width//4, height - height//10)
+
+    text = skanal
 
     drawing.text(pos, text, fill=black, font=font)
-    pos = (1 + width // 3, 1 + height - height // 10)
+    pos = (1 + width // 4, 1 + height - height // 10)
     drawing.text(pos, text, fill=black, font=font)
-    pos = (2 + width // 3, 2 + height - height // 10)
+    pos = (2 + width // 4, 2 + height - height // 10)
     drawing.text(pos, text, fill=black, font=font)
 
     photo_path = f'{f.name}.jpeg'
