@@ -23,21 +23,29 @@ telo = ''
 vkanal = ''
 pkanal = 100
 
-itembtnNews = types.KeyboardButton('Новости')
-itembtnIt = types.KeyboardButton('Прогресс')
-itembtnBla = types.KeyboardButton('Мнение')
-itembtnDa = types.KeyboardButton('Дача')
-itembtnKomb = types.KeyboardButton('Объединить')
-itembtndHum = types.KeyboardButton('Юмор')
-itembtnSend = types.KeyboardButton('Отправить')
-itembtnRead = types.KeyboardButton('Далее...')
+itembtnNews = types.KeyboardButton('News')
+itembtnIt = types.KeyboardButton('IT News')
+itembtnBla = types.KeyboardButton('Sight')
+itembtnDa = types.KeyboardButton('Hands')
+itembtnKomb = types.KeyboardButton('Comb')
+itembtndHum = types.KeyboardButton('Humor')
+itembtnSend = types.KeyboardButton('Send')
+itembtnRead = types.KeyboardButton('Help')
 
 markup.row(itembtnNews, itembtnIt, itembtnDa, itembtnKomb)
 markup.row(itembtndHum, itembtnBla, itembtnRead, itembtnSend)
 
+HS='Здравствуйте. ' \
+   ' Оговорюсь сразу - бот создавался исключительно для помощи в продвижении моего канала.' \
+   ' Простота накладывает ограничения - вы всегда работаете только с последним отправленным боту сообщением.' \
+   ' Настроить расположение водяного знака нельзя. Любая отправленная ссылка (кроме на ютуб) формирует “Читать далее”.' \
+   ' Ссылка на ютуб скачивает видео. Отправленная картинка возвращается с водяным знаком. ' \
+   '\n' \
+   '<a href="https://t.me/SGK_espace">Подписаться на мой канал</a>'
+
 @bot.message_handler(commands=['start'])
 def start_message(message):
-    bot.send_message(message.chat.id, 'Привет, ты написал мне /start', reply_markup=markup)
+    bot.send_message(message.chat.id, HS,parse_mode='html', disable_web_page_preview=True)
 
 @bot.message_handler(content_types=['text'])
 def send_text(message):
@@ -45,7 +53,7 @@ def send_text(message):
     global vkanal
     global pkanal
 
-    if message.text.lower() == 'новости':
+    if message.text.lower() == 'news':
         if pkanal == 1 or pkanal == 10:
             pkanal = 10
             telo = vkanal + '\n' + '<a href="https://t.me/SGK_espace">#Новости</a>'
@@ -55,27 +63,27 @@ def send_text(message):
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
         telo = ''
-    elif message.text.lower() == 'дача':
+    elif message.text.lower() == 'hands':
         if pkanal == 1 or pkanal == 10:
             pkanal = 10
-            telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Дача</a>'
+            telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Hands</a>'
         else:
-            telo = telo + '\n' + '<a href="https://t.me/sgk_proba">#Дача</a>'
+            telo = telo + '\n' + '<a href="https://t.me/sgk_proba">#Hands</a>'
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
         telo = ''
-    elif message.text.lower() == 'отправить':
+    elif message.text.lower() == 'send':
         telo = vkanal
-        bot.send_message('@SGK_espace', telo, parse_mode='html', disable_web_page_preview=True)
+        bot.send_message('@SGK_proba', telo, parse_mode='html', disable_web_page_preview=True)
         bot.delete_message(message.chat.id, message.message_id)
         telo = ''
-    elif message.text.lower() == 'прогресс':
+    elif message.text.lower() == 'it news':
         if pkanal == 1 or pkanal == 10:
             pkanal = 10
-            telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Прогресс</a>'
+            telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#NewsIT</a>'
         else:
-            telo = telo + '\n' + '<a href="https://t.me/sgk_proba">#Прогресс</a>'
+            telo = telo + '\n' + '<a href="https://t.me/sgk_proba">#NewsIT</a>'
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
@@ -99,8 +107,6 @@ def send_text(message):
                         os.remove('/tmp/f.mp3')
 
 
-
-
                     else:  # Читать далее
                       if telo == '':
                          telo = vkanal + '<a href="' + message.text + '">Читать далее...</a>'
@@ -113,13 +119,13 @@ def send_text(message):
                       telo = ''
                       pkanal = 1
 
-    elif message.text.lower() == 'объединить':
+    elif message.text.lower() == 'comb':
         telo = telo +'<a href="https://t.me/sgk_proba">Этого пункта скорее всего не будет</a>'
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
         telo = ''
-    elif message.text.lower() == 'мнение':
+    elif message.text.lower() == 'sight':
         if pkanal == 1 or pkanal == 10:
             pkanal = 10
             telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Мнение</a>'
@@ -129,8 +135,7 @@ def send_text(message):
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
         telo = ''
-    elif message.text.lower() == 'юмор':
-        #  bot.send_sticker(message.chat.id, 'CAADAgADZgkAAnlc4gmfCor5YbYYRAI')
+    elif message.text.lower() == 'humor':
         if pkanal == 1 or pkanal == 10:
             pkanal = 10
             telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Юмор</a>'
