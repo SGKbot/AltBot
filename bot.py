@@ -6,9 +6,6 @@ import youtube_dl
 
 bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s')
 
-log = open("output.log","a")
-log.write("test")
-log.close()
 
 from PIL import Image
 from PIL import ImageDraw
@@ -22,7 +19,7 @@ markup = types.ReplyKeyboardMarkup(True)
 telo = ''
 vkanal = ''
 pkanal = 100
-skanal = ''
+skanal = 'https://t.me/sgk_proba'
 
 itembtnNews = types.KeyboardButton('News')
 itembtnIt = types.KeyboardButton('IT News')
@@ -36,8 +33,8 @@ itembtnRead = types.KeyboardButton('Help')
 markup.row(itembtnNews, itembtnIt, itembtnDa, itembtnKomb)
 markup.row(itembtndHum, itembtnBla, itembtnRead, itembtnSend)
 
-HS='Здравствуйте. ' \
-   ' Оговорюсь сразу - бот создавался исключительно для помощи в продвижении моего канала.' \
+HS = 'Здравствуйте. ' \
+    ' Оговорюсь сразу - бот создавался исключительно для помощи в продвижении моего канала.' \
    ' Простота накладывает ограничения - вы всегда работаете только с последним отправленным боту сообщением.' \
    ' Настроить расположение водяного знака нельзя. Любая отправленная ссылка (кроме на ютуб) формирует “Читать далее”.' \
    ' Ссылка на ютуб скачивает видео. Отправленная картинка возвращается с водяным знаком. ' \
@@ -46,7 +43,7 @@ HS='Здравствуйте. ' \
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
-    bot.send_message(message.chat.id, HS,parse_mode='html', disable_web_page_preview=True)
+    bot.send_message(message.chat.id, HS,parse_mode='html', disable_web_page_preview=True, reply_markup=markup)
 
 @bot.message_handler(content_types=['text'])
 def send_text(message):
@@ -55,21 +52,22 @@ def send_text(message):
     global pkanal
     global skanal
 
-    if message.text.lower() == 'news':
+
+    if message.text.lower() == 'news':                                            # Новости
         if pkanal == 1 or pkanal == 10:
             pkanal = 10
-            #  telo = vkanal + '\n' + '<a href="https://t.me/SGK_espace">#Новости</a>'
             telo = vkanal + '\n' + '<a href="' + skanal + '">#Новости</a>'
         else:
-            #  telo = telo + '\n' + '<a href="https://t.me/SGK_espace">#Новости</a>'
             telo = telo + '\n' + '<a href="' + skanal + '">#Новости</a>'
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
         telo = ''
+
     elif message.text.lower() == 'help':
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, HS, parse_mode='html', disable_web_page_preview=True)
+
     elif message.text.lower() == 'hands':
         if pkanal == 1 or pkanal == 10:
             pkanal = 10
@@ -80,12 +78,22 @@ def send_text(message):
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
         telo = ''
-    elif message.text.lower() == 'send':
-        telo = vkanal
-        bot.send_message('@SGK_proba', telo, parse_mode='html', disable_web_page_preview=True)
-        bot.delete_message(message.chat.id, message.message_id)
-        telo = ''
-    elif message.text.lower() == 'it news':
+
+    elif message.text.lower() == 'send':                        #  Отправка в канал
+
+        if telo == '' or skanal == '':
+            bot.send_message(message.chat.id, 'Пустое сообщение или неопределен канал', parse_mode='html', disable_web_page_preview=True)
+        else:
+            if pkanal==9:
+                telo = telo
+            else:
+                telo = vkanal
+
+            bot.send_message("@" + skanal[13:], telo, parse_mode='html', disable_web_page_preview=True)
+            bot.delete_message(message.chat.id, message.message_id)
+            telo = ''
+
+    elif message.text.lower() == 'it news':                     #  Новости
         if pkanal == 1 or pkanal == 10:
             pkanal = 10
             telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#NewsIT</a>'
@@ -96,26 +104,22 @@ def send_text(message):
         vkanal = telo
         telo = ''
 
-    elif message.entities:
+    elif message.entities:                                      # Работа со ссылками
              for item in message.entities:
                 if item.type == "url":
-                    if 'youtube.com' in message.text: #  Загружаем с Ютуб
-
+                    if 'youtube.com' in message.text:           #  Загружаем с Ютуб
                         ydl_opts = {'outtmpl': '/tmp/f.mp3', 'preferredcodec': 'mp3'}
                         link_of_the_video = message.text
-
                         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
                             ydl.download([link_of_the_video])
-
                         bot.delete_message(message.chat.id, message.message_id)
                         video = open('/tmp/f.mp3', 'rb')
                         bot.send_video(message.chat.id, video)
-                        #  bot.send_video(chat_id, "FILEID")
                         os.remove('/tmp/f.mp3')
 
-                    elif 't.me' in message.text: #  устанавливаем канал пользователя
+                    elif 't.me' in message.text:              #  устанавливаем канал пользователя
                         skanal = message.text
-                        bot.send_message(message.chat.id, skanal, parse_mode='html', disable_web_page_preview=True)
+
                     else:  # Читать далее
                       if telo == '':
                          telo = vkanal + '<a href="' + message.text + '">Читать далее...</a>'
@@ -134,7 +138,8 @@ def send_text(message):
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
         telo = ''
-    elif message.text.lower() == 'sight':
+
+    elif message.text.lower() == 'sight':                  # Мнение
         if pkanal == 1 or pkanal == 10:
             pkanal = 10
             telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Мнение</a>'
@@ -144,7 +149,8 @@ def send_text(message):
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
         telo = ''
-    elif message.text.lower() == 'humor':
+
+    elif message.text.lower() == 'humor':                    # Юмор
         if pkanal == 1 or pkanal == 10:
             pkanal = 10
             telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Юмор</a>'
@@ -154,46 +160,38 @@ def send_text(message):
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
         telo = ''
-    telo = message.text + '\n'
+
+
+    telo = message.text + '\n'        #   Общая для всех
+    pkanal = 9
     # vkanal = telo
 
 
 
-@bot.message_handler(content_types=['photo'])
+@bot.message_handler(content_types=['photo'])           #  Водяной знак
 def handle_docs_photo(message):
     f = tempfile.NamedTemporaryFile(delete=False)
-
     file_info = bot.get_file(message.photo[-1].file_id)
-
     f.write(bot.download_file(file_info.file_path))
     f.close()
-
     photo = Image.open(f.name)
     width, height = photo.size
-
     drawing = ImageDraw.Draw(photo)
-
     black = (240, 8, 12)
     font = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", width//20)
     pos = (width//4, height - height//10)
-
     text = skanal
-
     drawing.text(pos, text, fill=black, font=font)
     pos = (1 + width // 4, 1 + height - height // 10)
     drawing.text(pos, text, fill=black, font=font)
     pos = (2 + width // 4, 2 + height - height // 10)
     drawing.text(pos, text, fill=black, font=font)
-
     photo_path = f'{f.name}.jpeg'
     photo.save(photo_path, 'JPEG')
-
     with open(photo_path, 'rb') as fi:
         bot.send_photo(message.chat.id, fi)
-
     os.remove(f.name)
     os.remove(photo_path)
-
 
 
 bot.polling()
