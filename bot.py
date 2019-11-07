@@ -228,6 +228,7 @@ def send_text(message):
     else:
         telo = message.text + '\n'        # Просто текст
         pkanal = 9
+        # bot.send_message(message.chat.id,message ,parse_mode='html', disable_web_page_preview=True)
         # vkanal = telo
 
 
@@ -257,5 +258,7 @@ def handle_docs_photo(message):
     os.remove(f.name)
     os.remove(photo_path)
     pkanal = 5
+
+
 
 bot.polling()
