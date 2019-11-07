@@ -35,15 +35,60 @@ markup.row(itembtndHum, itembtnBla, itembtnRead, itembtnSend)
 
 HS = 'Здравствуйте. ' \
     ' Оговорюсь сразу - бот создавался исключительно для помощи в продвижении моего канала.' \
-   ' Простота накладывает ограничения - вы всегда работаете только с последним отправленным боту сообщением.' \
+   ' Простота накладывает ограничения - вы всегда работаете только с последним ВИДИМЫМ В боте сообщением.' \
    ' Настроить расположение водяного знака нельзя. Любая отправленная ссылка (кроме на ютуб) формирует “Читать далее”.' \
    ' Ссылка на ютуб скачивает видео. Отправленная картинка возвращается с водяным знаком. ' \
    '\n' \
    '<a href="https://t.me/SGK_espace">Подписаться на мой канал</a>'
 
+HSK = '<b>Не забудьте сделать бота администратором вашего канала</b>' \
+    '\n \n' \
+    '<b>Клавиши:</b>' \
+    '\n \n' \
+    '<b>Теги:</b>' \
+    '\n' \
+    '<b>News</b>      Новости' \
+    '\n' \
+    '<b>IT News</b>  Новости науки и технологий' \
+    '\n' \
+    '<b>Sight</b>       Мнение автора' \
+    '\n' \
+    '<b>Hands</b>     Дача, своими руками' \
+    '\n' \
+    '<b>Humor</b>    Юмор' \
+    '\n \n' \
+    '<b>Действия:</b>' \
+    '\n' \
+    '<b>Comb</b>    Объединить два последних сообщения' \
+    '\n' \
+    '<b>Send</b>      Отправить подготовленное сообщение в ваш канал' \
+    '\n' \
+    '<b>Help</b>       Помощь по боту' \
+    '\n \n' \
+    '<b>Действия без клавиш:</b>' \
+    '\n' \
+    '<b>Отправить боту картинку</b> возвращается картинка с указанием на ваш канал.' \
+    '\n' \
+    '<b>Отправка боту ссылки</b>' \
+    '\n' \
+    '<b>на ютуб</b> возвращает видеофайл' \
+    '\n' \
+    '<b>на ваш канал</b> в последующем добавляет в тег гиперссылку на канал,  пишет на картинке, отправленной боту вашу ссылку.' \
+    '\n' \
+    'Формат https://t.me/SGK_espace' \
+    '\n' \
+    '<b>любая другая</b> ссылка добавляется к тексту гиперссылкой со словами “Читать далее…"' \
+    '\n' \
+    'Все вопросы и предложения по работе бота только в чате моего канала.' \
+    '\n' \
+    '<a href="https://t.me/SGK_espace">Подписаться на мой канал</a>'
+
 @bot.message_handler(commands=['start'])
 def start_message(message):
     bot.send_message(message.chat.id, HS,parse_mode='html', disable_web_page_preview=True, reply_markup=markup)
+    telo = ''
+    vkanal = ''
+    pkanal = 100
 
 @bot.message_handler(content_types=['text'])
 def send_text(message):
@@ -54,57 +99,66 @@ def send_text(message):
 
 
     if message.text.lower() == 'news':                                            # Новости
-        if pkanal == 1 or pkanal == 10:
-            pkanal = 10
+
+        if pkanal == 10:
             telo = vkanal + '\n' + '<a href="' + skanal + '">#Новости</a>'
         else:
             telo = telo + '\n' + '<a href="' + skanal + '">#Новости</a>'
+
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
+
         vkanal = telo
         telo = ''
+        pkanal = 10
 
     elif message.text.lower() == 'help':
         bot.delete_message(message.chat.id, message.message_id)
-        bot.send_message(message.chat.id, HS, parse_mode='html', disable_web_page_preview=True)
+        bot.send_message(message.chat.id, HSK, parse_mode='html', disable_web_page_preview=True)
+        telo = ''
+        vkanal = ''
+        pkanal = 100
 
     elif message.text.lower() == 'hands':
-        if pkanal == 1 or pkanal == 10:
-            pkanal = 10
-            telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Hands</a>'
+
+        if pkanal == 10:
+            telo = vkanal + '\n' + '<a href="' + skanal + '">#Hands</a>'
         else:
-            telo = telo + '\n' + '<a href="https://t.me/sgk_proba">#Hands</a>'
+            telo = telo + '\n' + '<a href="' + skanal + '">#Hands</a>'
+
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
         telo = ''
+        pkanal = 10
 
     elif message.text.lower() == 'send':                        #  Отправка в канал
 
-        if telo == '' or skanal == '':
+        if pkanal == 100:
             bot.send_message(message.chat.id, 'Пустое сообщение или неопределен канал', parse_mode='html', disable_web_page_preview=True)
+        elif pkanal==10:
+            telo = vkanal
         else:
-            if pkanal==9:
-                telo = telo
-            else:
-                telo = vkanal
+            telo = telo
 
-            bot.send_message("@" + skanal[13:], telo, parse_mode='html', disable_web_page_preview=True)
-            bot.delete_message(message.chat.id, message.message_id)
-            telo = ''
+        bot.send_message("@" + skanal[13:], telo, parse_mode='html', disable_web_page_preview=True)
+        bot.delete_message(message.chat.id, message.message_id)
+        telo = ''
+        vkanal = ''
+        pkanal = 100
 
-    elif message.text.lower() == 'it news':                     #  Новости
-        if pkanal == 1 or pkanal == 10:
-            pkanal = 10
-            telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#NewsIT</a>'
+    elif message.text.lower() == 'it news':                     #  Новости IT
+        if pkanal == 10:
+            telo = vkanal + '\n' + '<a href="' + skanal + '">#NewsIT</a>'
         else:
-            telo = telo + '\n' + '<a href="https://t.me/sgk_proba">#NewsIT</a>'
+            telo = telo + '\n' + '<a href="' + skanal + '">#NewsIT</a>'
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
         telo = ''
+        pkanal = 10
 
-    elif message.entities:                                      # Работа со ссылками
+    elif message.entities:                                      # Работа со ссылками добавить вид при поделиться из ютуб
              for item in message.entities:
                 if item.type == "url":
                     if 'youtube.com' in message.text:           #  Загружаем с Ютуб
@@ -116,21 +170,30 @@ def send_text(message):
                         video = open('/tmp/f.mp3', 'rb')
                         bot.send_video(message.chat.id, video)
                         os.remove('/tmp/f.mp3')
+                        pkanal = 6
 
                     elif 't.me' in message.text:              #  устанавливаем канал пользователя
                         skanal = message.text
+                        telo = ''
+                        vkanal = ''
+                        pkanal = 100
+                        bot.delete_message(message.chat.id, message.message_id)
+                        bot.send_message(message.chat.id, 'Вы установили свой канал как ' + skanal, parse_mode='html', disable_web_page_preview=True)
 
-                    else:  # Читать далее
-                      if telo == '':
-                         telo = vkanal + '<a href="' + message.text + '">Читать далее...</a>'
+                    else:                                        # Читать далее
+                      if pkanal == 9:
+                        telo = telo + '<a href="' + message.text + '">Читать далее...</a>'
+                        # telo = vkanal + '<a href="' + message.text + '">Читать далее...</a>'
                       else:
-                         telo = telo + '<a href="' + message.text + '">Читать далее...</a>'
+                        telo = telo + '<a href="' + message.text + '">Читать далее...</a>'
 
                       bot.delete_message(message.chat.id, message.message_id)
                       bot.send_message(message.chat.id, telo, parse_mode='html', disable_web_page_preview=True)
-                      vkanal = telo + '\n'
+
+                      vkanal = telo + '\n'   # хуйня тут
                       telo = ''
-                      pkanal = 1
+                      pkanal = 10
+
 
     elif message.text.lower() == 'comb':
         telo = telo +'<a href="https://t.me/sgk_proba">Этого пункта скорее всего не будет</a>'
@@ -138,33 +201,34 @@ def send_text(message):
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
         telo = ''
+        pkanal = 11
 
     elif message.text.lower() == 'sight':                  # Мнение
-        if pkanal == 1 or pkanal == 10:
-            pkanal = 10
-            telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Мнение</a>'
+        if pkanal == 10:
+            telo = vkanal + '\n' + '<a href="' + skanal + '">#Мнение</a>'
         else:
-            telo = telo + '\n' + '<a href="https://t.me/sgk_proba">#Мнение</a>'
+            telo = telo + '\n' + '<a href="' + skanal + '">#Мнение</a>'
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
         telo = ''
+        pkanal = 10
 
     elif message.text.lower() == 'humor':                    # Юмор
-        if pkanal == 1 or pkanal == 10:
-            pkanal = 10
-            telo = vkanal + '\n' + '<a href="https://t.me/sgk_proba">#Юмор</a>'
+        if pkanal == 10:
+            telo = vkanal + '\n' + '<a href="' + skanal + '">#Юмор</a>'
         else:
-            telo = telo + '\n' + '<a href="https://t.me/sgk_proba">#Юмор</a>'
+            telo = telo + '\n' + '<a href="' + skanal + '">#Юмор</a>'
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
         telo = ''
+        pkanal = 10
 
-
-    telo = message.text + '\n'        #   Общая для всех
-    pkanal = 9
-    # vkanal = telo
+    else:
+        telo = message.text + '\n'        # Просто текст
+        pkanal = 9
+        # vkanal = telo
 
 
 
@@ -192,6 +256,6 @@ def handle_docs_photo(message):
         bot.send_photo(message.chat.id, fi)
     os.remove(f.name)
     os.remove(photo_path)
-
+    pkanal = 5
 
 bot.polling()
