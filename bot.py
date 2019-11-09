@@ -22,7 +22,7 @@ pkanal = 100
 skanal = 'https://t.me/sgk_proba'
 
 itembtnNews = types.KeyboardButton('News')
-itembtnIt = types.KeyboardButton('IT News')
+itembtnADS = types.KeyboardButton('ADS')
 itembtnBla = types.KeyboardButton('Sight')
 itembtnDa = types.KeyboardButton('Hands')
 itembtnKomb = types.KeyboardButton('Comb')
@@ -30,7 +30,7 @@ itembtndHum = types.KeyboardButton('Humor')
 itembtnSend = types.KeyboardButton('Send')
 itembtnRead = types.KeyboardButton('Help')
 
-markup.row(itembtnNews, itembtnIt, itembtnDa, itembtnKomb)
+markup.row(itembtnNews, itembtnADS, itembtnDa, itembtnKomb)
 markup.row(itembtndHum, itembtnBla, itembtnRead, itembtnSend)
 
 HS = 'Здравствуйте. ' \
@@ -49,7 +49,7 @@ HSK = '<b>Не забудьте сделать бота администрато
     '\n' \
     '<b>News</b>      Новости' \
     '\n' \
-    '<b>IT News</b>  Новости науки и технологий' \
+    '<b>ADS</b>  Реклама' \
     '\n' \
     '<b>Sight</b>       Мнение автора' \
     '\n' \
@@ -147,11 +147,11 @@ def send_text(message):
         vkanal = ''
         pkanal = 100
 
-    elif message.text.lower() == 'it news':                     #  Новости IT
+    elif message.text.lower() == 'ads':                     #  Реклама
         if pkanal == 10:
-            telo = vkanal + '\n' + '<a href="' + skanal + '">#NewsIT</a>'
+            telo = vkanal + '\n' + '<a href="' + skanal + '">#Реклама</a>'
         else:
-            telo = telo + '\n' + '<a href="' + skanal + '">#NewsIT</a>'
+            telo = telo + '\n' + '<a href="' + skanal + '">#Реклама</a>'
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
         vkanal = telo
@@ -161,7 +161,7 @@ def send_text(message):
     elif message.entities:                                      # Работа со ссылками добавить вид при поделиться из ютуб
              for item in message.entities:
                 if item.type == "url":
-                    if 'youtube.com' in message.text:           #  Загружаем с Ютуб
+                    if 'youtube.com' in message.text or 'youtu.be' in message.text:           #  Загружаем с Ютуб
                         ydl_opts = {'outtmpl': '/tmp/f.mp3', 'preferredcodec': 'mp3'}
                         link_of_the_video = message.text
                         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
@@ -190,7 +190,7 @@ def send_text(message):
                       bot.delete_message(message.chat.id, message.message_id)
                       bot.send_message(message.chat.id, telo, parse_mode='html', disable_web_page_preview=True)
 
-                      vkanal = telo + '\n'   # хуйня тут
+                      vkanal = telo + '\n'
                       telo = ''
                       pkanal = 10
 
