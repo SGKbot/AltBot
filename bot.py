@@ -49,7 +49,7 @@ HSK = '<b>Не забудьте сделать бота администрато
     '\n' \
     '<b>News</b>      Новости' \
     '\n' \
-    '<b>ADS</b>  Реклама' \
+    '<b>ADS</b>         Реклама' \
     '\n' \
     '<b>Sight</b>       Мнение автора' \
     '\n' \
@@ -158,7 +158,7 @@ def send_text(message):
         telo = ''
         pkanal = 10
 
-    elif message.entities:                                      # Работа со ссылками добавить вид при поделиться из ютуб
+    elif message.entities:                                      # Работа со ссылками
              for item in message.entities:
                 if item.type == "url":
                     if 'youtube.com' in message.text or 'youtu.be' in message.text:           #  Загружаем с Ютуб
