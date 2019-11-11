@@ -1,0 +1,52 @@
+- hosts: all
+  gather_facts: no
+  tasks:
+    - name: install packages
+      apt:
+        name:
+          - python3
+          - python3-pip
+          - python-pip
+        state: present
+
+    - name: install docker python module
+      pip:
+       executable: pip
+       name:
+         - setuptools
+         - wheel
+         - docker
+
+    - name: setup service file
+      template:
+        src: altbot.service
+        dest: /etc/systemd/system/altbot.service
+      register: service_file
+
+    - name: Pull docker image
+      command: docker pull sgkond/altbot
+      register: docker_pull
+      changed_when: "'Status: Downloaded newer image' in docker_pull.stdout"
+
+    - name: Get ID of docker image
+      docker_inspect: id="sgkond/altbot" type=image
+      register: docker_image
+      failed_when: false
+
+    - name: Detect upgrade of image
+      docker_inspect: id=altbot
+      register: docker_container
+      changed_when: docker_image.attrs.Id is not defined
+        or docker_container.attrs.Image is not defined
+        or docker_image.attrs.Id != docker_container.attrs.Image
+      failed_when: false
+      ignore_errors: true
+
+    - name: Restart service
+      service: name=altbot state=restarted
+      when: service_file.changed or docker_container.changed
+
+    - name: start bot
+      systemd:
+        name: altbot.service
+        state: started

@@ -1,0 +1,2 @@
+[all]
+srv ansible_host=159.69.144.230 ansible_user=root
