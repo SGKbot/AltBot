@@ -3,6 +3,12 @@ import PIL
 import tempfile
 import os
 import youtube_dl
+import yaml
+
+#  config_file = open("config.yaml","r")
+#  config = yaml.load(config_file)
+#  value = config.get("key")
+
 
 bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s')
 
@@ -227,6 +233,17 @@ def send_text(message):
 
     else:
         telo = message.text + '\n'        # Просто текст
+
+                                                       # Обрабатываем выделение жирным, нет проверки на ошибку
+
+        bb='бб'
+        for bb in telo:
+            index1 = telo.index('бб')
+            telo = telo[:index1] + '<b>' + telo[(index1+ 2):]
+            index2 = telo.index('бб', index1)
+            telo = telo[:index2] + '</b>' + telo[(index2 + 2):]
+
+
         pkanal = 9
         # bot.send_message(message.chat.id,message ,parse_mode='html', disable_web_page_preview=True)
         # vkanal = telo
