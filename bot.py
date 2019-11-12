@@ -27,6 +27,8 @@ vkanal = ''
 pkanal = 100
 skanal = ''
 # skanal = 'https://t.me/sgk_proba'
+pv = 0
+HSK1 = ''
 
 itembtnNews = types.KeyboardButton('News')
 itembtnADS = types.KeyboardButton('ADS')
@@ -50,11 +52,11 @@ HS = 'Здравствуйте. ' \
     'Ограничения: Простота накладывает ограничения - вы всегда работаете только с последним ВИДИМЫМ В боте сообщением.' \
     ' Настроить расположение водяного знака нельзя. Любая отправленная ссылка (кроме на ютуб) формирует “Читать далее”.' \
     ' Ссылка на ютуб скачивает видео. Отправленная картинка возвращается с водяным знаком. ' \
+    'v1.0' \
     '\n' \
     '<a href="https://t.me/SGK_espace">Подписаться на мой канал</a>'
 
-HSK = '<b>Не забудьте сделать бота администратором вашего канала</b>' \
-    '\n \n' \
+HSK = '\n \n' \
     '<b>       Клавиши:</b>' \
     '\n' \
     '<b>Теги:</b>' \
@@ -110,6 +112,9 @@ def send_text(message):
     global vkanal
     global pkanal
     global skanal
+    global HSK
+    global HSK1
+    global pv
 
 
     if message.text.lower() == 'news':                                            # Новости
@@ -127,8 +132,16 @@ def send_text(message):
         pkanal = 10
 
     elif message.text.lower() == 'help':
+
+        if skanal == '' and pv == 0:
+            HSK1 = '<b>Не забудьте сделать бота администратором вашего канала и отправить боту ссылку на канал</b>'
+            pv = 1
+        elif pv == 2:
+            HSK1 = '<b>Ваш канал </b>' + skanal
+            pv = 3
+
         bot.delete_message(message.chat.id, message.message_id)
-        bot.send_message(message.chat.id, HSK, parse_mode='html', disable_web_page_preview=True)
+        bot.send_message(message.chat.id,HSK1+HSK, parse_mode='html', disable_web_page_preview=True)
         telo = ''
         vkanal = ''
         pkanal = 100
@@ -197,7 +210,7 @@ def send_text(message):
                         pkanal = 100
                         bot.delete_message(message.chat.id, message.message_id)
                         bot.send_message(message.chat.id, 'Вы установили свой канал как ' + skanal, parse_mode='html', disable_web_page_preview=True)
-
+                        pv = 2
                         #  chat_id = '@SGK_proba'
                         #  adm_list = [(adm_obj.user.id, adm_obj.user.username) for adm_obj in
                         #            bot.get_chat_administrators(chat_id)]
