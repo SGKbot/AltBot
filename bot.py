@@ -25,7 +25,8 @@ markup = types.ReplyKeyboardMarkup(True)
 telo = ''
 vkanal = ''
 pkanal = 100
-skanal = 'https://t.me/sgk_proba'
+skanal = ''
+# skanal = 'https://t.me/sgk_proba'
 
 itembtnNews = types.KeyboardButton('News')
 itembtnADS = types.KeyboardButton('ADS')
@@ -147,18 +148,22 @@ def send_text(message):
 
     elif message.text.lower() == 'send':                        #  Отправка в канал
 
-        if pkanal == 100:
-            bot.send_message(message.chat.id, 'Пустое сообщение или неопределен канал', parse_mode='html', disable_web_page_preview=True)
-        elif pkanal==10:
-            telo = vkanal
-        else:
-            telo = telo
+        chat_id = "@" + skanal[13:]
+        if message.from_user.id in [adm_obj.user.id for adm_obj in bot.get_chat_administrators(chat_id)]:
+            if pkanal==10:
+               telo = vkanal
+            else:
+               telo = telo
 
-        bot.send_message("@" + skanal[13:], telo, parse_mode='html', disable_web_page_preview=True)
-        bot.delete_message(message.chat.id, message.message_id)
-        telo = ''
-        vkanal = ''
-        pkanal = 100
+            bot.send_message(chat_id, telo, parse_mode='html', disable_web_page_preview=True)
+            bot.delete_message(message.chat.id, message.message_id)
+            telo = ''
+            vkanal = ''
+            pkanal = 100
+
+        else:
+            bot.send_message(message.chat.id, 'Вы не являетесь Администратором канала', parse_mode='html', disable_web_page_preview=True)
+
 
     elif message.text.lower() == 'ads':                     #  Реклама
         if pkanal == 10:
@@ -192,6 +197,12 @@ def send_text(message):
                         pkanal = 100
                         bot.delete_message(message.chat.id, message.message_id)
                         bot.send_message(message.chat.id, 'Вы установили свой канал как ' + skanal, parse_mode='html', disable_web_page_preview=True)
+
+                        #  chat_id = '@SGK_proba'
+                        #  adm_list = [(adm_obj.user.id, adm_obj.user.username) for adm_obj in
+                        #            bot.get_chat_administrators(chat_id)]
+                        #  bot.send_message(message.chat.id, f'Администраторы {adm_list}\n', parse_mode='html',
+                        #                 disable_web_page_preview=True)
 
                     else:                                        # Читать далее
                       if pkanal == 9:
@@ -241,7 +252,9 @@ def send_text(message):
     else:
         telo = message.text + '\n'        # Просто текст
 
-                                                       # Обрабатываем выделение жирным, нет проверки на ошибку
+                                                       #  Обрабатываем выделение жирным, нет проверки на ошибку
+                                                       #  надо переписать это на str.find(), вместо index()
+                                                       #  и разобраться с парностью
         while (True):
             try:
                 index = telo.index('бб')
