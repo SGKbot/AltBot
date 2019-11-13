@@ -164,8 +164,7 @@ def send_text(message):
         #  Водяной знак       pkanal = 5
         #  Работа со ссылками pkanal = 6
         if pkanal == 5 or pkanal == 6 or pkanal == 100:
-            bot.send_message(message.chat.id, 'Фото, видео и пустые сообщения не отправляются в канал',
-                             parse_mode='html', disable_web_page_preview=True)
+            bot.send_message(message.chat.id, 'Фото, видео и пустые сообщения не отправляются в канал',                             parse_mode='html', disable_web_page_preview=True)
         else:
             chat_id = "@" + skanal[13:]
             if message.from_user.id in [adm_obj.user.id for adm_obj in bot.get_chat_administrators(chat_id)]:
