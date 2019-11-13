@@ -297,7 +297,8 @@ def handle_docs_photo(message):
     width, height = photo.size
     drawing = ImageDraw.Draw(photo)
     black = (240, 8, 12)
-    font = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", width//20)
+    font = ImageFont.truetype("/FreeMono.ttf", width // 20)
+    #  font = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", width//20)
     pos = (width//4, height - height//10)
     text = skanal
     drawing.text(pos, text, fill=black, font=font)
