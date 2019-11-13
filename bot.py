@@ -161,21 +161,26 @@ def send_text(message):
 
     elif message.text.lower() == 'send':                        #  Отправка в канал
 
-        chat_id = "@" + skanal[13:]
-        if message.from_user.id in [adm_obj.user.id for adm_obj in bot.get_chat_administrators(chat_id)]:
-            if pkanal==10:
-               telo = vkanal
-            else:
-               telo = telo
-
-            bot.send_message(chat_id, telo, parse_mode='html', disable_web_page_preview=True)
-            bot.delete_message(message.chat.id, message.message_id)
-            telo = ''
-            vkanal = ''
-            pkanal = 100
-
+        #  Водяной знак       pkanal = 5
+        #  Работа со ссылками pkanal = 6
+        if pkanal == 5 or pkanal == 6 or pkanal == 100:
+            bot.send_message(message.chat.id, 'Фото, видео и пустые сообщения не отправляются в канал',
+                             parse_mode='html', disable_web_page_preview=True)
         else:
-            bot.send_message(message.chat.id, 'Вы не являетесь Администратором канала', parse_mode='html', disable_web_page_preview=True)
+            chat_id = "@" + skanal[13:]
+            if message.from_user.id in [adm_obj.user.id for adm_obj in bot.get_chat_administrators(chat_id)]:
+                if pkanal==10:
+                   telo = vkanal
+                else:
+                   telo = telo
+
+                bot.send_message(chat_id, telo, parse_mode='html', disable_web_page_preview=True)
+                bot.delete_message(message.chat.id, message.message_id)
+                telo = ''
+                vkanal = ''
+                pkanal = 100
+            else:
+                bot.send_message(message.chat.id, 'Вы не являетесь Администратором канала', parse_mode='html', disable_web_page_preview=True)
 
 
     elif message.text.lower() == 'ads':                     #  Реклама
@@ -189,7 +194,7 @@ def send_text(message):
         telo = ''
         pkanal = 10
 
-    elif message.entities:                                      # Работа со ссылками
+    elif message.entities:                                      # Работа со ссылками pkanal = 6
              for item in message.entities:
                 if item.type == "url":
                     if 'youtube.com' in message.text or 'youtu.be' in message.text:           #  Загружаем с Ютуб
@@ -283,7 +288,7 @@ def send_text(message):
 
 
 
-@bot.message_handler(content_types=['photo'])           #  Водяной знак
+@bot.message_handler(content_types=['photo'])           #  Водяной знак p=5
 def handle_docs_photo(message):
     f = tempfile.NamedTemporaryFile(delete=False)
     file_info = bot.get_file(message.photo[-1].file_id)
