@@ -108,6 +108,7 @@ def start_message(message):
 
 @bot.message_handler(content_types=['text'])
 def send_text(message):
+
     global telo
     global vkanal
     global pkanal
@@ -131,7 +132,7 @@ def send_text(message):
         telo = ''
         pkanal = 10
 
-    elif message.text.lower() == 'help':
+    elif message.text.lower() == 'help':                        # Помощь
 
         if skanal == '' and pv == 0:
             HSK1 = '<b>Не забудьте сделать бота администратором вашего канала и отправить боту ссылку на канал</b>'
@@ -146,7 +147,7 @@ def send_text(message):
         vkanal = ''
         pkanal = 100
 
-    elif message.text.lower() == 'hands':
+    elif message.text.lower() == 'hands':                               #  Своми руками
 
         if pkanal == 10:
             telo = vkanal + '\n' + '<a href="' + skanal + '">#Hands</a>'
@@ -160,7 +161,6 @@ def send_text(message):
         pkanal = 10
 
     elif message.text.lower() == 'send':                        #  Отправка в канал
-
         #  Водяной знак       pkanal = 5
         #  Работа со ссылками pkanal = 6
         if pkanal == 5 or pkanal == 6 or pkanal == 100:
