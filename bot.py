@@ -197,15 +197,23 @@ def send_text(message):
              for item in message.entities:
                 if item.type == "url":
                     if 'youtube.com' in message.text or 'youtu.be' in message.text:           #  Загружаем с Ютуб
-                        ydl_opts = {'outtmpl': '/tmp/f.mp3', 'preferredcodec': 'mp3'}
+                        ydl_opts = {'outtmpl': '/tmp/f.mp3', 'preferredcodec': 'mp3', 'max_filesize': 60000000}
                         link_of_the_video = message.text
                         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
                             ydl.download([link_of_the_video])
                         bot.delete_message(message.chat.id, message.message_id)
-                        video = open('/tmp/f.mp3', 'rb')
-                        bot.send_video(message.chat.id, video)
-                        os.remove('/tmp/f.mp3')
-                        pkanal = 6
+
+                        if os.path.exists('/tmp/f.mp3'):  # файл есть
+                            video = open('/tmp/f.mp3', 'rb')
+                            bot.send_video(message.chat.id, video)
+                            os.remove('/tmp/f.mp3')
+                            pkanal = 6
+                        else:       # файла нет
+                            bot.send_message(message.chat.id, 'Слишком большой файл', parse_mode='html', disable_web_page_preview=True)
+                            telo = ''
+                            vkanal = ''
+                            pkanal = 100
+
 
                     elif 't.me' in message.text:              #  устанавливаем канал пользователя
                         skanal = message.text
