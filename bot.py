@@ -132,7 +132,7 @@ def send_text(message):
         telo = ''
         pkanal = 10
 
-    elif message.text.lower() == 'help':                        # Помощь
+    elif message.text.lower() == 'help':                                            # Помощь
 
         if skanal == '' and pv == 0:
             HSK1 = '<b>Не забудьте сделать бота администратором вашего канала и отправить боту ссылку на канал</b>'
@@ -160,7 +160,7 @@ def send_text(message):
         telo = ''
         pkanal = 10
 
-    elif message.text.lower() == 'send':                        #  Отправка в канал
+    elif message.text.lower() == 'send':                                    #  Отправка в канал
         #  Водяной знак       pkanal = 5
         #  Работа со ссылками pkanal = 6
         if pkanal == 5 or pkanal == 6 or pkanal == 100:
@@ -182,7 +182,7 @@ def send_text(message):
                 bot.send_message(message.chat.id, 'Вы не являетесь Администратором канала', parse_mode='html', disable_web_page_preview=True)
 
 
-    elif message.text.lower() == 'ads':                     #  Реклама
+    elif message.text.lower() == 'ads':                                                     #  Реклама
         if pkanal == 10:
             telo = vkanal + '\n' + '<a href="' + skanal + '">#Реклама</a>'
         else:
@@ -193,9 +193,9 @@ def send_text(message):
         telo = ''
         pkanal = 10
 
-    elif message.entities:                                      # Работа со ссылками pkanal = 6
+    elif message.entities:                                               # Работа со ссылками pkanal = 6
              for item in message.entities:
-                if item.type == "url":
+                if item.type == "url" and message.text.find(' ') == -1:
                     if 'youtube.com' in message.text or 'youtu.be' in message.text:           #  Загружаем с Ютуб
                         ydl_opts = {'outtmpl': '/tmp/f.mp3', 'preferredcodec': 'mp3', 'max_filesize': 60000000}
                         link_of_the_video = message.text
@@ -215,8 +215,13 @@ def send_text(message):
                             pkanal = 100
 
 
-                    elif 't.me' in message.text:              #  устанавливаем канал пользователя
-                        skanal = message.text
+                    elif 't.me' in message.text or message.text.find('@') == 0:              #  устанавливаем канал пользователя
+                        bot.send_message(message.chat.id, message.text, parse_mode='html', disable_web_page_preview=True)
+                        if not message.text.find('@') == -1:   # Нашел @    Тут что-то ни хрена не работает
+                            skanal ='https://t.me/' + message.text[1:]
+                        else:
+                            skanal = message.text
+
                         telo = ''
                         vkanal = ''
                         pkanal = 100
@@ -236,12 +241,30 @@ def send_text(message):
                       else:
                         telo = telo + '<a href="' + message.text + '">Читать далее...</a>'
 
+
                       bot.delete_message(message.chat.id, message.message_id)
                       bot.send_message(message.chat.id, telo, parse_mode='html', disable_web_page_preview=True)
-
                       vkanal = telo + '\n'
                       telo = ''
                       pkanal = 10
+
+             if not message.text.find(' ') == -1:   # В сообщении присутствует ссылка, но это сообщение в канал
+
+                 telo = message.text + '\n'  # Просто текст
+
+                 #  Обрабатываем выделение жирным, нет проверки на ошибку
+                 #  надо переписать это на str.find(), вместо index()
+                 #  и разобраться с парностью
+                 while (True):
+                     try:
+                         index = telo.index('бб')
+                         telo = telo[:index] + '<b>' + telo[index + 2:]
+                         index = telo.index('бб', index)
+                         telo = telo[:index] + '</b>' + telo[index + 2:]
+                     except ValueError:
+                         break
+
+                 pkanal = 9
 
 
     elif message.text.lower() == 'comb':
@@ -274,7 +297,7 @@ def send_text(message):
         telo = ''
         pkanal = 10
 
-    else:
+    elif not message.text == '':
         telo = message.text + '\n'        # Просто текст
 
                                                        #  Обрабатываем выделение жирным, нет проверки на ошибку
