@@ -4,6 +4,7 @@ import tempfile
 import os
 import youtube_dl
 import yaml
+#  import time
 
 #  config_file = open("config.yaml","r")
 #  config = yaml.load(config_file)
@@ -29,6 +30,7 @@ skanal = ''
 # skanal = 'https://t.me/sgk_proba'
 pv = 0
 HSK1 = ''
+info = ''
 
 itembtnNews = types.KeyboardButton('News')
 itembtnADS = types.KeyboardButton('ADS')
@@ -131,7 +133,8 @@ def send_text(message):
     global HSK
     global HSK1
     global pv
-
+    global IdPhotoSign
+    global info
 
     if message.text.lower() == 'news':                                            # Новости
 
@@ -231,7 +234,7 @@ def send_text(message):
 
 
                     elif 't.me' in message.text or message.text.find('@') == 0:              #  устанавливаем канал пользователя
-                        bot.send_message(message.chat.id, message.text, parse_mode='html', disable_web_page_preview=True)
+                        #  bot.send_message(message.chat.id, message.text, parse_mode='html', disable_web_page_preview=True)
                         if not message.text.find('@') == -1:   # Нашел @    Тут что-то ни хрена не работает
                             skanal ='https://t.me/' + message.text[1:]
                         else:
@@ -285,7 +288,15 @@ def send_text(message):
     elif message.text.lower() == 'comb':
         telo = telo +'<a href="https://t.me/sgk_proba">Этого пункта скорее всего не будет</a>'
         bot.delete_message(message.chat.id, message.message_id)
-        bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
+        bot.send_message(message.chat.id, telo, parse_mode='html', disable_web_page_preview=True)
+
+        # if not IdPhotoSign == 0:     pkanal == 5 and
+
+        #  time.sleep(0.25)
+
+        bot.send_photo(info.chat.id, info.photo[-1].file_id, caption=telo)
+
+
         vkanal = telo
         telo = ''
         pkanal = 11
@@ -339,6 +350,9 @@ def handle_docs_photo(message):
     file_info = bot.get_file(message.photo[-1].file_id)
     f.write(bot.download_file(file_info.file_path))
     f.close()
+
+    bot.delete_message(message.chat.id, message.message_id)
+
     photo = Image.open(f.name)
     width, height = photo.size
     drawing = ImageDraw.Draw(photo)
@@ -354,12 +368,17 @@ def handle_docs_photo(message):
     drawing.text(pos, text, fill=black, font=font)
     photo_path = f'{f.name}.jpeg'
     photo.save(photo_path, 'JPEG')
+
     with open(photo_path, 'rb') as fi:
-        bot.send_photo(message.chat.id, fi)
+        info = bot.send_photo(message.chat.id, fi)
+
     os.remove(f.name)
     os.remove(photo_path)
+
     pkanal = 5
 
+    #  IdPhotoSign = message.photo[-1].file_id
 
+    # bot.send_photo(info.chat.id, info.photo[-1].file_id, caption='Ктулху')
 
 bot.polling()
