@@ -286,20 +286,19 @@ def send_text(message):
 
 
     elif message.text.lower() == 'comb':
-        telo = telo +'<a href="https://t.me/sgk_proba">Этого пункта скорее всего не будет</a>'
-        bot.delete_message(message.chat.id, message.message_id)
-        bot.send_message(message.chat.id, telo, parse_mode='html', disable_web_page_preview=True)
+        # telo = telo +'<a href="https://t.me/sgk_proba">Этого пункта скорее всего не будет</a>'
+        # bot.delete_message(message.chat.id, message.message_id)
+        # bot.send_message(message.chat.id, telo, parse_mode='html', disable_web_page_preview=True)
 
-        # if not IdPhotoSign == 0:     pkanal == 5 and
+         if pkanal == 10:
+             telo = vkanal
 
-        #  time.sleep(0.25)
-
-        bot.send_photo(info.chat.id, info.photo[-1].file_id, caption=telo)
+         bot.send_photo(info.chat.id, info.photo[-1].file_id, caption=telo,  parse_mode='html')
 
 
-        vkanal = telo
-        telo = ''
-        pkanal = 11
+         vkanal = telo
+         telo = ''
+         pkanal = 11
 
     elif message.text.lower() == 'sight':                  # Мнение
         if pkanal == 10:
@@ -346,6 +345,7 @@ def send_text(message):
 
 @bot.message_handler(content_types=['photo'])           #  Водяной знак p=5
 def handle_docs_photo(message):
+    global info
     f = tempfile.NamedTemporaryFile(delete=False)
     file_info = bot.get_file(message.photo[-1].file_id)
     f.write(bot.download_file(file_info.file_path))
