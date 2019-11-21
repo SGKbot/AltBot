@@ -66,8 +66,8 @@ HS = "Здравствуйте." \
      " Ссылка на ютуб скачивает видео. Отправленная картинка возвращается с водяным знаком. " \
      "\n" \
      "Данный проект не является коммерческим, поэтому у него нет специального чата поддержки. " \
-     "Если у вас возникнет необходимость обсудить работу бота зарегистрируйтесь на моем канале и " \
-     "<a href='https://t.me/joinchat/EHLktEzzYJXpERD7UgaHFQ'>задайте вопрос в чате.</a>" \
+     "Если у вас возникнет необходимость обсудить работу бота зарегистрируйтесь на моем канале или " \
+     "<a href='https://t.me/joinchat/EHLktEzzYJXpERD7UgaHFQ'>задайте вопрос сразу в чате.</a> " \
      "\n" \
      "<a href='https://t.me/SGK_espace'>Подписаться на мой канал</a>"     \
      "\n" \
@@ -90,7 +90,7 @@ HSK = '\n \n' \
     '\n \n' \
     '<b>       Действия:</b>' \
     '\n' \
-    '<b>Comb</b>    Объединить два последних сообщения. В процессе' \
+    '<b>Comb</b>    Объединить картинку и сообщение' \
     '\n' \
     '<b>Send</b>      Отправить подготовленное сообщение в ваш канал' \
     '\n' \
@@ -113,8 +113,7 @@ HSK = '\n \n' \
     '<b>любая другая</b> ссылка добавляется к тексту гиперссылкой со словами “Читать далее…"' \
     '\n' \
     'Все вопросы и предложения по работе бота только в чате моего канала.' \
-    '\n' \
-    '<a href="https://t.me/SGK_espace">Подписаться на мой канал</a>'
+    '<a href="https://t.me/SGK_espace"> Подписаться на канал</a>'
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
@@ -178,21 +177,30 @@ def send_text(message):
         telo = ''
         pkanal = 10
 
-    elif message.text.lower() == 'send':                                    #  Отправка в канал
-        #  Водяной знак       pkanal = 5
-        #  Работа со ссылками pkanal = 6
+    elif message.text.lower() == 'send':                                                             #  Отправка в канал
+        #  Водяной знак        pkanal = 5
+        #  Работа со ссылками  pkanal = 6
+        #  Картинка с каментом pkanal = 11
+        bot.delete_message(message.chat.id, message.message_id)
         if pkanal == 5 or pkanal == 6 or pkanal == 100:
-            bot.send_message(message.chat.id, 'Фото, видео и пустые сообщения не отправляются в канал',                             parse_mode='html', disable_web_page_preview=True)
+            bot.send_message(message.chat.id, 'Фото, видео и пустые сообщения не отправляются в канал', parse_mode='html', disable_web_page_preview=True)
         else:
             chat_id = "@" + skanal[13:]
-            if message.from_user.id in [adm_obj.user.id for adm_obj in bot.get_chat_administrators(chat_id)]:
-                if pkanal==10:
-                   telo = vkanal
-                else:
-                   telo = telo
+            if message.from_user.id in [adm_obj.user.id for adm_obj in bot.get_chat_administrators(chat_id)]:        #  Важно, можно ли отправлять в канал
+                if pkanal == 11:  #  Картинка с каментом
+                    bot.send_photo(chat_id, info.photo[-1].file_id, caption=telo,  parse_mode='html')
 
-                bot.send_message(chat_id, telo, parse_mode='html', disable_web_page_preview=True)
-                bot.delete_message(message.chat.id, message.message_id)
+
+
+                else:
+                     if pkanal == 10:
+                         telo = vkanal
+                     else:
+                         telo = telo
+
+                     bot.send_message(chat_id, telo, parse_mode='html', disable_web_page_preview=True)
+                     bot.delete_message(message.chat.id, message.message_id)
+
                 telo = ''
                 vkanal = ''
                 pkanal = 100
@@ -200,7 +208,7 @@ def send_text(message):
                 bot.send_message(message.chat.id, 'Вы не являетесь Администратором канала', parse_mode='html', disable_web_page_preview=True)
 
 
-    elif message.text.lower() == 'ads':                                                     #  Реклама
+    elif message.text.lower() == 'ads':                                                                       #  Реклама
         if pkanal == 10:
             telo = vkanal + '\n' + '<a href="' + skanal + '">#Реклама</a>'
         else:
@@ -211,10 +219,10 @@ def send_text(message):
         telo = ''
         pkanal = 10
 
-    elif message.entities:                                               # Работа со ссылками pkanal = 6
+    elif message.entities:                                                               # Работа со ссылками pkanal = 6
              for item in message.entities:
                 if item.type == "url" and message.text.find(' ') == -1:
-                    if 'youtube.com' in message.text or 'youtu.be' in message.text:           #  Загружаем с Ютуб
+                    if 'youtube.com' in message.text or 'youtu.be' in message.text:                  #  Загружаем с Ютуб
                         ydl_opts = {'outtmpl': '/tmp/f.mp3', 'preferredcodec': 'mp3', 'max_filesize': 60000000}
                         link_of_the_video = message.text
                         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
@@ -252,7 +260,7 @@ def send_text(message):
                         #  bot.send_message(message.chat.id, f'Администраторы {adm_list}\n', parse_mode='html',
                         #                 disable_web_page_preview=True)
 
-                    else:                                        # Читать далее
+                    else:                                                                                 # Читать далее
                       if pkanal == 9:
                         telo = telo + '<a href="' + message.text + '">Читать далее...</a>'
                         # telo = vkanal + '<a href="' + message.text + '">Читать далее...</a>'
@@ -266,7 +274,7 @@ def send_text(message):
                       telo = ''
                       pkanal = 10
 
-             if not message.text.find(' ') == -1:   # В сообщении присутствует ссылка, но это сообщение в канал
+             if not message.text.find(' ') == -1:            # В сообщении присутствует ссылка, но это сообщение в канал
 
                  telo = message.text + '\n'  # Просто текст
 
@@ -285,11 +293,11 @@ def send_text(message):
                  pkanal = 9
 
 
-    elif message.text.lower() == 'comb':
+    elif message.text.lower() == 'comb':                                              # Объединение картинки и сообщения
         # telo = telo +'<a href="https://t.me/sgk_proba">Этого пункта скорее всего не будет</a>'
         # bot.delete_message(message.chat.id, message.message_id)
         # bot.send_message(message.chat.id, telo, parse_mode='html', disable_web_page_preview=True)
-
+         bot.delete_message(message.chat.id, message.message_id)
          if pkanal == 10:
              telo = vkanal
 
@@ -297,10 +305,10 @@ def send_text(message):
 
 
          vkanal = telo
-         telo = ''
+         # telo = ''
          pkanal = 11
 
-    elif message.text.lower() == 'sight':                  # Мнение
+    elif message.text.lower() == 'sight':                                                                       # Мнение
         if pkanal == 10:
             telo = vkanal + '\n' + '<a href="' + skanal + '">#Мнение</a>'
         else:
@@ -343,7 +351,7 @@ def send_text(message):
 
 
 
-@bot.message_handler(content_types=['photo'])           #  Водяной знак p=5
+@bot.message_handler(content_types=['photo'])                                                        #  Водяной знак p=5
 def handle_docs_photo(message):
     global info
     f = tempfile.NamedTemporaryFile(delete=False)
