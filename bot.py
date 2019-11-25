@@ -299,10 +299,9 @@ def send_text(message):
 
 
     elif message.text.lower() == 'comb':                                              # Объединение картинки и сообщения
-        # telo = telo +'<a href="https://t.me/sgk_proba">Этого пункта скорее всего не будет</a>'
-        # bot.delete_message(message.chat.id, message.message_id)
-        # bot.send_message(message.chat.id, telo, parse_mode='html', disable_web_page_preview=True)
-         bot.delete_message(message.chat.id, message.message_id)
+
+         bot.delete_message(message.chat.id, message.message_id) # удаляю слово Комб
+
          if pkanal == 10:
              telo = vkanal
 
