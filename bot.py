@@ -4,6 +4,8 @@ import tempfile
 import os
 import youtube_dl
 import yaml
+import moviepy
+
 #  import time
 
 #  config_file = open("config.yaml","r")
@@ -17,8 +19,11 @@ bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s')
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
-
 from telebot import types
+
+# from moviepy.editor import *
+
+
 
 markup = types.ReplyKeyboardMarkup(True)
 
@@ -71,7 +76,7 @@ HS = "Здравствуйте." \
      "\n" \
      "<a href='https://t.me/SGK_espace'>Подписаться на мой канал</a>"     \
      "\n" \
-     "v1.0" \
+     "v1.01" \
 
 HSK = '\n \n' \
     '<b>       Клавиши:</b>' \
@@ -232,7 +237,7 @@ def send_text(message):
                         if os.path.exists('/tmp/f.mp3'):  # файл есть
                             video = open('/tmp/f.mp3', 'rb')
                             bot.send_video(message.chat.id, video)
-                            os.remove('/tmp/f.mp3')
+                            # os.remove('/tmp/f.mp3') не удаляем для теста вод зн
                             pkanal = 6
                         else:       # файла нет
                             bot.send_message(message.chat.id, 'Слишком большой файл', parse_mode='html', disable_web_page_preview=True)
@@ -353,40 +358,90 @@ def send_text(message):
 
 @bot.message_handler(content_types=['photo'])                                                        #  Водяной знак p=5
 def handle_docs_photo(message):
-    global info
-    f = tempfile.NamedTemporaryFile(delete=False)
-    file_info = bot.get_file(message.photo[-1].file_id)
-    f.write(bot.download_file(file_info.file_path))
-    f.close()
 
-    bot.delete_message(message.chat.id, message.message_id)
+    keyboard = types.InlineKeyboardMarkup()  # наша клавиатура
+    key_yes = types.InlineKeyboardButton(text='Да', callback_data='yes')  # кнопка «Да»
+    keyboard.add(key_yes)  # добавляем кнопку в клавиатуру
+    key_no = types.InlineKeyboardButton(text='Нет', callback_data='no')
+    keyboard.add(key_no)
+    question = 'Водяной знак нужен и картинка Вам принадлежит? '
+    bot.send_message(message.from_user.id, text=question, reply_markup=keyboard)
 
-    photo = Image.open(f.name)
-    width, height = photo.size
-    drawing = ImageDraw.Draw(photo)
-    black = (240, 8, 12)
-    font = ImageFont.truetype("/FreeMono.ttf", width // 20)
-    #  font = ImageFont.truetype("Pillow/Tests/fonts/FreeMono.ttf", width//20)
-    pos = (width//4, height - height//10)
-    text = skanal
-    drawing.text(pos, text, fill=black, font=font)
-    pos = (1 + width // 4, 1 + height - height // 10)
-    drawing.text(pos, text, fill=black, font=font)
-    pos = (2 + width // 4, 2 + height - height // 10)
-    drawing.text(pos, text, fill=black, font=font)
-    photo_path = f'{f.name}.jpeg'
-    photo.save(photo_path, 'JPEG')
+    @bot.callback_query_handler(func=lambda call: True)
+    def callback_worker(call):
+        if call.data == "yes":  # call.data это callback_data, которую мы указали при объявлении кнопки
+            global info
+            global pkanal
+            f = tempfile.NamedTemporaryFile(delete=False)
+            file_info = bot.get_file(message.photo[-1].file_id)
+            f.write(bot.download_file(file_info.file_path))
+            f.close()
+            # bot.delete_message(message.chat.id, message.message_id)  # что он удалит?
+            photo = Image.open(f.name)
+            width, height = photo.size
+            drawing = ImageDraw.Draw(photo)
+            black = (240, 8, 12)
+            font = ImageFont.truetype("/FreeMono.ttf", width // 20)
+            pos = (width // 4, height - height // 10)
+            text = skanal
+            drawing.text(pos, text, fill=black, font=font)
+            pos = (1 + width // 4, 1 + height - height // 10)
+            drawing.text(pos, text, fill=black, font=font)
+            pos = (2 + width // 4, 2 + height - height // 10)
+            drawing.text(pos, text, fill=black, font=font)
+            photo_path = f'{f.name}.jpeg'
+            photo.save(photo_path, 'JPEG')
+            with open(photo_path, 'rb') as fi:
+                info = bot.send_photo(message.chat.id, fi)
+            os.remove(f.name)
+            os.remove(photo_path)
+            pkanal = 5
 
-    with open(photo_path, 'rb') as fi:
-        info = bot.send_photo(message.chat.id, fi)
+        elif call.data == "no":
+            # global info
+            # global pkanal
+            f = tempfile.NamedTemporaryFile(delete=False)
+            file_info = bot.get_file(message.photo[-1].file_id)
+            f.write(bot.download_file(file_info.file_path))
+            f.close()
+            photo = Image.open(f.name)
+            photo_path = f'{f.name}.jpeg'
+            photo.save(photo_path, 'JPEG')
+            with open(photo_path, 'rb') as fi:
+                info = bot.send_photo(message.chat.id, fi)
+            os.remove(f.name)
+            os.remove(photo_path)
+            pkanal = 5
 
-    os.remove(f.name)
-    os.remove(photo_path)
 
-    pkanal = 5
+@bot.message_handler(content_types=['sticker'])                                     #  Водяной знак видео p=7
+def handle_docs_video(message):
+    my_clip = moviepy.video.io.VideoFileClip("/tmp/f.mp3", audio=True)  # Видео файл с включенным аудио
 
-    #  IdPhotoSign = message.photo[-1].file_id
+    w, h = my_clip.size  # размер клипа
 
-    # bot.send_photo(info.chat.id, info.photo[-1].file_id, caption='Ктулху')
+    # Клип с текстом и черным полупрозрачным фоном
+
+    txt = TextClip("THE WATERMARK TEXT", font='Amiri-regular',
+                   color='white', fontsize=24)
+
+    txt_col = txt.on_color(size=(my_clip.w + txt.w, txt.h - 10),
+                           color=(0, 0, 0), pos=(6, 'center'), col_opacity=0.6)
+
+    # Этот пример демонстрирует эффект движущегося текста, где позиция является функцией времени (t, в секундах).
+    # Конечно, вы можете исправить положение текста вручную. Помните, что вы можете использовать строки,
+    # как 'top', 'left', чтобы указать позицию
+    txt_mov = txt_col.set_pos(lambda t: (max(w / 30, int(w - 0.5 * w * t)),
+                                         max(5 * h / 6, int(100 * t))))
+
+    # Записать файл на диск
+    final = CompositeVideoClip([my_clip, txt_mov])
+    final.duration = my_clip.duration
+    final.write_videofile("OUT.mp4", fps=24, codec='libx264')
+
+
+
+
+
 
 bot.polling()
