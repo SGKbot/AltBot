@@ -4,7 +4,7 @@ import tempfile
 import os
 import youtube_dl
 import yaml
-import moviepy
+# import moviepy
 
 #  import time
 
@@ -394,7 +394,7 @@ def handle_docs_photo(message):
             photo_path = f'{f.name}.jpeg'
             photo.save(photo_path, 'JPEG')
             with open(photo_path, 'rb') as fi:
-            info = bot.send_photo(message.chat.id, fi)
+                info = bot.send_photo(message.chat.id, fi)
             os.remove(f.name)
             os.remove(photo_path)
             pkanal = 5
@@ -410,7 +410,7 @@ def handle_docs_photo(message):
             photo_path = f'{f.name}.jpeg'
             photo.save(photo_path, 'JPEG')
             with open(photo_path, 'rb') as fi:
-            info = bot.send_photo(message.chat.id, fi)
+                info = bot.send_photo(message.chat.id, fi)
             os.remove(f.name)
             os.remove(photo_path)
             pkanal = 5
