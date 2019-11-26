@@ -357,6 +357,8 @@ def send_text(message):
 
 @bot.message_handler(content_types=['photo'])                                                        #  Водяной знак p=5
 def handle_docs_photo(message):
+    global info
+    global pkanal
 
     keyboard = types.InlineKeyboardMarkup()  # наша клавиатура
     key_yes = types.InlineKeyboardButton(text='Да', callback_data='yes')  # кнопка «Да»
