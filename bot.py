@@ -237,7 +237,7 @@ def send_text(message):
                         if os.path.exists('/tmp/f.mp3'):  # файл есть
                             video = open('/tmp/f.mp3', 'rb')
                             bot.send_video(message.chat.id, video)
-                            # os.remove('/tmp/f.mp3') не удаляем для теста вод зн
+                            os.remove('/tmp/f.mp3') # не удаляем для теста вод зн
                             pkanal = 6
                         else:       # файла нет
                             bot.send_message(message.chat.id, 'Слишком большой файл', parse_mode='html', disable_web_page_preview=True)
@@ -368,9 +368,10 @@ def handle_docs_photo(message):
 
     @bot.callback_query_handler(func=lambda call: True)
     def callback_worker(call):
+        global info
+        global pkanal
+
         if call.data == "yes":  # call.data это callback_data, которую мы указали при объявлении кнопки
-            global info
-            global pkanal
             f = tempfile.NamedTemporaryFile(delete=False)
             file_info = bot.get_file(message.photo[-1].file_id)
             f.write(bot.download_file(file_info.file_path))
