@@ -357,63 +357,34 @@ def send_text(message):
 
 @bot.message_handler(content_types=['photo'])                                                        #  Водяной знак p=5
 def handle_docs_photo(message):
+
     global info
     global pkanal
+    f = tempfile.NamedTemporaryFile(delete=False)
+    file_info = bot.get_file(message.photo[-1].file_id)
+    f.write(bot.download_file(file_info.file_path))
+    f.close()
 
-    keyboard = types.InlineKeyboardMarkup()  # наша клавиатура
-    key_yes = types.InlineKeyboardButton(text='Да', callback_data='yes')  # кнопка «Да»
-    keyboard.add(key_yes)  # добавляем кнопку в клавиатуру
-    key_no = types.InlineKeyboardButton(text='Нет', callback_data='no')
-    keyboard.add(key_no)
-    question = 'Водяной знак нужен и картинка Вам принадлежит? '
-    bot.send_message(message.from_user.id, text=question, reply_markup=keyboard)
+    photo = Image.open(f.name)
+    width, height = photo.size
+    drawing = ImageDraw.Draw(photo)
+    black = (240, 8, 12)
+    font = ImageFont.truetype("/FreeMono.ttf", width // 20)
+    pos = (width // 4, height - height // 10)
+    text = skanal
+    drawing.text(pos, text, fill=black, font=font)
+    pos = (1 + width // 4, 1 + height - height // 10)
+    drawing.text(pos, text, fill=black, font=font)
+    pos = (2 + width // 4, 2 + height - height // 10)
+    drawing.text(pos, text, fill=black, font=font)
+    photo_path = f'{f.name}.jpeg'
+    photo.save(photo_path, 'JPEG')
+    with open(photo_path, 'rb') as fi:
+        info = bot.send_photo(message.chat.id, fi)
+    os.remove(f.name)
+    os.remove(photo_path)
+    pkanal = 5
 
-    @bot.callback_query_handler(func=lambda call: True)
-    def callback_worker(call):
-        global info
-        global pkanal
-
-        if call.data == "yes":  # call.data это callback_data, которую мы указали при объявлении кнопки
-            f = tempfile.NamedTemporaryFile(delete=False)
-            file_info = bot.get_file(message.photo[-1].file_id)
-            f.write(bot.download_file(file_info.file_path))
-            f.close()
-            # bot.delete_message(message.chat.id, message.message_id)  # что он удалит?
-            photo = Image.open(f.name)
-            width, height = photo.size
-            drawing = ImageDraw.Draw(photo)
-            black = (240, 8, 12)
-            font = ImageFont.truetype("/FreeMono.ttf", width // 20)
-            pos = (width // 4, height - height // 10)
-            text = skanal
-            drawing.text(pos, text, fill=black, font=font)
-            pos = (1 + width // 4, 1 + height - height // 10)
-            drawing.text(pos, text, fill=black, font=font)
-            pos = (2 + width // 4, 2 + height - height // 10)
-            drawing.text(pos, text, fill=black, font=font)
-            photo_path = f'{f.name}.jpeg'
-            photo.save(photo_path, 'JPEG')
-            with open(photo_path, 'rb') as fi:
-                info = bot.send_photo(message.chat.id, fi)
-            os.remove(f.name)
-            os.remove(photo_path)
-            pkanal = 5
-
-        elif call.data == "no":
-            # global info
-            # global pkanal
-            f = tempfile.NamedTemporaryFile(delete=False)
-            file_info = bot.get_file(message.photo[-1].file_id)
-            f.write(bot.download_file(file_info.file_path))
-            f.close()
-            photo = Image.open(f.name)
-            photo_path = f'{f.name}.jpeg'
-            photo.save(photo_path, 'JPEG')
-            with open(photo_path, 'rb') as fi:
-                info = bot.send_photo(message.chat.id, fi)
-            os.remove(f.name)
-            os.remove(photo_path)
-            pkanal = 5
 
 
 @bot.message_handler(content_types=['sticker'])                                     #  Водяной знак видео p=7
