@@ -36,7 +36,7 @@ skanal = ''
 pv = 0
 HSK1 = ''
 info = ''
-
+mm = 0
 itembtnNews = types.KeyboardButton('News')
 itembtnADS = types.KeyboardButton('ADS')
 itembtnBla = types.KeyboardButton('Sight')
@@ -139,6 +139,7 @@ def send_text(message):
     global pv
     global IdPhotoSign
     global info
+    global mm
 
     if message.text.lower() == 'news':                                            # Новости
 
@@ -227,6 +228,9 @@ def send_text(message):
     elif message.entities:                                                               # Работа со ссылками pkanal = 6
              for item in message.entities:
                 if item.type == "url" and message.text.find(' ') == -1:
+
+                    global message_video_File_id
+
                     if 'youtube.com' in message.text or 'youtu.be' in message.text:                  #  Загружаем с Ютуб
                         ydl_opts = {'outtmpl': '/tmp/f.mp3', 'preferredcodec': 'mp3', 'max_filesize': 60000000}
                         link_of_the_video = message.text
@@ -236,14 +240,19 @@ def send_text(message):
 
                         if os.path.exists('/tmp/f.mp3'):  # файл есть
                             video = open('/tmp/f.mp3', 'rb')
-                            bot.send_video(message.chat.id, video)
-                            os.remove('/tmp/f.mp3') # не удаляем для теста вод зн
+                            info = bot.send_video(message.chat.id, video)
+                            os.remove('/tmp/f.mp3')
                             pkanal = 6
                         else:       # файла нет
                             bot.send_message(message.chat.id, 'Слишком большой файл', parse_mode='html', disable_web_page_preview=True)
                             telo = ''
                             vkanal = ''
                             pkanal = 100
+
+                        #bot.send_message(message.chat.id, info)
+
+                        message_video_File_id = info.video.file_id
+                        mm = 2
 
 
                     elif 't.me' in message.text or message.text.find('@') == 0:              #  устанавливаем канал пользователя
@@ -259,11 +268,6 @@ def send_text(message):
                         bot.delete_message(message.chat.id, message.message_id)
                         bot.send_message(message.chat.id, 'Вы установили свой канал как ' + skanal, parse_mode='html', disable_web_page_preview=True)
                         pv = 2
-                        #  chat_id = '@SGK_proba'
-                        #  adm_list = [(adm_obj.user.id, adm_obj.user.username) for adm_obj in
-                        #            bot.get_chat_administrators(chat_id)]
-                        #  bot.send_message(message.chat.id, f'Администраторы {adm_list}\n', parse_mode='html',
-                        #                 disable_web_page_preview=True)
 
                     else:                                                                                 # Читать далее
                       if pkanal == 9:
@@ -305,7 +309,10 @@ def send_text(message):
          if pkanal == 10:
              telo = vkanal
 
-         bot.send_photo(info.chat.id, info.photo[-1].file_id, caption=telo,  parse_mode='html')
+         if mm == 1:     # mm == 1  photo
+             bot.send_photo(info.chat.id, info.photo[-1].file_id, caption=telo,  parse_mode='html')
+         elif mm == 2:    # mm == 2  video
+             bot.send_video(info.chat.id, message_video_File_id, caption=telo, parse_mode='html')
 
 
          vkanal = telo
@@ -358,33 +365,103 @@ def send_text(message):
 @bot.message_handler(content_types=['photo'])                                                        #  Водяной знак p=5
 def handle_docs_photo(message):
 
+#    bot.send_message(message.chat.id,message.message_id)
+#    bot.send_message(message.chat.id, message.photo[-1].file_id)
+
     global info
     global pkanal
-    f = tempfile.NamedTemporaryFile(delete=False)
-    file_info = bot.get_file(message.photo[-1].file_id)
-    f.write(bot.download_file(file_info.file_path))
-    f.close()
+    global chat_id
+    global message_id_Photo
+    global message_Photo_File_id
+    global mm
 
-    photo = Image.open(f.name)
-    width, height = photo.size
-    drawing = ImageDraw.Draw(photo)
-    black = (240, 8, 12)
-    font = ImageFont.truetype("/FreeMono.ttf", width // 20)
-    pos = (width // 4, height - height // 10)
-    text = skanal
-    drawing.text(pos, text, fill=black, font=font)
-    pos = (1 + width // 4, 1 + height - height // 10)
-    drawing.text(pos, text, fill=black, font=font)
-    pos = (2 + width // 4, 2 + height - height // 10)
-    drawing.text(pos, text, fill=black, font=font)
-    photo_path = f'{f.name}.jpeg'
-    photo.save(photo_path, 'JPEG')
-    with open(photo_path, 'rb') as fi:
-        info = bot.send_photo(message.chat.id, fi)
-    os.remove(f.name)
-    os.remove(photo_path)
-    pkanal = 5
+    mm = 1
+    chat_id = message.chat.id
+    message_id_Photo = message.message_id
+    message_Photo_File_id = message.photo[-1].file_id
 
+#    bot.send_message(message.chat.id, message.message_id)
+#    bot.send_message(message.chat.id, message_id_Photo)
+#    bot.send_message(message.chat.id, message_Photo_File_id)
+
+    keyboard = types.InlineKeyboardMarkup()  # наша клавиатура
+    key_yes = types.InlineKeyboardButton(text='Да', callback_data='yes')  # кнопка «Да»
+    keyboard.add(key_yes)  # добавляем кнопку в клавиатуру
+    key_no = types.InlineKeyboardButton(text='Нет', callback_data='no')
+    keyboard.add(key_no)
+    question = 'Водяной знак нужен и картинка Вам принадлежит? '
+    bot.send_message(message.from_user.id, text=question, reply_markup=keyboard)
+
+    @bot.callback_query_handler(func=lambda call: True)
+    def callback_worker(call):
+
+        global info
+        global pkanal
+        global chat_id
+        global message_id_Photo
+        global message_Photo_File_id
+
+#        bot.send_message(message.chat.id, message.message_id)
+#        bot.send_message(message.chat.id, message_id_Photo)
+#        bot.send_message(message.chat.id, message_Photo_File_id)
+
+        if call.data == "yes":  # call.data это callback_data, которую мы указали при объявлении кнопки
+
+            f = tempfile.NamedTemporaryFile(delete=False)
+            #  file_info = bot.get_file(message.photo[-1].file_id)
+            file_info = bot.get_file(message_Photo_File_id)
+            f.write(bot.download_file(file_info.file_path))
+            f.close()
+
+#            bot.send_message(message.chat.id, message.message_id)
+#            bot.send_message(message.chat.id, message_id_Photo)
+#            bot.send_message(message.chat.id, message_Photo_File_id)
+
+            bot.delete_message(chat_id, message_id_Photo)
+
+#            bot.send_message(message.chat.id, message.message_id)
+#            bot.send_message(message.chat.id, message_id_Photo)
+#            bot.send_message(message.chat.id, message_Photo_File_id)
+
+            photo = Image.open(f.name)
+            width, height = photo.size
+            drawing = ImageDraw.Draw(photo)
+            black = (240, 8, 12)
+            font = ImageFont.truetype("/FreeMono.ttf", width // 20)
+            pos = (width // 4, height - height // 10)
+            text = skanal
+            drawing.text(pos, text, fill=black, font=font)
+            pos = (1 + width // 4, 1 + height - height // 10)
+            drawing.text(pos, text, fill=black, font=font)
+            pos = (2 + width // 4, 2 + height - height // 10)
+            drawing.text(pos, text, fill=black, font=font)
+            photo_path = f'{f.name}.jpeg'
+            photo.save(photo_path, 'JPEG')
+            with open(photo_path, 'rb') as fi:
+                info = bot.send_photo(message.chat.id, fi)
+            os.remove(f.name)
+            os.remove(photo_path)
+            pkanal = 5
+
+#            bot.send_message(message.chat.id, message.message_id)
+#            bot.send_message(message.chat.id, message_id_Photo)
+#            bot.send_message(message.chat.id, message_Photo_File_id)
+
+        elif call.data == "no":
+
+            f = tempfile.NamedTemporaryFile(delete=False)
+            file_info = bot.get_file(message_Photo_File_id)
+            f.write(bot.download_file(file_info.file_path))
+            f.close()
+            bot.delete_message(chat_id, message_id_Photo)
+            photo = Image.open(f.name)
+            photo_path = f'{f.name}.jpeg'
+            photo.save(photo_path, 'JPEG')
+            with open(photo_path, 'rb') as fi:
+                info = bot.send_photo(message.chat.id, fi)
+            os.remove(f.name)
+            os.remove(photo_path)
+            pkanal = 5
 
 
 @bot.message_handler(content_types=['sticker'])                                     #  Водяной знак видео p=7
