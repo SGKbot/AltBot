@@ -140,6 +140,7 @@ def send_text(message):
     global IdPhotoSign
     global info
     global mm
+    global message_video_File_id
 
     if message.text.lower() == 'news':                                            # Новости
 
