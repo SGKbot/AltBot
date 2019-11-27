@@ -230,8 +230,6 @@ def send_text(message):
              for item in message.entities:
                 if item.type == "url" and message.text.find(' ') == -1:
 
-                    global message_video_File_id
-
                     if 'youtube.com' in message.text or 'youtu.be' in message.text:                  #  Загружаем с Ютуб
                         ydl_opts = {'outtmpl': '/tmp/f.mp3', 'preferredcodec': 'mp3', 'max_filesize': 60000000}
                         link_of_the_video = message.text
@@ -241,7 +239,7 @@ def send_text(message):
 
                         if os.path.exists('/tmp/f.mp3'):  # файл есть
                             video = open('/tmp/f.mp3', 'rb')
-                            info = bot.send_video(message.chat.id, video)
+                            bot.send_video(message.chat.id, video)
                             os.remove('/tmp/f.mp3')
                             pkanal = 6
                         else:       # файла нет
@@ -252,7 +250,7 @@ def send_text(message):
 
                         #bot.send_message(message.chat.id, info)
 
-                        message_video_File_id = info.video.file_id
+                        # message_video_File_id = info.video.file_id
                         mm = 2
 
 
@@ -313,8 +311,8 @@ def send_text(message):
          if mm == 1:     # mm == 1  photo
              bot.send_photo(info.chat.id, info.photo[-1].file_id, caption=telo,  parse_mode='html')
          elif mm == 2:    # mm == 2  video
-             bot.send_video(info.chat.id, message_video_File_id, caption=telo, parse_mode='html')
-
+             # bot.send_video(info.chat.id, message_video_File_id, caption=telo, parse_mode='html')
+             pkanal = 11
 
          vkanal = telo
          # telo = ''
@@ -489,10 +487,6 @@ def handle_docs_video(message):
     final = CompositeVideoClip([my_clip, txt_mov])
     final.duration = my_clip.duration
     final.write_videofile("OUT.mp4", fps=24, codec='libx264')
-
-
-
-
 
 
 bot.polling()
