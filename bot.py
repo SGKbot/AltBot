@@ -382,7 +382,7 @@ def handle_docs_photo(message):
 #    bot.send_message(message.chat.id, message.message_id)
 #    bot.send_message(message.chat.id, message_id_Photo)
 #    bot.send_message(message.chat.id, message_Photo_File_id)
-
+    # one_time_keyboard=true
     keyboard = types.InlineKeyboardMarkup()  # наша клавиатура
     key_yes = types.InlineKeyboardButton(text='Да', callback_data='yes')  # кнопка «Да»
     keyboard.add(key_yes)  # добавляем кнопку в клавиатуру
@@ -411,13 +411,14 @@ def handle_docs_photo(message):
             file_info = bot.get_file(message_Photo_File_id)
             f.write(bot.download_file(file_info.file_path))
             f.close()
+            # one_time_keyboard
 
 #            bot.send_message(message.chat.id, message.message_id)
 #            bot.send_message(message.chat.id, message_id_Photo)
 #            bot.send_message(message.chat.id, message_Photo_File_id)
 
             bot.delete_message(chat_id, message_id_Photo)
-
+            bot.delete_message(chat_id, message_id_Photo + 1)
 #            bot.send_message(message.chat.id, message.message_id)
 #            bot.send_message(message.chat.id, message_id_Photo)
 #            bot.send_message(message.chat.id, message_Photo_File_id)
@@ -452,7 +453,10 @@ def handle_docs_photo(message):
             file_info = bot.get_file(message_Photo_File_id)
             f.write(bot.download_file(file_info.file_path))
             f.close()
+
             bot.delete_message(chat_id, message_id_Photo)
+            bot.delete_message(chat_id, message_id_Photo + 1)
+
             photo = Image.open(f.name)
             photo_path = f'{f.name}.jpeg'
             photo.save(photo_path, 'JPEG')
@@ -461,6 +465,8 @@ def handle_docs_photo(message):
             os.remove(f.name)
             os.remove(photo_path)
             pkanal = 5
+
+
 
 
 @bot.message_handler(content_types=['sticker'])                                     #  Водяной знак видео p=7
