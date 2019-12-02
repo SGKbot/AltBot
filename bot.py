@@ -122,7 +122,10 @@ HSK = '\n \n' \
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
-    bot.send_message(message.chat.id, HS,parse_mode='html', disable_web_page_preview=True, reply_markup=markup)
+    global telo
+    global vkanal
+    global pkanal
+    bot.send_message(message.chat.id, HS, parse_mode='html', disable_web_page_preview=True, reply_markup=markup)
     telo = ''
     vkanal = ''
     pkanal = 100
@@ -141,6 +144,7 @@ def send_text(message):
     global info
     global mm
     global message_video_File_id
+    global URL_for_Inline
 
     if message.text.lower() == 'news':                                            # Новости
 
@@ -188,6 +192,7 @@ def send_text(message):
         #  Водяной знак        pkanal = 5
         #  Работа со ссылками  pkanal = 6
         #  Картинка с каментом pkanal = 11
+        #  instant view        pkanal = 22
         bot.delete_message(message.chat.id, message.message_id)
         if pkanal == 5 or pkanal == 6 or pkanal == 100:
             bot.send_message(message.chat.id, 'Фото, видео и пустые сообщения не отправляются в канал', parse_mode='html', disable_web_page_preview=True)
@@ -197,16 +202,18 @@ def send_text(message):
                 if pkanal == 11:  #  Картинка с каментом
                     bot.send_photo(chat_id, info.photo[-1].file_id, caption=telo,  parse_mode='html')
 
-
-
                 else:
                      if pkanal == 10:
                          telo = vkanal
+                         bot.send_message(chat_id, telo, parse_mode='html', disable_web_page_preview=True)
+                     elif pkanal == 22:
+                         telo = vkanal
+                         bot.send_message(chat_id, telo, parse_mode='html', disable_web_page_preview=False)
                      else:
                          telo = telo
 
-                     bot.send_message(chat_id, telo, parse_mode='html', disable_web_page_preview=True)
-                     bot.delete_message(message.chat.id, message.message_id)
+                     # bot.send_message(chat_id, telo, parse_mode='html', disable_web_page_preview=True)
+                     # bot.delete_message(message.chat.id, message.message_id)
 
                 telo = ''
                 vkanal = ''
@@ -215,7 +222,7 @@ def send_text(message):
                 bot.send_message(message.chat.id, 'Вы не являетесь Администратором канала', parse_mode='html', disable_web_page_preview=True)
 
 
-    elif message.text.lower() == 'ads':                                                                       #  Реклама
+    elif message.text.lower() == 'ads':                                             #  Реклама
         if pkanal == 10:
             telo = vkanal + '\n' + '<a href="' + skanal + '">#Реклама</a>'
         else:
@@ -268,19 +275,62 @@ def send_text(message):
                         bot.send_message(message.chat.id, 'Вы установили свой канал как ' + skanal, parse_mode='html', disable_web_page_preview=True)
                         pv = 2
 
-                    else:                                                                                 # Читать далее
-                      if pkanal == 9:
-                        telo = telo + '<a href="' + message.text + '">Читать далее...</a>'
-                        # telo = vkanal + '<a href="' + message.text + '">Читать далее...</a>'
-                      else:
-                        telo = telo + '<a href="' + message.text + '">Читать далее...</a>'
+                    else:                                                                    # Читать далее
+                        if pkanal == 10:
+                            telo = vkanal
+
+                                                                                          # режим instant view 111111
+
+                        chat_id = message.chat.id
+                        message_id_Telo = message.message_id
 
 
-                      bot.delete_message(message.chat.id, message.message_id)
-                      bot.send_message(message.chat.id, telo, parse_mode='html', disable_web_page_preview=True)
-                      vkanal = telo + '\n'
-                      telo = ''
-                      pkanal = 10
+                        keybIV = types.InlineKeyboardMarkup()  # наша клавиатура
+                        key_yes = types.InlineKeyboardButton(text='Да', callback_data='yes')  # кнопка «Да»
+                        keybIV.add(key_yes)  # добавляем кнопку в клавиатуру
+                        key_no = types.InlineKeyboardButton(text='Нет', callback_data='no')
+                        keybIV.add(key_no)
+                        question = 'Нужен режим instant view?'
+                        bot.send_message(message.from_user.id, text=question, reply_markup=keybIV)
+
+                        URL_for_Inline = message.text
+
+                        @bot.callback_query_handler(func=lambda call: True)
+                        def callback_worker(call):
+
+                            global file_info
+                            global URL_for_Inline
+                            global telo
+                            global chat_id
+                            global message_id_Telo  # 1111111
+                            global vkanal
+                            global pkanal
+
+                            # bot.send_message(message.chat.id, URL_for_Inline, parse_mode='html', disable_web_page_preview=False)
+
+                            if call.data == "yes":  # call.data это callback_data, которую мы указали при объявлении кнопки
+                                telo ='<a href="' + URL_for_Inline + '">.</a>' + telo  # исправить 11111
+
+                                # inline_message_id
+                                # bot.delete_message(message.chat.id, message.message_id)
+                                # bot.delete_message(message.chat.id, message.message_id + 1)
+                                bot.send_message(message.chat.id, telo, parse_mode='html', disable_web_page_preview=False)
+                                vkanal = telo + '\n'
+                                telo = ''   #   А с этим надо что-то делать!!!!
+                                pkanal = 22
+
+                            elif call.data == "no":
+                                telo = telo + '\n' + '<a href="' + URL_for_Inline + '">Читать далее...</a>'
+
+                                # bot.delete_message(message.chat.id, message.message_id)
+                                # bot.delete_message(message.chat.id, message.message_id + 1)
+
+                                bot.send_message(message.chat.id, telo, parse_mode='html', disable_web_page_preview=True)
+                                vkanal = telo + '\n'
+                                telo = ''    #  А с этим надо что-то делать!!!!
+                                pkanal = 10
+
+
 
              if not message.text.find(' ') == -1:            # В сообщении присутствует ссылка, но это сообщение в канал
 
@@ -364,25 +414,21 @@ def send_text(message):
 @bot.message_handler(content_types=['photo'])                                                        #  Водяной знак p=5
 def handle_docs_photo(message):
 
-#    bot.send_message(message.chat.id,message.message_id)
-#    bot.send_message(message.chat.id, message.photo[-1].file_id)
-
     global info
     global pkanal
     global chat_id
     global message_id_Photo
     global message_Photo_File_id
     global mm
+    global telo
+    global vkanal
+    global file_info
 
     mm = 1
     chat_id = message.chat.id
     message_id_Photo = message.message_id
     message_Photo_File_id = message.photo[-1].file_id
 
-#    bot.send_message(message.chat.id, message.message_id)
-#    bot.send_message(message.chat.id, message_id_Photo)
-#    bot.send_message(message.chat.id, message_Photo_File_id)
-    # one_time_keyboard=true
     keyboard = types.InlineKeyboardMarkup()  # наша клавиатура
     key_yes = types.InlineKeyboardButton(text='Да', callback_data='yes')  # кнопка «Да»
     keyboard.add(key_yes)  # добавляем кнопку в клавиатуру
@@ -394,15 +440,16 @@ def handle_docs_photo(message):
     @bot.callback_query_handler(func=lambda call: True)
     def callback_worker(call):
 
+        global telo
         global info
         global pkanal
         global chat_id
         global message_id_Photo
         global message_Photo_File_id
+        global vkanal
+        global file_info
 
-#        bot.send_message(message.chat.id, message.message_id)
-#        bot.send_message(message.chat.id, message_id_Photo)
-#        bot.send_message(message.chat.id, message_Photo_File_id)
+
 
         if call.data == "yes":  # call.data это callback_data, которую мы указали при объявлении кнопки
 
@@ -411,17 +458,10 @@ def handle_docs_photo(message):
             file_info = bot.get_file(message_Photo_File_id)
             f.write(bot.download_file(file_info.file_path))
             f.close()
-            # one_time_keyboard
 
-#            bot.send_message(message.chat.id, message.message_id)
-#            bot.send_message(message.chat.id, message_id_Photo)
-#            bot.send_message(message.chat.id, message_Photo_File_id)
 
             bot.delete_message(chat_id, message_id_Photo)
             bot.delete_message(chat_id, message_id_Photo + 1)
-#            bot.send_message(message.chat.id, message.message_id)
-#            bot.send_message(message.chat.id, message_id_Photo)
-#            bot.send_message(message.chat.id, message_Photo_File_id)
 
             photo = Image.open(f.name)
             width, height = photo.size
@@ -443,9 +483,6 @@ def handle_docs_photo(message):
             os.remove(photo_path)
             pkanal = 5
 
-#            bot.send_message(message.chat.id, message.message_id)
-#            bot.send_message(message.chat.id, message_id_Photo)
-#            bot.send_message(message.chat.id, message_Photo_File_id)
 
         elif call.data == "no":
 
@@ -467,10 +504,13 @@ def handle_docs_photo(message):
             pkanal = 5
 
 
-
-
 @bot.message_handler(content_types=['sticker'])                                     #  Водяной знак видео p=7
 def handle_docs_video(message):
+
+    global telo
+    global vkanal
+    global pkanal
+
     my_clip = moviepy.video.io.VideoFileClip("/tmp/f.mp3", audio=True)  # Видео файл с включенным аудио
 
     w, h = my_clip.size  # размер клипа
