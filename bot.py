@@ -36,6 +36,7 @@ skanal = ''
 pv = 0
 HSK1 = ''
 info = ''
+info_video = ''
 mm = 0
 itembtnNews = types.KeyboardButton('News')
 itembtnADS = types.KeyboardButton('ADS')
@@ -142,9 +143,11 @@ def send_text(message):
     global pv
     global IdPhotoSign
     global info
+    global info_video
     global mm
     global message_video_File_id
     global URL_for_Inline
+    global file_info_video
 
     if message.text.lower() == 'news':                                            # Новости
 
@@ -238,17 +241,27 @@ def send_text(message):
                 if item.type == "url" and message.text.find(' ') == -1:
 
                     if 'youtube.com' in message.text or 'youtu.be' in message.text:                  #  Загружаем с Ютуб
-                        ydl_opts = {'outtmpl': '/tmp/f.mp3', 'preferredcodec': 'mp3', 'max_filesize': 60000000}
+                        ydl_opts = {'outtmpl': '/tmp/f.mp4', 'preferredcodec': 'mp3', 'max_filesize': 60000000}
                         link_of_the_video = message.text
                         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
                             ydl.download([link_of_the_video])
                         bot.delete_message(message.chat.id, message.message_id)
 
-                        if os.path.exists('/tmp/f.mp3'):  # файл есть
-                            video = open('/tmp/f.mp3', 'rb')
-                            bot.send_video(message.chat.id, video)
-                            os.remove('/tmp/f.mp3')
+                        if os.path.exists('/tmp/f.mp4'):  # файл есть
+                            video_save = open('/tmp/f.mp4', 'rb')
+
+                            with open('/tmp/f.mp4', 'rb') as fi:
+                                info_video = bot.send_video(message.chat.id, fi)
+
+
+                            os.remove('/tmp/f.mp4')
                             pkanal = 6
+                            mm = 2
+
+                            file_info_video = bot.get_file(info_video.video.file_id)
+
+                            # bot.send_message(message.chat.id, message)
+                            # message_video_File_id = message.video
                         else:       # файла нет
                             bot.send_message(message.chat.id, 'Слишком большой файл', parse_mode='html', disable_web_page_preview=True)
                             telo = ''
@@ -258,10 +271,10 @@ def send_text(message):
                         #bot.send_message(message.chat.id, info)
 
                         # message_video_File_id = info.video.file_id
-                        mm = 2
+                        # mm = 2
 
 
-                    elif 't.me' in message.text or message.text.find('@') == 0:              #  устанавливаем канал пользователя
+                    elif '/t.me/' in message.text or message.text.find('@') == 0:              #  устанавливаем канал пользователя
                         #  bot.send_message(message.chat.id, message.text, parse_mode='html', disable_web_page_preview=True)
                         if not message.text.find('@') == -1:   # Нашел @    Тут что-то ни хрена не работает
                             skanal ='https://t.me/' + message.text[1:]
@@ -361,7 +374,7 @@ def send_text(message):
          if mm == 1:     # mm == 1  photo
              bot.send_photo(info.chat.id, info.photo[-1].file_id, caption=telo,  parse_mode='html')
          elif mm == 2:    # mm == 2  video
-             # bot.send_video(info.chat.id, message_video_File_id, caption=telo, parse_mode='html')
+             bot.send_video(message.chat.id, file_info_video.file_id, caption=telo, parse_mode='html')
              pkanal = 11
 
          vkanal = telo
@@ -504,35 +517,41 @@ def handle_docs_photo(message):
             pkanal = 5
 
 
-@bot.message_handler(content_types=['sticker'])                                     #  Водяной знак видео p=7
+@bot.message_handler(content_types=['video'])                                     #  Водяной знак видео p=7
 def handle_docs_video(message):
 
     global telo
     global vkanal
     global pkanal
+    global mm
+    global file_info_video
+    global info_video
 
-    my_clip = moviepy.video.io.VideoFileClip("/tmp/f.mp3", audio=True)  # Видео файл с включенным аудио
+    # bot.send_video(message.chat.id, message, caption=telo, parse_mode='html')
+    # message_video_File_id = message.message_id
 
-    w, h = my_clip.size  # размер клипа
 
+    file_info_video = bot.get_file(message.video.file_id)
+    mm = 2
+
+    # bot.send_message(message.chat.id,  info_video, parse_mode='html', disable_web_page_preview=True)
+
+    # my_clip = moviepy.video.io.VideoFileClip("/tmp/f.mp3", audio=True)  # Видео файл с включенным аудио
+    # w, h = my_clip.size  # размер клипа
     # Клип с текстом и черным полупрозрачным фоном
-
-    txt = TextClip("THE WATERMARK TEXT", font='Amiri-regular',
-                   color='white', fontsize=24)
-
-    txt_col = txt.on_color(size=(my_clip.w + txt.w, txt.h - 10),
-                           color=(0, 0, 0), pos=(6, 'center'), col_opacity=0.6)
-
+    # txt = TextClip("THE WATERMARK TEXT", font='Amiri-regular', color='white', fontsize=24)
+    # txt_col = txt.on_color(size=(my_clip.w + txt.w, txt.h - 10), color=(0, 0, 0), pos=(6, 'center'), col_opacity=0.6)
     # Этот пример демонстрирует эффект движущегося текста, где позиция является функцией времени (t, в секундах).
     # Конечно, вы можете исправить положение текста вручную. Помните, что вы можете использовать строки,
     # как 'top', 'left', чтобы указать позицию
-    txt_mov = txt_col.set_pos(lambda t: (max(w / 30, int(w - 0.5 * w * t)),
-                                         max(5 * h / 6, int(100 * t))))
+    # txt_mov = txt_col.set_pos(lambda t: (max(w / 30, int(w - 0.5 * w * t)), max(5 * h / 6, int(100 * t))))
 
     # Записать файл на диск
-    final = CompositeVideoClip([my_clip, txt_mov])
-    final.duration = my_clip.duration
-    final.write_videofile("OUT.mp4", fps=24, codec='libx264')
+    # final = CompositeVideoClip([my_clip, txt_mov])
+    # final.duration = my_clip.duration
+    # final.write_videofile("OUT.mp4", fps=24, codec='libx264')
+
+
 
 
 bot.polling()
