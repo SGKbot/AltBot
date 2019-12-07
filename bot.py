@@ -461,6 +461,7 @@ def handle_docs_photo(message):
         global message_Photo_File_id
         global vkanal
         global file_info
+        global mm
 
 
 
@@ -495,6 +496,7 @@ def handle_docs_photo(message):
             os.remove(f.name)
             os.remove(photo_path)
             pkanal = 5
+            mm = 1
 
 
         elif call.data == "no":
@@ -515,6 +517,7 @@ def handle_docs_photo(message):
             os.remove(f.name)
             os.remove(photo_path)
             pkanal = 5
+            mm = 1
 
 
 @bot.message_handler(content_types=['video'])                                     #  Водяной знак видео p=7
