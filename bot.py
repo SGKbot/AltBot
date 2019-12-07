@@ -299,10 +299,10 @@ def send_text(message):
 
 
                         keybIV = types.InlineKeyboardMarkup()  # наша клавиатура
-                        key_yes = types.InlineKeyboardButton(text='Да', callback_data='yes')  # кнопка «Да»
-                        keybIV.add(key_yes)  # добавляем кнопку в клавиатуру
-                        key_no = types.InlineKeyboardButton(text='Нет', callback_data='no')
-                        keybIV.add(key_no)
+                        key_yes_iv = types.InlineKeyboardButton(text='Да', callback_data='yes')  # кнопка «Да»
+                        keybIV.add(key_yes_iv)  # добавляем кнопку в клавиатуру
+                        key_no_iv = types.InlineKeyboardButton(text='Нет', callback_data='no')
+                        keybIV.add(key_no_iv)
                         question = 'Нужен режим instant view?'
                         bot.send_message(message.from_user.id, text=question, reply_markup=keybIV)
 
