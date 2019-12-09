@@ -148,6 +148,8 @@ def send_text(message):
     global message_video_File_id
     global URL_for_Inline
     global file_info_video
+    global message_keyb_IV
+    global message_keyb_WM
 
     if message.text.lower() == 'news':                                            # Новости
 
@@ -299,17 +301,18 @@ def send_text(message):
 
 
                         keybIV = types.InlineKeyboardMarkup()  # наша клавиатура
-                        key_yes_iv = types.InlineKeyboardButton(text='Да', callback_data='yes')  # кнопка «Да»
+                        key_yes_iv = types.InlineKeyboardButton(text='Да', callback_data='iv_yes')  # кнопка «Да»
                         keybIV.add(key_yes_iv)  # добавляем кнопку в клавиатуру
-                        key_no_iv = types.InlineKeyboardButton(text='Нет', callback_data='no')
+                        key_no_iv = types.InlineKeyboardButton(text='Нет', callback_data='iv_no')
                         keybIV.add(key_no_iv)
                         question = 'Нужен режим instant view?'
-                        bot.send_message(message.from_user.id, text=question, reply_markup=keybIV)
+                        message_keyb_IV = bot.send_message(message.from_user.id, text=question, reply_markup=keybIV)
 
                         URL_for_Inline = message.text
+                        # message_Id_for_delet = message.message_id
 
-                        @bot.callback_query_handler(func=lambda call: True)
-                        def callback_worker(call):
+                        @bot.callback_query_handler(func=lambda call: call.data and call.data.startswith("iv"))
+                        def callback_worker_iv(call):
 
                             global file_info
                             global URL_for_Inline
@@ -318,24 +321,26 @@ def send_text(message):
                             global message_id_Telo  # 1111111
                             global vkanal
                             global pkanal
+                            global message_keyb_IV
 
                             # bot.send_message(message.chat.id, URL_for_Inline, parse_mode='html', disable_web_page_preview=False)
 
-                            if call.data == "yes":  # call.data это callback_data, которую мы указали при объявлении кнопки
+                            if call.data == "iv_yes":  # call.data это callback_data, которую мы указали при объявлении кнопки
                                 telo ='<a href="' + URL_for_Inline + '">.</a>' + telo  # исправить 11111
 
                                 # inline_message_id
-                                # bot.delete_message(message.chat.id, message.message_id)
+                                bot.delete_message(message.chat.id, message_keyb_IV.message_id)
                                 # bot.delete_message(message.chat.id, message.message_id + 1)
+                                # markup = types.ReplyKeyboardRemove(selective=False)   убрать нахер строку и маркуп в следующей
                                 bot.send_message(message.chat.id, telo, parse_mode='html', disable_web_page_preview=False)
                                 vkanal = telo + '\n'
                                 telo = ''   #   А с этим надо что-то делать!!!!
                                 pkanal = 22
 
-                            elif call.data == "no":
+                            elif call.data == "iv_no":
                                 telo = telo + '\n' + '<a href="' + URL_for_Inline + '">Читать далее...</a>'
 
-                                # bot.delete_message(message.chat.id, message.message_id)
+                                bot.delete_message(message.chat.id, message_keyb_IV.message_id)
                                 # bot.delete_message(message.chat.id, message.message_id + 1)
 
                                 bot.send_message(message.chat.id, telo, parse_mode='html', disable_web_page_preview=True)
@@ -343,6 +348,10 @@ def send_text(message):
                                 telo = ''    #  А с этим надо что-то делать!!!!
                                 pkanal = 10
 
+                                # bot.send_message(message.from_user.id, reply_markup=markup)
+
+                            # bot.editMessageReplyMarkup()
+                            # return False
 
 
              if not message.text.find(' ') == -1:            # В сообщении присутствует ссылка, но это сообщение в канал
@@ -436,6 +445,7 @@ def handle_docs_photo(message):
     global telo
     global vkanal
     global file_info
+    global message_keyb_WM
 
     mm = 1
     chat_id = message.chat.id
@@ -443,15 +453,16 @@ def handle_docs_photo(message):
     message_Photo_File_id = message.photo[-1].file_id
 
     keyboard = types.InlineKeyboardMarkup()  # наша клавиатура
-    key_yes = types.InlineKeyboardButton(text='Да', callback_data='yes')  # кнопка «Да»
+    key_yes = types.InlineKeyboardButton(text='Да', callback_data='wm_yes')  # кнопка «Да»
     keyboard.add(key_yes)  # добавляем кнопку в клавиатуру
-    key_no = types.InlineKeyboardButton(text='Нет', callback_data='no')
+    key_no = types.InlineKeyboardButton(text='Нет', callback_data='wm_no')
     keyboard.add(key_no)
     question = 'Водяной знак нужен и картинка Вам принадлежит? '
-    bot.send_message(message.from_user.id, text=question, reply_markup=keyboard)
+    message_keyb_WM  = bot.send_message(message.from_user.id, text=question, reply_markup=keyboard)
 
-    @bot.callback_query_handler(func=lambda call: True)
-    def callback_worker(call):
+
+    @bot.callback_query_handler(func=lambda call: call.data and call.data.startswith("wm"))
+    def callback_worker_wm(call):
 
         global telo
         global info
@@ -462,10 +473,11 @@ def handle_docs_photo(message):
         global vkanal
         global file_info
         global mm
+        global message_keyb_WM
 
 
 
-        if call.data == "yes":  # call.data это callback_data, которую мы указали при объявлении кнопки
+        if call.data == "wm_yes":  # call.data это callback_data, которую мы указали при объявлении кнопки
 
             f = tempfile.NamedTemporaryFile(delete=False)
             #  file_info = bot.get_file(message.photo[-1].file_id)
@@ -475,7 +487,7 @@ def handle_docs_photo(message):
 
 
             bot.delete_message(chat_id, message_id_Photo)
-            bot.delete_message(chat_id, message_id_Photo + 1)
+            bot.delete_message(chat_id, message_keyb_WM.message_id)
 
             photo = Image.open(f.name)
             width, height = photo.size
@@ -499,7 +511,7 @@ def handle_docs_photo(message):
             mm = 1
 
 
-        elif call.data == "no":
+        elif call.data == "wm_no":
 
             f = tempfile.NamedTemporaryFile(delete=False)
             file_info = bot.get_file(message_Photo_File_id)
@@ -507,7 +519,7 @@ def handle_docs_photo(message):
             f.close()
 
             bot.delete_message(chat_id, message_id_Photo)
-            bot.delete_message(chat_id, message_id_Photo + 1)
+            bot.delete_message(chat_id, message_keyb_WM.message_id)
 
             photo = Image.open(f.name)
             photo_path = f'{f.name}.jpeg'
@@ -519,6 +531,8 @@ def handle_docs_photo(message):
             pkanal = 5
             mm = 1
 
+        # bot.editMessageReplyMarkup()
+        # return False
 
 @bot.message_handler(content_types=['video'])                                     #  Водяной знак видео p=7
 def handle_docs_video(message):
