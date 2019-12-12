@@ -77,7 +77,7 @@ HS = "Здравствуйте." \
      "\n" \
      "<a href='https://t.me/SGK_espace'>Подписаться на мой канал</a>"     \
      "\n" \
-     "v1.01" \
+     "v1.02" \
 
 HSK = '\n \n' \
     '<b>       Клавиши:</b>' \
@@ -96,7 +96,7 @@ HSK = '\n \n' \
     '\n \n' \
     '<b>       Действия:</b>' \
     '\n' \
-    '<b>Comb</b>    Объединить картинку и сообщение' \
+    '<b>Comb</b>    Объединить картинку или видео с сообщением' \
     '\n' \
     '<b>Send</b>      Отправить подготовленное сообщение в ваш канал' \
     '\n' \
@@ -243,20 +243,38 @@ def send_text(message):
                 if item.type == "url" and message.text.find(' ') == -1:
 
                     if 'youtube.com' in message.text or 'youtu.be' in message.text:                  #  Загружаем с Ютуб
-                        ydl_opts = {'outtmpl': '/tmp/f.mp4', 'preferredcodec': 'mp3', 'max_filesize': 60000000}
+
+                        f = tempfile.NamedTemporaryFile(delete=False)
+                        video_path = f'{f.name}.mp4'
+
+
+                        # bot.send_message(message.chat.id, f.name, parse_mode='html', disable_web_page_preview=True)
+                        # bot.send_message(message.chat.id, video_path, parse_mode='html', disable_web_page_preview=True)
+
+                        # ydl_opts = {'outtmpl': '/tmp/f.mp4', 'preferredcodec': 'mp3', 'max_filesize': 60000000}
+                        ydl_opts = {'outtmpl': video_path, 'preferredcodec': 'mp3', 'max_filesize': 60000000}
+
                         link_of_the_video = message.text
+
+
                         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
                             ydl.download([link_of_the_video])
+
+
+
                         bot.delete_message(message.chat.id, message.message_id)
+                        # video_path = f'{f.name}.mp4'
 
-                        if os.path.exists('/tmp/f.mp4'):  # файл есть
-                            video_save = open('/tmp/f.mp4', 'rb')
+                        if os.path.exists(video_path):  # файл есть   if os.path.exists('/tmp/f.mp4'):
+                            video_save = open(video_path, 'rb')   # video_save = open('/tmp/f.mp4', 'rb')
 
-                            with open('/tmp/f.mp4', 'rb') as fi:
+                            with open(video_path, 'rb') as fi:    # with open('/tmp/f.mp4', 'rb') as fi:
                                 info_video = bot.send_video(message.chat.id, fi)
 
 
-                            os.remove('/tmp/f.mp4')
+                            os.remove(f.name)   # os.remove('/tmp/f.mp4')
+                            os.remove(video_path)
+
                             pkanal = 6
                             mm = 2
 
@@ -278,7 +296,7 @@ def send_text(message):
 
                     elif '/t.me/' in message.text or message.text.find('@') == 0:              #  устанавливаем канал пользователя
                         #  bot.send_message(message.chat.id, message.text, parse_mode='html', disable_web_page_preview=True)
-                        if not message.text.find('@') == -1:   # Нашел @    Тут что-то ни хрена не работает
+                        if not message.text.find('@') == -1:   # Нашел @    Тут что-то ни хрена не работает// а С ХЕРА БУДЕТ РАБОТАТЬ ЕСЛИ ПОПАЛ СЮДА ПО УСЛОВИЮ /t.me
                             skanal ='https://t.me/' + message.text[1:]
                         else:
                             skanal = message.text
@@ -480,7 +498,7 @@ def handle_docs_photo(message):
         if call.data == "wm_yes":  # call.data это callback_data, которую мы указали при объявлении кнопки
 
             f = tempfile.NamedTemporaryFile(delete=False)
-            #  file_info = bot.get_file(message.photo[-1].file_id)
+
             file_info = bot.get_file(message_Photo_File_id)
             f.write(bot.download_file(file_info.file_path))
             f.close()
