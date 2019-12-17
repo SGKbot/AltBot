@@ -4,7 +4,7 @@ import tempfile
 import os
 import youtube_dl
 import yaml
-# import moviepy
+import moviepy
 
 #  import time
 
@@ -21,7 +21,7 @@ from PIL import ImageDraw
 from PIL import ImageFont
 from telebot import types
 
-# from moviepy.editor import *
+from moviepy.editor import *
 
 
 
@@ -565,28 +565,40 @@ def handle_docs_video(message):
     # bot.send_video(message.chat.id, message, caption=telo, parse_mode='html')
     # message_video_File_id = message.message_id
 
-
+    f = tempfile.NamedTemporaryFile(delete=False)
     file_info_video = bot.get_file(message.video.file_id)
+    f.write(bot.download_file(file_info_video.file_path))
+    f.close()
+
     mm = 2
 
-    # bot.send_message(message.chat.id,  info_video, parse_mode='html', disable_web_page_preview=True)
+    bot.send_message(message.chat.id, file_info_video, parse_mode='html', disable_web_page_preview=True)
 
-    # my_clip = moviepy.video.io.VideoFileClip("/tmp/f.mp3", audio=True)  # Видео файл с включенным аудио
-    # w, h = my_clip.size  # размер клипа
+
+    # my_clip = moviepy.video.io.VideoFileClip(kino, audio=True)  # Видео файл с включенным аудио
+
+    my_clip = VideoFileClip('/home/f/Видео/karaul_ustal.mp4')  # Видео файл с включенным аудио
+    w, h = my_clip.size  # размер клипа
     # Клип с текстом и черным полупрозрачным фоном
-    # txt = TextClip("THE WATERMARK TEXT", font='Amiri-regular', color='white', fontsize=24)
-    # txt_col = txt.on_color(size=(my_clip.w + txt.w, txt.h - 10), color=(0, 0, 0), pos=(6, 'center'), col_opacity=0.6)
+    #  font='FreeMono.ttf'
+    txt = TextClip("THE WATERMARK TEXT", color='white', fontsize=24)
+    #txt = TextClip("THE WATERMARK TEXT", font='Amiri-regular', color='white', fontsize=24)
+    txt_col = txt.on_color(size=(my_clip.w + txt.w, txt.h - 10), color=(0, 0, 0), pos=(6, 'center'), col_opacity=0.6)
     # Этот пример демонстрирует эффект движущегося текста, где позиция является функцией времени (t, в секундах).
     # Конечно, вы можете исправить положение текста вручную. Помните, что вы можете использовать строки,
     # как 'top', 'left', чтобы указать позицию
-    # txt_mov = txt_col.set_pos(lambda t: (max(w / 30, int(w - 0.5 * w * t)), max(5 * h / 6, int(100 * t))))
+    txt_mov = txt_col.set_pos(lambda t: (max(w / 30, int(w - 0.5 * w * t)), max(5 * h / 6, int(100 * t))))
 
     # Записать файл на диск
-    # final = CompositeVideoClip([my_clip, txt_mov])
-    # final.duration = my_clip.duration
-    # final.write_videofile("OUT.mp4", fps=24, codec='libx264')
+    final = CompositeVideoClip([my_clip, txt_mov])
+    final.duration = my_clip.duration
+
+    video_path = f'{f.name}.mp4'
+
+    final.write_videofile(video_path, fps=24, codec='libx264')
 
 
-
+    with open(video_path, 'rb') as fi:
+        info_video = bot.send_video(message.chat.id, fi)
 
 bot.polling()
