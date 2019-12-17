@@ -4,7 +4,7 @@ import tempfile
 import os
 import youtube_dl
 import yaml
-import moviepy
+# import moviepy
 
 #  import time
 
@@ -21,7 +21,7 @@ from PIL import ImageDraw
 from PIL import ImageFont
 from telebot import types
 
-from moviepy.editor import *
+# from moviepy.editor import *
 
 
 
@@ -577,25 +577,25 @@ def handle_docs_video(message):
 
     # my_clip = moviepy.video.io.VideoFileClip(kino, audio=True)  # Видео файл с включенным аудио
 
-    my_clip = VideoFileClip('/home/f/Видео/karaul_ustal.mp4')  # Видео файл с включенным аудио
-    w, h = my_clip.size  # размер клипа
+#    my_clip = VideoFileClip('/home/f/Видео/karaul_ustal.mp4')  # Видео файл с включенным аудио
+ #   w, h = my_clip.size  # размер клипа
     # Клип с текстом и черным полупрозрачным фоном
     #  font='FreeMono.ttf'
-    txt = TextClip("THE WATERMARK TEXT", color='white', fontsize=24)
+#    txt = TextClip("THE WATERMARK TEXT", color='white', fontsize=24)
     #txt = TextClip("THE WATERMARK TEXT", font='Amiri-regular', color='white', fontsize=24)
-    txt_col = txt.on_color(size=(my_clip.w + txt.w, txt.h - 10), color=(0, 0, 0), pos=(6, 'center'), col_opacity=0.6)
+ #   txt_col = txt.on_color(size=(my_clip.w + txt.w, txt.h - 10), color=(0, 0, 0), pos=(6, 'center'), col_opacity=0.6)
     # Этот пример демонстрирует эффект движущегося текста, где позиция является функцией времени (t, в секундах).
     # Конечно, вы можете исправить положение текста вручную. Помните, что вы можете использовать строки,
     # как 'top', 'left', чтобы указать позицию
-    txt_mov = txt_col.set_pos(lambda t: (max(w / 30, int(w - 0.5 * w * t)), max(5 * h / 6, int(100 * t))))
+#    txt_mov = txt_col.set_pos(lambda t: (max(w / 30, int(w - 0.5 * w * t)), max(5 * h / 6, int(100 * t))))
 
     # Записать файл на диск
-    final = CompositeVideoClip([my_clip, txt_mov])
-    final.duration = my_clip.duration
+ #   final = CompositeVideoClip([my_clip, txt_mov])
+ #   final.duration = my_clip.duration
 
     video_path = f'{f.name}.mp4'
 
-    final.write_videofile(video_path, fps=24, codec='libx264')
+  #  final.write_videofile(video_path, fps=24, codec='libx264')
 
 
     with open(video_path, 'rb') as fi:
