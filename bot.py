@@ -4,7 +4,7 @@ import tempfile
 import os
 import youtube_dl
 import yaml
-# import moviepy
+import moviepy
 
 #  import time
 
@@ -21,7 +21,7 @@ from PIL import ImageDraw
 from PIL import ImageFont
 from telebot import types
 
-# from moviepy.editor import *
+from moviepy.editor import *
 
 
 
@@ -245,35 +245,39 @@ def send_text(message):
                     if 'youtube.com' in message.text or 'youtu.be' in message.text:                  #  Загружаем с Ютуб
 
                         f = tempfile.NamedTemporaryFile(delete=False)
-                        video_path = f'{f.name}.mp4'
+                        video_path_out = f'{f.name}.mkv'
+                        video_path = f.name
+                        video_path_out_mp4 = f'{f.name}.mp4'
 
-
-                        # bot.send_message(message.chat.id, f.name, parse_mode='html', disable_web_page_preview=True)
                         # bot.send_message(message.chat.id, video_path, parse_mode='html', disable_web_page_preview=True)
 
-                        # ydl_opts = {'outtmpl': '/tmp/f.mp4', 'preferredcodec': 'mp3', 'max_filesize': 60000000}
-                        ydl_opts = {'outtmpl': video_path, 'preferredcodec': 'mp3', 'max_filesize': 60000000}
+                        ydl_opts = {'outtmpl': video_path, 'max_filesize': 60000000, 'filename': video_path_out}
 
                         link_of_the_video = message.text
 
-
                         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-                            ydl.download([link_of_the_video])
+                            video_path = ydl.download([link_of_the_video])
 
+                        # bot.delete_message(message.chat.id, message.message_id)
+                        # video_path = f.name
+                        # bot.send_message(message.chat.id, youtube_dl.YoutubeDL.filename, parse_mode='html', disable_web_page_preview=True)
 
-
-                        bot.delete_message(message.chat.id, message.message_id)
-                        # video_path = f'{f.name}.mp4'
 
                         if os.path.exists(video_path):  # файл есть   if os.path.exists('/tmp/f.mp4'):
-                            video_save = open(video_path, 'rb')   # video_save = open('/tmp/f.mp4', 'rb')
+                            # video_save = open(video_path, 'rb')
 
-                            with open(video_path, 'rb') as fi:    # with open('/tmp/f.mp4', 'rb') as fi:
+                            video = VideoFileClip(video_path_out)  # пробую из vkv --> mp4
+                            result = CompositeVideoClip([video])
+                            result.write_videofile(video_path_out_mp4)
+
+                            with open(video_path_out_mp4, 'rb') as fi:
                                 info_video = bot.send_video(message.chat.id, fi)
 
 
-                            os.remove(f.name)   # os.remove('/tmp/f.mp4')
-                            os.remove(video_path)
+                            os.remove(f.name)
+                            #  os.remove(video_path)
+                            os.remove(video_path_out)
+                            os.remove(video_path_out_mp4)
 
                             pkanal = 6
                             mm = 2
@@ -400,7 +404,7 @@ def send_text(message):
 
          if mm == 1:     # mm == 1  photo
              bot.send_photo(info.chat.id, info.photo[-1].file_id, caption=telo,  parse_mode='html')
-         elif mm == 2:    # mm == 2  video
+         elif mm == 2:    # mm == 2  video .file_id
              bot.send_video(message.chat.id, file_info_video.file_id, caption=telo, parse_mode='html')
              pkanal = 11
 
@@ -561,44 +565,79 @@ def handle_docs_video(message):
     global mm
     global file_info_video
     global info_video
-
-    # bot.send_video(message.chat.id, message, caption=telo, parse_mode='html')
-    # message_video_File_id = message.message_id
+    global skanal
 
     f = tempfile.NamedTemporaryFile(delete=False)
     file_info_video = bot.get_file(message.video.file_id)
     f.write(bot.download_file(file_info_video.file_path))
     f.close()
-
+    vp = f.name
     mm = 2
 
-    bot.send_message(message.chat.id, file_info_video, parse_mode='html', disable_web_page_preview=True)
+
+    keyboard = types.InlineKeyboardMarkup()  # наша клавиатура
+    key_yes = types.InlineKeyboardButton(text='Да', callback_data='wv_yes')  # кнопка «Да»
+    keyboard.add(key_yes)  # добавляем кнопку в клавиатуру
+    key_no = types.InlineKeyboardButton(text='Нет', callback_data='wv_no')
+    keyboard.add(key_no)
+    question = 'Водяной знак нужен и видео Вам принадлежит? '
+    message_keyb_WM  = bot.send_message(message.from_user.id, text=question, reply_markup=keyboard)
 
 
-    # my_clip = moviepy.video.io.VideoFileClip(kino, audio=True)  # Видео файл с включенным аудио
+    @bot.callback_query_handler(func=lambda call: call.data and call.data.startswith("wv"))
+    def callback_worker_wm(call):
 
-#    my_clip = VideoFileClip('/home/f/Видео/karaul_ustal.mp4')  # Видео файл с включенным аудио
- #   w, h = my_clip.size  # размер клипа
-    # Клип с текстом и черным полупрозрачным фоном
-    #  font='FreeMono.ttf'
-#    txt = TextClip("THE WATERMARK TEXT", color='white', fontsize=24)
-    #txt = TextClip("THE WATERMARK TEXT", font='Amiri-regular', color='white', fontsize=24)
- #   txt_col = txt.on_color(size=(my_clip.w + txt.w, txt.h - 10), color=(0, 0, 0), pos=(6, 'center'), col_opacity=0.6)
-    # Этот пример демонстрирует эффект движущегося текста, где позиция является функцией времени (t, в секундах).
-    # Конечно, вы можете исправить положение текста вручную. Помните, что вы можете использовать строки,
-    # как 'top', 'left', чтобы указать позицию
-#    txt_mov = txt_col.set_pos(lambda t: (max(w / 30, int(w - 0.5 * w * t)), max(5 * h / 6, int(100 * t))))
+        global telo
+        global vkanal
+        global pkanal
+        global mm
+        global file_info_video
+        global info_video
+        global skanal
 
-    # Записать файл на диск
- #   final = CompositeVideoClip([my_clip, txt_mov])
- #   final.duration = my_clip.duration
+        if call.data == "wv_yes":
 
-    video_path = f'{f.name}.mp4'
+            #  bot.delete_message(message.chat.id, message.message_id)
 
-  #  final.write_videofile(video_path, fps=24, codec='libx264')
+            my_clip = VideoFileClip(vp, audio=True)  # Видео файл с включенным аудио
+            clip_duration = my_clip.duration  # длительность ролика
+
+            w, h = my_clip.size  # размер клипа
+            # Клип с текстом и прозрачным фоном
+            #  font='FreeMono.ttf'
+            text = 'Это не мое видео'
+            if len(skanal) > 0 :
+                text = skanal
+
+            txt = TextClip(text, color='red', fontsize=w//20)
+            # txt.h - 10
+            txt_col = txt.on_color(size=(my_clip.w + txt.w, txt.h ), color=(0, 0, 0), pos=(120, 'center'), col_opacity=0)
+
+            # Этот пример демонстрирует эффект движущегося текста, где позиция является функцией времени (t, в секундах).
+            # Конечно, вы можете исправить положение текста вручную. Помните, что вы можете использовать строки,
+            # как 'top', 'left', чтобы указать позицию
+
+            #  txt_mov = txt_col.set_pos(lambda t: (max(w / 35, int(w - 0.5 * w * t)), max(5 * h / 6, int(20 * t))))
+            txt_mov = txt_col.set_pos(lambda t: (max(w / 50, int(w - w * (t+2)/clip_duration)), max(5 * h / 6, int(h*t/clip_duration))))
+            # Записать файл на диск
+            final = CompositeVideoClip([my_clip, txt_mov])
+            final.duration = my_clip.duration
+
+            video_path = f'{f.name}.mp4'
+
+            final.write_videofile(video_path, fps=24, codec='libx264')
 
 
-    with open(video_path, 'rb') as fi:
-        info_video = bot.send_video(message.chat.id, fi)
+            with open(video_path, 'rb') as fi:
+                info_video = bot.send_video(message.chat.id, fi)
+
+            os.remove(f.name)
+            os.remove(video_path)
+            file_info_video = bot.get_file(info_video.video.file_id)
+
+            # bot.send_message(message.chat.id,info_video ,parse_mode='html', disable_web_page_preview=True)
+            # bot.send_message(message.chat.id,file_info_video ,parse_mode='html', disable_web_page_preview=True)
+
+
 
 bot.polling()
