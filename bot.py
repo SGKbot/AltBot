@@ -21,7 +21,7 @@ from PIL import ImageDraw
 from PIL import ImageFont
 from telebot import types
 
-from moviepy.editor import *
+# from moviepy.editor import *
 
 
 
