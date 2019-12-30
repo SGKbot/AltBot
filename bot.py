@@ -1,5 +1,5 @@
 import pytelegrambotapi
-# import telebot
+import telebot
 import PIL
 import tempfile
 import os
