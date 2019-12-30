@@ -1,4 +1,5 @@
-import telebot
+import pytelegrambotapi
+# import telebot
 import PIL
 import tempfile
 import os
