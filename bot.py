@@ -1,4 +1,4 @@
-import pytelegrambotapi
+# import pytelegrambotapi
 import telebot
 import PIL
 import tempfile
