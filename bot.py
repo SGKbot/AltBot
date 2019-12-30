@@ -13,7 +13,7 @@ import moviepy
 #  config = yaml.load(config_file)
 #  value = config.get("key")
 
-
+# telebot==3.6.6
 bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s')
 
 
