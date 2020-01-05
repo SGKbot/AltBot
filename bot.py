@@ -7,11 +7,6 @@ import youtube_dl
 import yaml
 import moviepy
 
-#  import time
-
-#  config_file = open("config.yaml","r")
-#  config = yaml.load(config_file)
-#  value = config.get("key")
 
 # telebot==3.6.6
 bot = telebot.TeleBot('930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s')
@@ -160,7 +155,7 @@ def send_text(message):
             telo = telo + '\n' + '<a href="' + skanal + '">#Новости</a>'
 
         bot.delete_message(message.chat.id, message.message_id)
-        bot.send_message(message.chat.id, telo,parse_mode='html', disable_web_page_preview=True)
+        bot.send_message(message.chat.id, telo, parse_mode='html', disable_web_page_preview=True)
 
         vkanal = telo
         telo = ''
