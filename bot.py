@@ -628,7 +628,7 @@ def handle_docs_video(message):
                 info_video = bot.send_video(message.chat.id, fi)
 
             os.remove(f.name)
-            os.remove(video_path)
+            # os.remove(video_path)
             file_info_video = bot.get_file(info_video.video.file_id)
 
             # bot.send_message(message.chat.id,info_video ,parse_mode='html', disable_web_page_preview=True)
