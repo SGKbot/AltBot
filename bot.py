@@ -65,7 +65,7 @@ HS = "Здравствуйте." \
      "\n \n" \
      "Простота бота накладывает ограничения - вы всегда работаете только с последним ВИДИМЫМ в боте сообщением." \
      " Настроить расположение водяного знака нельзя. Любая отправленная ссылка (кроме на ютуб) формирует “Читать далее”." \
-     " Ссылка на ютуб скачивает видео. Отправленная картинка возвращается с водяным знаком. " \
+     " Ссылка на ютуб скачивает видео. Отправленная картинка или видео возвращаются с водяным знаком. " \
      "\n" \
      "Данный проект не является коммерческим, поэтому у него нет специального чата поддержки. " \
      "Если у вас возникнет необходимость обсудить работу бота зарегистрируйтесь на моем канале или " \
@@ -73,7 +73,7 @@ HS = "Здравствуйте." \
      "\n" \
      "<a href='https://t.me/SGK_espace'>Подписаться на мой канал</a>"     \
      "\n" \
-     "v1.02" \
+     "v1.10" \
 
 HSK = '\n \n' \
     '<b>       Клавиши:</b>' \
@@ -108,7 +108,7 @@ HSK = '\n \n' \
     '\n' \
     '<b>на ютуб</b> возвращает видеофайл' \
     '\n' \
-    '<b>на ваш канал</b> в последующем добавляет в тег гиперссылку на канал,  пишет на картинке, отправленной боту вашу ссылку.' \
+    '<b>на ваш канал</b> в последующем, если вам надо, добавляет в тег гиперссылку на канал, пишет на картинке, отправленной боту вашу ссылку, добавляет в видео бегущую строку с вашей ссылкой.' \
     '\n' \
     'Формат https://t.me/SGK_espace' \
     '\n' \
@@ -196,12 +196,15 @@ def send_text(message):
         #  instant view        pkanal = 22
         bot.delete_message(message.chat.id, message.message_id)
         if pkanal == 5 or pkanal == 6 or pkanal == 100:
-            bot.send_message(message.chat.id, 'Фото, видео и пустые сообщения не отправляются в канал', parse_mode='html', disable_web_page_preview=True)
+            bot.send_message(message.chat.id, 'Пустые сообщения не отправляются в канал', parse_mode='html', disable_web_page_preview=True)
         else:
             chat_id = "@" + skanal[13:]
             if message.from_user.id in [adm_obj.user.id for adm_obj in bot.get_chat_administrators(chat_id)]:        #  Важно, можно ли отправлять в канал
                 if pkanal == 11:  #  Картинка с каментом
-                    bot.send_photo(chat_id, info.photo[-1].file_id, caption=telo,  parse_mode='html')
+                    if mm == 2:
+                        bot.send_video(message.chat.id, file_info_video.file_id, caption=telo, parse_mode='html')
+                    else:
+                        bot.send_photo(chat_id, info.photo[-1].file_id, caption=telo,  parse_mode='html')
 
                 else:
                      if pkanal == 10:
@@ -245,7 +248,6 @@ def send_text(message):
                         video_path = f.name
                         video_path_out_mp4 = f'{f.name}.mp4'
 
-                        # bot.send_message(message.chat.id, video_path, parse_mode='html', disable_web_page_preview=True)
 
                         ydl_opts = {'outtmpl': video_path, 'max_filesize': 60000000, 'filename': video_path_out}
 
@@ -254,15 +256,9 @@ def send_text(message):
                         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
                             video_path = ydl.download([link_of_the_video])
 
-                        # bot.delete_message(message.chat.id, message.message_id)
-                        # video_path = f.name
-                        # bot.send_message(message.chat.id, youtube_dl.YoutubeDL.filename, parse_mode='html', disable_web_page_preview=True)
+                        if not os.path.exists(video_path) == 0:  # файл есть   if os.path.exists('/tmp/f.mp4'):
 
-
-                        if os.path.exists(video_path):  # файл есть   if os.path.exists('/tmp/f.mp4'):
-                            # video_save = open(video_path, 'rb')
-
-                            video = VideoFileClip(video_path_out)  # пробую из vkv --> mp4
+                            video = VideoFileClip(video_path_out)  # mkv --> mp4
                             result = CompositeVideoClip([video])
                             result.write_videofile(video_path_out_mp4)
 
@@ -590,6 +586,7 @@ def handle_docs_video(message):
         global file_info_video
         global info_video
         global skanal
+        mm = 2
 
         if call.data == "wv_yes":
 
@@ -630,10 +627,7 @@ def handle_docs_video(message):
             os.remove(f.name)
             # os.remove(video_path)
             file_info_video = bot.get_file(info_video.video.file_id)
-
-            # bot.send_message(message.chat.id,info_video ,parse_mode='html', disable_web_page_preview=True)
-            # bot.send_message(message.chat.id,file_info_video ,parse_mode='html', disable_web_page_preview=True)
-
+            mm = 2
 
 
 bot.polling()
