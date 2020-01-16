@@ -1,4 +1,5 @@
 # import pytelegrambotapi
+# было отключено
 import telebot
 import PIL
 import tempfile
@@ -104,6 +105,8 @@ HSK = '\n \n' \
     '\n' \
     '<b>Отправить боту картинку</b> возвращается картинка с указанием на ваш канал.' \
     '\n' \
+    '<b>Отправить боту видеофайл</b> возвращается видео с бегущей строкой вашего канала.' \
+    '\n' \
     '<b>Отправка боту ссылки</b>' \
     '\n' \
     '<b>на ютуб</b> возвращает видеофайл' \
@@ -126,6 +129,14 @@ def start_message(message):
     telo = ''
     vkanal = ''
     pkanal = 100
+
+
+@bot.message_handler(content_types=['document'])
+def start_message(document):
+    bot.send_message(document.chat.id, document)
+
+    bot.send_document(document.chat.id, 'CgADAgAD6wUAAuOb8Ugra3Kv7t4n_hYE')
+
 
 @bot.message_handler(content_types=['text'])
 def send_text(message):
@@ -175,6 +186,7 @@ def send_text(message):
         telo = ''
         vkanal = ''
         pkanal = 100
+
 
     elif message.text.lower() == 'hands':                               #  Своми руками
 
@@ -242,6 +254,8 @@ def send_text(message):
                 if item.type == "url" and message.text.find(' ') == -1:
 
                     if 'youtube.com' in message.text or 'youtu.be' in message.text:                  #  Загружаем с Ютуб
+                        bot.send_chat_action(message.chat.id, action='upload_video')
+                        bot.send_document(message.chat.id, 'CgADAgAD6wUAAuOb8Ugra3Kv7t4n_hYE')
 
                         f = tempfile.NamedTemporaryFile(delete=False)
                         video_path_out = f'{f.name}.mkv'
@@ -249,10 +263,11 @@ def send_text(message):
                         video_path_out_mp4 = f'{f.name}.mp4'
 
 
-                        ydl_opts = {'outtmpl': video_path, 'max_filesize': 60000000, 'filename': video_path_out}
+                        ydl_opts = {'outtmpl': video_path, 'merge_output_format': 'mkv', 'max_filesize': 70000000, 'filename': video_path_out}
 
                         link_of_the_video = message.text
-
+                        # bot.delete_message(message.chat.id, message.message_id)
+                        bot.send_chat_action(message.chat.id, action='upload_video')
                         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
                             video_path = ydl.download([link_of_the_video])
 
@@ -261,6 +276,9 @@ def send_text(message):
                             video = VideoFileClip(video_path_out)  # mkv --> mp4
                             result = CompositeVideoClip([video])
                             result.write_videofile(video_path_out_mp4)
+
+                            bot.send_chat_action(message.chat.id, action='upload_video')
+                            bot.send_chat_action(message.chat.id, action='upload_video')
 
                             with open(video_path_out_mp4, 'rb') as fi:
                                 info_video = bot.send_video(message.chat.id, fi)
@@ -364,8 +382,6 @@ def send_text(message):
 
                                 # bot.send_message(message.from_user.id, reply_markup=markup)
 
-                            # bot.editMessageReplyMarkup()
-                            # return False
 
 
              if not message.text.find(' ') == -1:            # В сообщении присутствует ссылка, но это сообщение в канал
@@ -493,6 +509,8 @@ def handle_docs_photo(message):
 
         if call.data == "wm_yes":  # call.data это callback_data, которую мы указали при объявлении кнопки
 
+            bot.send_chat_action(message.chat.id, action='upload_photo')
+
             f = tempfile.NamedTemporaryFile(delete=False)
 
             file_info = bot.get_file(message_Photo_File_id)
@@ -517,6 +535,7 @@ def handle_docs_photo(message):
             drawing.text(pos, text, fill=black, font=font)
             photo_path = f'{f.name}.jpeg'
             photo.save(photo_path, 'JPEG')
+            bot.send_chat_action(message.chat.id, action='upload_photo')
             with open(photo_path, 'rb') as fi:
                 info = bot.send_photo(message.chat.id, fi)
             os.remove(f.name)
@@ -545,11 +564,10 @@ def handle_docs_photo(message):
             pkanal = 5
             mm = 1
 
-        # bot.editMessageReplyMarkup()
-        # return False
 
 @bot.message_handler(content_types=['video'])                                     #  Водяной знак видео p=7
 def handle_docs_video(message):
+    # bot.send_message(message.chat.id, message)
 
     global telo
     global vkanal
@@ -589,8 +607,10 @@ def handle_docs_video(message):
         mm = 2
 
         if call.data == "wv_yes":
-
-            #  bot.delete_message(message.chat.id, message.message_id)
+            # bot.answer_callback_query(callback_query_id=call.id, text='Дело делаем')
+            bot.send_chat_action(message.chat.id, action='upload_video')
+            bot.send_document(message.chat.id, 'CgADAgAD6wUAAuOb8Ugra3Kv7t4n_hYE')
+            # bot.delete_message(message.chat.id, message.message_id)   УДАЛЯЕМ ИНЛАЙН КЛАВУ
 
             my_clip = VideoFileClip(vp, audio=True)  # Видео файл с включенным аудио
             clip_duration = my_clip.duration  # длительность ролика
@@ -610,7 +630,6 @@ def handle_docs_video(message):
             # Конечно, вы можете исправить положение текста вручную. Помните, что вы можете использовать строки,
             # как 'top', 'left', чтобы указать позицию
 
-            #  txt_mov = txt_col.set_pos(lambda t: (max(w / 35, int(w - 0.5 * w * t)), max(5 * h / 6, int(20 * t))))
             txt_mov = txt_col.set_pos(lambda t: (max(w / 50, int(w - w * (t+2)/clip_duration)), max(5 * h / 6, int(h*t/clip_duration))))
             # Записать файл на диск
             final = CompositeVideoClip([my_clip, txt_mov])
@@ -618,8 +637,19 @@ def handle_docs_video(message):
 
             video_path = f'{f.name}.mp4'
 
+            bot.send_chat_action(message.chat.id, action='record_video')
+            # bot.send_video(message.chat.id, '82428c1ff4a97038984f32ab98bda266')   гифку ну никак
+
+            bot.send_chat_action(message.chat.id, action='record_video')
+            bot.send_chat_action(message.chat.id, action='record_video')
+            bot.send_chat_action(message.chat.id, action='record_video')
+            bot.send_chat_action(message.chat.id, action='record_video')
+            bot.send_chat_action(message.chat.id, action='record_video')
+            bot.send_chat_action(message.chat.id, action='record_video')
+
             final.write_videofile(video_path, fps=24, codec='libx264')
 
+            bot.delete_message(message.chat.id, message.message_id)  #  удаляем ненужное сообщение
 
             with open(video_path, 'rb') as fi:
                 info_video = bot.send_video(message.chat.id, fi)
@@ -628,6 +658,5 @@ def handle_docs_video(message):
             # os.remove(video_path)
             file_info_video = bot.get_file(info_video.video.file_id)
             mm = 2
-
 
 bot.polling()
