@@ -1,6 +1,8 @@
 import cfg
 import sqlite3
 import bl_as_modul
+from telebot import types
+
 
 import telebot
 
@@ -27,19 +29,31 @@ def close_connection(conn):
     conn.close()
 
 
-def add_user(conn, n1, n2, n3, n4, n5, n6, n7, n8):  # Вставляем данные в таблицу bot_chat_id
+def add_user(conn, n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11):  # Вставляем данные в таблицу bot_chat_id
+
     cursor = conn.cursor()
-    user = (n1, n2, n3, n4, n5, n6, n7, n8)
-    cursor.execute('INSERT INTO projects VALUES (?, ?, ?, ?, ?, ?, ?, ?)', user)
+    user = (n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11)
+    cursor.execute('INSERT INTO projects VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', user)
     conn.commit()   # Сохраняем изменения
 
 
-def find_user(conn, n1):  # поиск юзера
+def find_user(conn, n0, n2, n9):  # поиск юзера
 
-    bci = (n1,)
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM projects WHERE  bot_chat_id=?', bci)
-    user_string = cursor.fetchone()  # возвращается кортеж
+    if n9 == 1:
+        bci = (n0, n9)
+        cursor.execute('SELECT * FROM projects WHERE bot_chat_id=? and chn=?', bci)
+        user_string = cursor.fetchone()  # возвращается кортеж
+    elif n9 == 2:  # 2 признак, все строки
+        bci = (n0, )
+        cursor.execute('SELECT * FROM projects WHERE bot_chat_id=?', bci)
+        user_string = cursor.fetchall()  # возвращается кортеж кортежей
+    elif len(n2) > 0:  # признак,  строки выбора или удалкния
+        bci = (n0, n2)
+        cursor.execute('SELECT * FROM projects WHERE bot_chat_id=? and channel_name=?', bci)
+        user_string = cursor.fetchone()  # возвращается кортеж
+
+    # user_string = cursor.fetchone()
 
     return user_string
 
@@ -48,13 +62,13 @@ def acquaintance(message):  # знакомство
     bot.send_message(message.chat.id, cfg.Pr, parse_mode='html', disable_web_page_preview=True)
 
 
-def update_user(conn, n1, n2, n3, n4, n5, n6, n7, n8):  # Обновляем данные
+def update_user(conn, n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11):  # Обновляем данные
     cursor = conn.cursor()
-    user = (n1, n2, n3, n4, n5, n6, n7, n8)
-    del_user = (n1,)
-    cursor.execute('DELETE FROM projects WHERE bot_chat_id = ?', del_user)
+    user = (n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11)
+    del_user = (n1, 1)
+    cursor.execute('DELETE FROM projects WHERE bot_chat_id = ? and chn=?', del_user)
     conn.commit()
-    cursor.execute('INSERT INTO projects VALUES (?, ?, ?, ?, ?, ?, ?, ?)', user)
+    cursor.execute('INSERT INTO projects VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', user)
     conn.commit()   # Сохраняем изменения
 
 
@@ -77,7 +91,7 @@ def add_hashtag(message, hashtag):
         hashtag = '#Новости'
 
     conn = create_connection()
-    u = find_user(conn, message.chat.id)
+    u = find_user(conn, message.chat.id, '', 1)
 
     if u[3] == 10:
        telo = u[4] + '\n' + '<a href="' + u[6] + '">' + hashtag + '</a>'
@@ -92,9 +106,8 @@ def add_hashtag(message, hashtag):
 
     bot.send_message(message.chat.id, telo, parse_mode='html', disable_web_page_preview=True)
 
-    update_user(conn, u[0], u[1], u[2], 10, telo, '', u[6], u[7])
+    update_user(conn, u[0], u[1], u[2], 10, telo, '', u[6], u[7], u[8], u[9], u[10])
     close_connection(conn)
-
 
 
 def help_bl_as(message):
@@ -103,8 +116,8 @@ def help_bl_as(message):
     bot.send_message(message.chat.id, bl_as_modul.HSK, parse_mode='html', disable_web_page_preview=True)
 
     conn = create_connection()
-    u = find_user(conn, message.chat.id)
-    update_user(conn, u[0], u[1], u[2], 100, '', '', u[6], 0)
+    u = find_user(conn, message.chat.id, '', 1)
+    update_user(conn, u[0], u[1], u[2], 100, '', '', u[6], 0, u[8], u[9], u[10])
     close_connection(conn)
 
 
@@ -125,6 +138,16 @@ def just_text(message):
                 break
 
     conn = create_connection()
-    u = find_user(conn, message.chat.id)
-    update_user(conn, u[0], u[1], u[2], 9, '', telo, u[6], u[7])
+    u = find_user(conn, message.chat.id, '', 1)
+    update_user(conn, u[0], u[1], u[2], 9, '', telo, u[6], u[7], u[8], u[9], u[10])
     close_connection(conn)
+
+def Name_ch_(SelStr):
+    k = len(SelStr)
+    spisok = ['', '', '', '', '', '']
+    i = 0
+    while i < k:
+        SS = SelStr[i]
+        spisok.insert(i, SS[2])
+        i = i + 1
+    return spisok

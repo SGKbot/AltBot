@@ -1,4 +1,12 @@
 import telebot
+import os
+import json
+from telebot import apihelper
+
+myproxy = os.getenv('myproxy', None)
+apihelper.proxy = json.loads(myproxy)
+print(myproxy)
+
 import cfg
 # import user_info
 
