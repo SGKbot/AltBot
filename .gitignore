@@ -1,3 +1,6 @@
 .idea
 *.retry
 config.yaml
+*.session
+user2.db
+user_copy.sqbpro
