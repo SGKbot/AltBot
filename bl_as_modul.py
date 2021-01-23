@@ -1,4 +1,7 @@
-import telebot
+
+from telethon import TelegramClient, events, sync
+
+
 import os
 import json
 from telebot import apihelper
@@ -10,9 +13,22 @@ print(myproxy)
 import cfg
 # import user_info
 
-def bot_telebot():
-    bot = telebot.TeleBot(cfg.token)
-    return bot
+def bot_bot():
+    # bot = telebot.TeleBot(cfg.token)
+    # bt = Bot(token=cfg.token)
+    # dp = Dispatcher(bot)
+    # bt = TelegramClient('BlAs12020', 1544232, '588b56542f3bde27c7d75eb8ba704cdc').start(bot_token=cfg.token)
+
+    return bt
+
+client = TelegramClient('BlAs12020', 1544232, '588b56542f3bde27c7d75eb8ba704cdc')
+client.start(bot_token=cfg.token)
+
+
+
+# def bot_dp():
+  #  dp = Dispatcher(bot_bot())
+   # return dp
 
 
 HS = "Здравствуйте." \

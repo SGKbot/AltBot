@@ -449,3 +449,11 @@ tt = u[9]
 u = user_info.find_user(conn, message.chat.id, chaname[tt], 3)
 user_info.update_user(conn, u[0], u[1], u[2], u[3], u[4], u[5], u[6], u[7], u[8], 0)
 user_info.close_connection(conn)
+
+
+
+photo = Image.open(u[10])
+photo_path = f'{u[10]}.jpeg'
+photo.save(photo_path, 'JPEG')
+        with open(photo_path, 'rb') as fi:
+            info = await bot.send_file(u[0], fi)

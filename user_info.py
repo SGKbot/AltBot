@@ -1,79 +1,80 @@
+# from telebot.apihelper import send_message
+from telethon.events import StopPropagation
+
 import cfg
-import sqlite3
+import aiosqlite
 import bl_as_modul
-from telebot import types
+import os
+
+bot = bl_as_modul.client
 
 
-import telebot
+async def create_connection():
+    db = await aiosqlite.connect(cfg.user_db)
+    cursor = await db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='projects';")
 
-# import bot
+    if not await cursor.fetchone():
+        await cursor.execute(cfg.sql_create_user_table)
 
-# from sqlite3 import Error
-# from cfg import user_db
-
-
-bot = bl_as_modul.bot_telebot()
-
-def create_connection():
-    conn = sqlite3.connect(cfg.user_db)
-    cursor = conn.cursor()
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='projects';")
-
-    if not cursor.fetchone():
-        cursor.execute(cfg.sql_create_user_table)
-
-    return conn
+    return cursor, db
 
 
-def close_connection(conn):
-    conn.close()
+async def close_connection(conn):
+    await conn[0].close()
+    await conn[1].close()
 
 
-def add_user(conn, n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11):  # Вставляем данные в таблицу bot_chat_id
+async def add_user(conn, n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11):  # Вставляем данные в таблицу bot_chat_id
 
-    cursor = conn.cursor()
     user = (n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11)
-    cursor.execute('INSERT INTO projects VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', user)
-    conn.commit()   # Сохраняем изменения
+    # await conn[0].execute('INSERT INTO projects VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', user)
+    # await conn[0].commit()   # Сохраняем изменения
+
+    async with aiosqlite.connect(cfg.user_db) as db:
+        await db.execute('INSERT INTO projects VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', user)
+        await db.commit()
 
 
-def find_user(conn, n0, n2, n9):  # поиск юзера
+async def find_user(cursor, n0, n2, n9):  # поиск юзера
 
-    cursor = conn.cursor()
+    # cursor = conn.cursor()
     if n9 == 1:
         bci = (n0, n9)
-        cursor.execute('SELECT * FROM projects WHERE bot_chat_id=? and chn=?', bci)
-        user_string = cursor.fetchone()  # возвращается кортеж
+        await cursor[0].execute('SELECT * FROM projects WHERE bot_chat_id=? and chn=?', bci)
+        user_string = await cursor[0].fetchone()  # возвращается кортеж
     elif n9 == 2:  # 2 признак, все строки
         bci = (n0, )
-        cursor.execute('SELECT * FROM projects WHERE bot_chat_id=?', bci)
-        user_string = cursor.fetchall()  # возвращается кортеж кортежей
-    elif len(n2) > 0:  # признак,  строки выбора или удалкния
-        bci = (n0, n2)
-        cursor.execute('SELECT * FROM projects WHERE bot_chat_id=? and channel_name=?', bci)
-        user_string = cursor.fetchone()  # возвращается кортеж
+        await cursor[0].execute('SELECT * FROM projects WHERE bot_chat_id=?', bci)
+        user_string = await cursor[0].fetchall()  # возвращается кортеж кортежей
 
-    # user_string = cursor.fetchone()
+    elif n2 != 0:  # признак,  строки выбора или удаления
+        bci = (n0, n2)
+        await cursor[0].execute('SELECT * FROM projects WHERE bot_chat_id=? and channel_chat_id=?', bci)
+        user_string = await cursor[0].fetchone()  # возвращается кортеж
+        # user_string = 1
+        raise StopPropagation
 
     return user_string
 
 
-def acquaintance(message):  # знакомство
-    bot.send_message(message.chat.id, cfg.Pr, parse_mode='html', disable_web_page_preview=True)
+# async def acquaintance(message):  # знакомство
+    # message.chat.id,
+  #  await send_message(message.chat_id, cfg.Pr, parse_mode='html', link_preview=False)
+     #   message.answer(cfg.Pr, parse_mode='html', disable_web_page_preview=True)
 
 
-def update_user(conn, n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11):  # Обновляем данные
-    cursor = conn.cursor()
+async def update_user(conn, n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11):  # Обновляем данные
+    # cursor = conn.cursor()
     user = (n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11)
     del_user = (n1, 1)
-    cursor.execute('DELETE FROM projects WHERE bot_chat_id = ? and chn=?', del_user)
-    conn.commit()
-    cursor.execute('INSERT INTO projects VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', user)
-    conn.commit()   # Сохраняем изменения
+    await conn[0].execute('DELETE FROM projects WHERE bot_chat_id = ? and chn=?', del_user)
+    await conn[1].commit()
+    await conn[0].execute('INSERT INTO projects VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', user)
+    await conn[1].commit()   # Сохраняем изменения
 
 
 
-def add_hashtag(message, hashtag):
+async def add_hashtag(message, hashtag):
 
     if hashtag == 'hands':
         hashtag = '#Hands'
@@ -90,42 +91,36 @@ def add_hashtag(message, hashtag):
     elif hashtag == 'news':
         hashtag = '#Новости'
 
-    conn = create_connection()
-    u = find_user(conn, message.chat.id, '', 1)
+    conn = await create_connection()
+    u = await find_user(conn, message.chat.id, '', 1)
 
     if u[3] == 10:
        telo = u[4] + '\n' + '<a href="' + u[6] + '">' + hashtag + '</a>'
     else:
        telo = u[5] + '\n' + '<a href="' + u[6] + '">' + hashtag + '</a>'
 
-    if message.message_id:
-        bot.delete_message(message.chat.id, message.message_id)
 
-    if message.message_id-1:
-        bot.delete_message(message.chat.id, message.message_id-1)
+    await bot.send_message(u[0], telo, parse_mode='html', link_preview=False)
 
-    bot.send_message(message.chat.id, telo, parse_mode='html', disable_web_page_preview=True)
-
-    update_user(conn, u[0], u[1], u[2], 10, telo, '', u[6], u[7], u[8], u[9], u[10])
-    close_connection(conn)
+    await update_user(conn, u[0], u[1], u[2], 10, telo, telo, u[6], u[7], u[8], u[9], u[10])
+    await close_connection(conn)
 
 
-def help_bl_as(message):
+async def help_bl_as(message):  # удалить
+    # bot.delete_message(s)
+    # await message.delete()
+    await message.answer(bl_as_modul.HSK, parse_mode='html', disable_web_page_preview=True)
 
-    bot.delete_message(message.chat.id, message.message_id)
-    bot.send_message(message.chat.id, bl_as_modul.HSK, parse_mode='html', disable_web_page_preview=True)
-
-    conn = create_connection()
-    u = find_user(conn, message.chat.id, '', 1)
-    update_user(conn, u[0], u[1], u[2], 100, '', '', u[6], 0, u[8], u[9], u[10])
-    close_connection(conn)
+    conn = await create_connection()
+    u = await find_user(conn, message.chat.id, '', 1)
+    await update_user(conn, u[0], u[1], u[2], 100, '', '', u[6], 0, u[8], u[9], u[10])
+    await close_connection(conn)
 
 
-def just_text(message):
-    telo = message.text + '\n'  # Просто текст
+async def just_text(event):
+    telo = event.message.text + '\n'  # Просто текст
     if round(telo.count('ьь') / 2) - telo.count('ьь') / 2 == 0.5 or telo.count('ьь') == 1:
-        bot.send_message(message.chat.id, 'Вы неправильно оформили выделение жирным шрифтом',
-                         parse_mode='html', disable_web_page_preview=True)
+        await bot.send_message(event.chat_id, 'Вы неправильно оформили выделение жирным шрифтом', parse_mode='html', link_preview=False)
     else:
         while (True):
             try:
@@ -137,12 +132,13 @@ def just_text(message):
             except ValueError:
                 break
 
-    conn = create_connection()
-    u = find_user(conn, message.chat.id, '', 1)
-    update_user(conn, u[0], u[1], u[2], 9, '', telo, u[6], u[7], u[8], u[9], u[10])
-    close_connection(conn)
+    conn = await create_connection()
+    u = await find_user(conn, event.chat_id, '', 1)
+    # тут
+    await update_user(conn, u[0], u[1], u[2], 9, '', telo, u[6], u[7], u[8], u[9], u[10])
+    await close_connection(conn)
 
-def Name_ch_(SelStr):
+async def Name_ch_(SelStr):
     k = len(SelStr)
     spisok = ['', '', '', '', '', '']
     i = 0
@@ -150,4 +146,31 @@ def Name_ch_(SelStr):
         SS = SelStr[i]
         spisok.insert(i, SS[2])
         i = i + 1
+        # await message.Message.answer_document(text=spisok[i])
+
     return spisok
+
+
+async def sel_chan(channel, id_message, s, od):
+
+    await bot.delete_messages(channel, id_message)
+
+    conn = await create_connection()
+    etud = await find_user(conn, channel, '', 2)
+    vis = etud[s]
+
+    if od == 1:
+        n = await find_user(conn, channel, '', 1)   # 1 зачем???????
+        if n == True:
+            await update_user(conn, n[0], n[1], n[2], n[3], n[4], n[5], n[6], n[7], 0, n[9], '')
+
+    del_user = (vis[0], vis[2])
+    await conn[0].execute('DELETE FROM projects WHERE bot_chat_id = ? and channel_name = ?', del_user)
+    await conn[1].commit()
+
+    if od == 1:
+        visi = (vis[0], vis[1], vis[2], vis[3], vis[4], vis[5], vis[6], vis[7], 1, vis[9], '')
+        await conn[0].execute('INSERT INTO projects VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', visi)
+        await conn[1].commit()
+
+    await close_connection(conn)

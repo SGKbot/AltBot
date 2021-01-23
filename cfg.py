@@ -7,7 +7,7 @@ us_in = 'user_info.py'  # создание, обработка БД пользо
 user_db = '/users/sgk/Documents/github/AltBot/user.db'  # файл с !!!ПУТЕМ!!! где хранится вся информация о пользователях с уникальными атрибутами
 user_font = '/users/sgk/Documents/github/AltBot/FreeMono.ttf'
 sql_create_user_table = """ CREATE TABLE IF NOT EXISTS projects (
-                                        bot_chat_id integer ,
+                                        bot_chat_id integer , 
                                         channel_chat_id integer PRIMARY KEY,
                                         channel_name text NOT NULL,
                                         pkanal integer,
@@ -19,6 +19,7 @@ sql_create_user_table = """ CREATE TABLE IF NOT EXISTS projects (
                                         InlKeyBut integer,
                                         mmfid text
                                     ); """
+
 Pr = "Давайте познакомимся." \
      "\n" \
      "\n" \
