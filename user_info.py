@@ -100,7 +100,7 @@ async def add_hashtag(message, hashtag):
        telo = u[5] + '\n' + '<a href="' + u[6] + '">' + hashtag + '</a>'
 
 
-    await bot.send_message(u[0], telo, parse_mode='html', link_preview=False)
+    await bot.send_message(u[0],'<b>' + u[2] + '</b>' + '\n\n' + telo, parse_mode='html', link_preview=False)
 
     await update_user(conn, u[0], u[1], u[2], 10, telo, telo, u[6], u[7], u[8], u[9], u[10])
     await close_connection(conn)

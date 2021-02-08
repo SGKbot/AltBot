@@ -241,12 +241,12 @@ async def photo_ex(event):
         await user_info.sel_chan(channel, id_message, 5, 1)
 
 
-    if callbtn == b"add_c": #  добавить канал
-        await bot.delete_messages(channel, id_message)
-        conn = await user_info.create_connection()
-        etud = await user_info.find_user(conn, channel, '', 2)
-        chaname = await user_info.Name_ch_(etud)
-        await user_info.close_connection(conn)
+    # if callbtn == b"add_c": #  добавить канал
+    #     await bot.delete_messages(channel, id_message)
+    #     conn = await user_info.create_connection()
+    #     etud = await user_info.find_user(conn, channel, '', 2)
+    #     chaname = await user_info.Name_ch_(etud)
+    #     await user_info.close_connection(conn)
 
 
     if callbtn == b"del_c": #  удалить канал
@@ -457,7 +457,7 @@ async def text_detect(event):
                 photo_path = f'{u[10]}.jpeg'
                 photo.save(photo_path, 'JPEG')
                 with open(photo_path, 'rb') as fi:
-                    info = await bot.send_file(u[0], fi, caption=u[5], parse_mode='html')
+                    info = await bot.send_file(u[0], fi, caption='<b>' + u[2] + '</b>' + '\n\n' + u[5], parse_mode='html')
 
 
             elif u[7] == 2:  # mm == 2  video .file_id   # 123
@@ -492,11 +492,11 @@ async def text_detect(event):
         hlp_but = types.ReplyInlineMarkup(
             rows=[
                 KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Выбрать канал", data=b"sel_c"), ]),
-                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Добавить канал", data=b"add_c"), ]),
                 KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Удалить канал", data=b"del_c"), ]),
                 KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Выйти из меню", data=b"otval"), ]),
                  ]
                                           )
+                # KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Добавить канал", data=b"add_c"), ]),
 
         await bot.send_message(channel, 'Выберите необходимое действие', buttons=hlp_but)
 
@@ -572,7 +572,7 @@ async def text_detect(event):
                                 'noplaylist': 'true',
                                 'ignoreerrors': 'true',
                                 'quiet': True,
-                                'max_filesize': 1200000000,
+                                'max_filesize': 120000000,
                                 'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
                                 'filename': video_path_out}
 
