@@ -37,7 +37,6 @@ from user_info import close_connection
 
 bot = bl_as_modul.client
 
-
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
@@ -47,7 +46,6 @@ from moviepy.editor import *
 pv = 0
 info = ''
 info_video = ''
-
 
 markup1 = types.ReplyInlineMarkup(
     rows=[
@@ -69,10 +67,8 @@ markup1 = types.ReplyInlineMarkup(
 )
 
 
-
 @bot.on(events.NewMessage(pattern='/start'))
 async def start_message(message):
-
     await bot.send_message(message.chat_id, bl_as_modul.HS, parse_mode='html', link_preview=False, buttons=[
         [
             Button.text('News'),
@@ -90,17 +86,16 @@ async def start_message(message):
         ]
     ])
 
-    await bot.send_message(message.chat_id, cfg.Pr, parse_mode='html', link_preview=False, buttons=markup1)
+    await bot.send_message(message.chat_id, cfg.Pr, parse_mode='html', link_preview=False)
+    # , buttons=markup1)
 
     # await event.delete()
-     # No other event handler will have a chance to handle this event
+    # No other event handler will have a chance to handle this event
     raise StopPropagation
-
 
 
 @bot.on(events.NewMessage(forwards='true'))
 async def send_text(message):
-
     new_link = (await bot(ExportChatInviteRequest(message.message.forward.chat_id))).link
 
     forward_message_text = message.message.text
@@ -117,28 +112,31 @@ async def send_text(message):
     conn = await user_info.create_connection()
     while (True):
         try:
-           user = await user_info.find_user(conn, message.chat_id, title_from_forward, 3)
+            user = await user_info.find_user(conn, message.chat_id, title_from_forward, 3)
         except NameError:
-            await user_info.add_user(conn, message.chat_id, title_from_forward, chat_from_forward, 100, '', '', new_link, 0, 1, 0, '')
+            await user_info.add_user(conn, message.chat_id, title_from_forward, chat_from_forward, 100, '', '',
+                                     new_link, 0, 1, 0, '')
         except Exception:
-            await user_info.add_user(conn, message.chat_id, title_from_forward, chat_from_forward, 100, '', '', new_link, 0, 0, 0, '')
-            await bot.send_message(message.chat_id, 'Данные о вашем канале успешно добавлены', parse_mode='html', link_preview=False)
+            await user_info.add_user(conn, message.chat_id, title_from_forward, chat_from_forward, 100, '', '',
+                                     new_link, 0, 0, 0, '')
+            await bot.send_message(message.chat_id, 'Данные о вашем канале успешно добавлены', parse_mode='html',
+                                   link_preview=False)
 
     await user_info.close_connection(conn)
+
 
 # @dp.message_handler(content_types=['document'])
 # def start_message(document):
 #    bot.send_message(document.chat.id, document)
 
 
-
 # фото делаем
 @bot.on(events.NewMessage(func=lambda e: e.is_private and getattr(e, 'photo')))
-async def photo_detect(event):    # Водяной знак p=5
+async def photo_detect(event):  # Водяной знак p=5
     sender = await event.get_sender()
     name = utils.get_display_name(sender)
     photo = event
-    channel = sender.id      # 275965108
+    channel = sender.id  # 275965108
     entity = await bot.get_entity(channel)
     # await bot.send_message(entity=entity, file=photo, message=name)
     photo_id = photo.message.photo.id
@@ -154,9 +152,9 @@ async def photo_detect(event):    # Водяной знак p=5
     await user_info.close_connection(conn)
 
     await bot.send_message(channel, 'Водяной знак нужен и картинка Вам принадлежит?', buttons=[
-                KeyboardButtonCallback(text="Да", data=b"wmp_y"),
-                KeyboardButtonCallback(text="Нет", data=b"wmp_n"),
-            ])
+        KeyboardButtonCallback(text="Да", data=b"wmp_y"),
+        KeyboardButtonCallback(text="Нет", data=b"wmp_n"),
+    ])
 
 
 @bot.on(events.CallbackQuery)
@@ -168,37 +166,35 @@ async def photo_ex(event):
     id_message = event.message_id
     if callbtn == b"iv_yes":  # инстан вью
 
-            conn = await user_info.create_connection()
-            u = await user_info.find_user(conn, channel, '', 1)
+        conn = await user_info.create_connection()
+        u = await user_info.find_user(conn, channel, '', 1)
 
-            telo = '<a href="' + u[4] + '">.</a>' + u[5]  # исправить 11111
+        telo = '<a href="' + u[4] + '">.</a>' + u[5]  # исправить 11111
 
-            # bot.delete_message(message.chat.id, message_keyb_IV.message_id)
-            await bot.send_message(channel, telo, parse_mode='html', link_preview=False)
+        # bot.delete_message(message.chat.id, message_keyb_IV.message_id)
+        await bot.send_message(channel,'<b>' + u[2] + '</b>' + '\n\n' + telo, parse_mode='html', link_preview=True)
 
-            vkanal = telo + '\n'
+        vkanal = telo + '\n'
 
-            await user_info.update_user(conn, u[0], u[1], u[2], 22, vkanal, '', u[6], u[7], u[8], U[9], '')
-            await user_info.close_connection(conn)
+        await user_info.update_user(conn, u[0], u[1], u[2], 22, vkanal, '', u[6], u[7], u[8], U[9], '')
+        await user_info.close_connection(conn)
 
     elif callbtn == b"iv_no":
 
-            conn = await user_info.create_connection()
-            u = await user_info.find_user(conn, channel, '', 1)
+        conn = await user_info.create_connection()
+        u = await user_info.find_user(conn, channel, '', 1)
 
+        telo = u[5] + '\n' + '<a href="' + u[4] + '">Читать далее...</a>'
 
-            telo = u[5] + '\n' + '<a href="' + URL_for_Inline + '">Читать далее...</a>'
+        # bot.delete_message(message.chat.id, message_keyb_IV.message_id)
 
-            # bot.delete_message(message.chat.id, message_keyb_IV.message_id)
+        await bot.send_message(channel,'<b>' + u[2] + '</b>' + '\n\n' + telo, parse_mode='html', link_preview=False)
 
-            await bot.send_message(message.chat.id, telo, parse_mode='html', link_preview=True)
+        u = await user_info.find_user(conn, message.chat.id, '', 1)
+        await user_info.update_user(conn, u[0], u[1], u[2], 10, vkanal, '', u[6], u[7], u[8], U[9], '')
+        await user_info.close_connection(conn)
 
-
-            u = await user_info.find_user(conn, message.chat.id, '', 1)
-            await user_info.update_user(conn, u[0], u[1], u[2], 10, vkanal, '', u[6], u[7], u[8], U[9], '')
-            await user_info.close_connection(conn)
-
-    if callbtn == b"sel_c": #  выбрать канал
+    if callbtn == b"sel_c":  # выбрать канал
 
         # await call.message.delete()
         await bot.delete_messages(channel, id_message)
@@ -219,8 +215,8 @@ async def photo_ex(event):
                 KeyboardButtonRow(buttons=[KeyboardButtonCallback(text=chaname[5], data=b"c6"), ]),
 
             ]
-                                       )
-        await bot.send_message(channel, 'канал?', buttons=hlp_v)     # 444444
+        )
+        await bot.send_message(channel, 'канал?', buttons=hlp_v)  # 444444
 
     if callbtn == b"c1":  # выбираем 1 канал
         await user_info.sel_chan(channel, id_message, 0, 1)
@@ -240,7 +236,6 @@ async def photo_ex(event):
     if callbtn == b"c6":  # выбираем 1 канал
         await user_info.sel_chan(channel, id_message, 5, 1)
 
-
     # if callbtn == b"add_c": #  добавить канал
     #     await bot.delete_messages(channel, id_message)
     #     conn = await user_info.create_connection()
@@ -248,8 +243,7 @@ async def photo_ex(event):
     #     chaname = await user_info.Name_ch_(etud)
     #     await user_info.close_connection(conn)
 
-
-    if callbtn == b"del_c": #  удалить канал
+    if callbtn == b"del_c":  # удалить канал
         await bot.delete_messages(channel, id_message)
         conn = await user_info.create_connection()
         etud = await user_info.find_user(conn, channel, '', 2)
@@ -286,13 +280,10 @@ async def photo_ex(event):
     if callbtn == b"d6":  # выбираем 1 канал
         await user_info.sel_chan(channel, id_message, 5, 2)
 
-
-    if callbtn == b"otval": #  выйти из меню работы с каналами
+    if callbtn == b"otval":  # выйти из меню работы с каналами
         await bot.delete_messages(channel, id_message)
 
-
     if callbtn == b'wmp_y':
-
         # Водяной знак p=5
         conn = await user_info.create_connection()
         u = await user_info.find_user(conn, channel, '', 1)
@@ -331,10 +322,10 @@ async def photo_ex(event):
         await user_info.close_connection(conn)
 
     if callbtn == b'wmp_n':
-       # решить, что делать
-       r=1
+        # решить, что делать
+        r = 1
 
-    if callbtn == b'wv_y':   # Видео
+    if callbtn == b'wv_y':  # Видео
         conn = await user_info.create_connection()
         u = await user_info.find_user(conn, channel, '', 1)
         user_info.update_user(conn, u[0], u[1], u[2], 7, u[4], u[5], u[6], 2, u[8], u[9], '')
@@ -354,7 +345,8 @@ async def photo_ex(event):
         # Конечно, вы можете исправить положение текста вручную. Помните, что вы можете использовать строки,
         # как 'top', 'left', чтобы указать позицию
 
-        txt_mov = txt_col.set_pos(lambda t: (max(w / 50, int(w - w * (t + 2) / clip_duration)), max(5 * h / 6, int(h * t / clip_duration))))
+        txt_mov = txt_col.set_pos(
+            lambda t: (max(w / 50, int(w - w * (t + 2) / clip_duration)), max(5 * h / 6, int(h * t / clip_duration))))
         # Записать файл на диск
         final = CompositeVideoClip([my_clip, txt_mov])
         final.duration = my_clip.duration
@@ -378,14 +370,12 @@ async def photo_ex(event):
         await user_info.close_connection(conn)
 
     if callbtn == b'wv_n':
-
-
         r = 1
+
 
 # видео делаем
 @bot.on(events.NewMessage(func=lambda e: e.is_private and getattr(e, 'video')))
 async def video_detect(event):
-
     sender = await event.get_sender()
     channel = sender.id
 
@@ -400,9 +390,10 @@ async def video_detect(event):
     await user_info.close_connection(conn)
 
     await bot.send_message(channel, 'Бегущая строка нужна и видео Вам принадлежит?', buttons=[
-                KeyboardButtonCallback(text="Да", data=b"wv_y"),
-                KeyboardButtonCallback(text="Нет", data=b"wv_n"),
-            ])
+        KeyboardButtonCallback(text="Да", data=b"wv_y"),
+        KeyboardButtonCallback(text="Нет", data=b"wv_n"),
+    ])
+
 
 # events.NewMessage(forwards='false')
 @bot.on(events.NewMessage(func=lambda e: e.is_private and getattr(e, 'text')))
@@ -457,7 +448,8 @@ async def text_detect(event):
                 photo_path = f'{u[10]}.jpeg'
                 photo.save(photo_path, 'JPEG')
                 with open(photo_path, 'rb') as fi:
-                    info = await bot.send_file(u[0], fi, caption='<b>' + u[2] + '</b>' + '\n\n' + u[5], parse_mode='html')
+                    info = await bot.send_file(u[0], fi, caption='<b>' + u[2] + '</b>' + '\n\n' + u[5],
+                                               parse_mode='html')
 
 
             elif u[7] == 2:  # mm == 2  video .file_id   # 123
@@ -467,7 +459,8 @@ async def text_detect(event):
             await user_info.update_user(conn, u[0], u[1], u[2], 11, telo, u[5], u[6], u[7], u[8], u[9], u[10])
 
         else:
-            await bot.send_message(message.chat.id, 'Нет медиафайла!', parse_mode='html', disable_web_page_preview=True, reply_markup=markup)
+            await bot.send_message(message.chat.id, 'Нет медиафайла!', parse_mode='html', disable_web_page_preview=True,
+                                   reply_markup=markup)
 
         await user_info.close_connection(conn)
 
@@ -494,9 +487,9 @@ async def text_detect(event):
                 KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Выбрать канал", data=b"sel_c"), ]),
                 KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Удалить канал", data=b"del_c"), ]),
                 KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Выйти из меню", data=b"otval"), ]),
-                 ]
-                                          )
-                # KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Добавить канал", data=b"add_c"), ]),
+            ]
+        )
+        # KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Добавить канал", data=b"add_c"), ]),
 
         await bot.send_message(channel, 'Выберите необходимое действие', buttons=hlp_but)
 
@@ -515,10 +508,9 @@ async def text_detect(event):
         u = await user_info.find_user(conn, channel, '', 1)
 
         if u[3] == 5 or u[3] == 6 or u[3] == 100:
-            await bot.send_message(channel, 'Пустые сообщения не отправляются в канал', parse_mode='html', link_preview=False)
+            await bot.send_message(channel, 'Пустые сообщения не отправляются в канал', parse_mode='html',
+                                   link_preview=False)
         else:
-
-
 
             # bot.send_message(message.chat.id, skanal, parse_mode='html', disable_web_page_preview=True)
             # bot.send_message(message.chat.id, chat_id, parse_mode='html', disable_web_page_preview=True)
@@ -526,7 +518,7 @@ async def text_detect(event):
             # if message.from_user.id in [adm_obj.user.id for adm_obj in bot.get_chat_administrators(chat_id)]:  # Важно, можно ли отправлять в канал
             # permissions = await bot.ChatMethods.get_permissions(u[1], id_user)
             # if permissions.is_admin:
-                # do something
+            # do something
 
             if u[0] > 0:
                 if u[3] == 9 or u[3] == 10:
@@ -535,7 +527,8 @@ async def text_detect(event):
                     # bot.send_message(chat_id, u[4], parse_mode='html', disable_web_page_preview=True)
                 elif u[3] == 11:  # Картинка или видео с каментом
                     if u[7] == 2:
-                        await bot.send_video(u[1] * (-1), file_info_video.file_id, caption=u[5], parse_mode='html')  # 123
+                        await bot.send_video(u[1] * (-1), file_info_video.file_id, caption=u[5],
+                                             parse_mode='html')  # 123
                     else:
                         await bot.send_file(u[1], u[10], caption=u[5], parse_mode='html')
                 elif u[3] == 22:
@@ -547,7 +540,8 @@ async def text_detect(event):
 
 
             else:
-                await bot.send_message(u[0], 'Вы не являетесь Администратором канала', parse_mode='html', link_preview=False)
+                await bot.send_message(u[0], 'Вы не являетесь Администратором канала', parse_mode='html',
+                                       link_preview=False)
 
         await user_info.close_connection(conn)
 
@@ -555,126 +549,130 @@ async def text_detect(event):
     # elif message.entities:  # Работа со ссылками pkanal = 6  6666666
     elif text_e.find('://') > 0:
 
-            if text_e.find(' ') == -1:
+        if text_e.find(' ') == -1:
 
-                if 'youtube.com' in text_e or 'youtu.be' in text_e or 'ok.ru' in text_e:  # Загружаем с Ютуб
+            if 'youtube.com' in text_e or 'youtu.be' in text_e or 'ok.ru' in text_e:  # Загружаем с Ютуб
 
-                    link_of_the_video = text_e
-                    # await message.delete()
+                link_of_the_video = text_e
+                # await message.delete()
 
-                    f = tempfile.NamedTemporaryFile(delete=False)
-                    video_path_out = f'{f.name}.mkv'  # .mkv
-                    video_path = f.name
-                    video_path_out_mp4 = f'{f.name}.mp4'
+                f = tempfile.NamedTemporaryFile(delete=False)
+                video_path_out = f'{f.name}.mkv'  # .mkv
+                video_path = f.name
+                video_path_out_mp4 = f'{f.name}.mp4'
 
-                    ydl_opts = {'outtmpl': video_path,
-                                'merge_output_format': 'mkv',
-                                'noplaylist': 'true',
-                                'ignoreerrors': 'true',
-                                'quiet': True,
-                                'max_filesize': 120000000,
-                                'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
-                                'filename': video_path_out}
+                ydl_opts = {'outtmpl': video_path,
+                            'merge_output_format': 'mkv',
+                            'noplaylist': 'true',
+                            'ignoreerrors': 'true',
+                            'quiet': True,
+                            'max_filesize': 120000000,
+                            'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
+                            'filename': video_path_out}
 
-                    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-                        video_path = ydl.download([link_of_the_video])
+                with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                    video_path = ydl.download([link_of_the_video])
 
-                    # message.reply('Закончили Ютуб ', parse_mode='html',disable_web_page_preview=True)
+                # message.reply('Закончили Ютуб ', parse_mode='html',disable_web_page_preview=True)
 
-                    # info_video = bot.send_video(message.chat.id, video_path)
+                # info_video = bot.send_video(message.chat.id, video_path)
 
-                    if not os.path.exists(video_path_out) == 0:  # файл есть   if os.path.exists('/tmp/f.mp4'):
+                if not os.path.exists(video_path_out) == 0:  # файл есть   if os.path.exists('/tmp/f.mp4'):
 
-                        video = VideoFileClip(video_path_out)  # mkv --> mp4
-                        result = CompositeVideoClip([video])
-                        result.write_videofile(video_path_out_mp4, fps=24, codec='mpeg4')
+                    video = VideoFileClip(video_path_out)  # mkv --> mp4
+                    result = CompositeVideoClip([video])
+                    result.write_videofile(video_path_out_mp4, fps=24, codec='mpeg4')
 
+                    with open(video_path_out_mp4, 'rb') as fi:
+                        # info_video = bot.send_video(message.chat.id, fi)
+                        # info_video = await message.answer_video(video=fi)
 
-                        with open(video_path_out_mp4, 'rb') as fi:
-                           # info_video = bot.send_video(message.chat.id, fi)
-                           # info_video = await message.answer_video(video=fi)
+                        info_video = await bot.send_file(channel, fi)
 
-                           info_video = await bot.send_file(channel, fi)
+                    # info_video = bot.send_video(message.chat.id, video_path_out_mp4)
 
-                        # info_video = bot.send_video(message.chat.id, video_path_out_mp4)
-
-                        os.remove(f.name)
-                        os.remove(video_path_out)
-                        os.remove(video_path_out_mp4)
-
-                        conn = await user_info.create_connection()
-                        u = await user_info.find_user(conn, channel, '', 1)
-                        await user_info.update_user(conn, u[0], u[1], u[2], 6, u[4], u[5], u[6], 2, u[8], u[9], '')
-                        await user_info.close_connection(conn)
-
-                        # file_info_video = bot.get_file(info_video.video.file_id)
-
-                    else:  # файла нет
-                        # bot.delete_message(message.chat.id, gif.message_id)
-                        message.reply('Слишком большой файл для загрузки,' + "<a href='https://t.me/joinchat/EHLktEzzYJXpERD7UgaHFQ'> пишите мне в чат </a>" + 'какие варианты интересны', parse_mode='html', disable_web_page_preview=True)
-                        # предложить  сделать ссылку  на ролик
-
-                        conn = await user_info.create_connection()
-                        u = await user_info.find_user(conn, message.chat.id, '', 1)
-                        await user_info.update_user(conn, u[0], u[1], u[2], 100, '', '', u[6], 0, u[8], u[9], '')
-                        await user_info.close_connection(conn)
-
-
-                else:  # Читать далее
+                    os.remove(f.name)
+                    os.remove(video_path_out)
+                    os.remove(video_path_out_mp4)
 
                     conn = await user_info.create_connection()
                     u = await user_info.find_user(conn, channel, '', 1)
-                    if u[3] == 10:
-                        # telo = vkanal
-                        await user_info.update_user(conn, u[0], u[1], u[2], u[3], u[4], u[4], u[6], 0, u[8], U[9], '')
-                        await user_info.close_connection(conn)
+                    await user_info.update_user(conn, u[0], u[1], u[2], 6, u[4], u[5], u[6], 2, u[8], u[9], '')
+                    await user_info.close_connection(conn)
 
-                        # режим instant view 111111
+                    # file_info_video = bot.get_file(info_video.video.file_id)
 
-                    chat_id = channel
-                    message_id_Telo = message.message.id
-
-                    await bot.send_message(channel, 'Нужен режим instant view?', buttons=[
-                        KeyboardButtonCallback(text="Да", data=b"iv_yes"),
-                        KeyboardButtonCallback(text="Нет", data=b"iv_no"),
-                    ])
+                else:  # файла нет
+                    # bot.delete_message(message.chat.id, gif.message_id)
+                    message.reply(
+                        'Слишком большой файл для загрузки,' + "<a href='https://t.me/joinchat/EHLktEzzYJXpERD7UgaHFQ'> пишите мне в чат </a>" + 'какие варианты интересны',
+                        parse_mode='html', disable_web_page_preview=True)
+                    # предложить  сделать ссылку  на ролик
 
                     conn = await user_info.create_connection()
-                    u = await user_info.find_user(conn, channel, '', 1)
-                    await user_info.update_user(conn, u[0], u[1], u[2], u[3], text_e, u[5], u[6], u[7], u[8], U[9], u[10])
+                    u = await user_info.find_user(conn, message.chat.id, '', 1)
+                    await user_info.update_user(conn, u[0], u[1], u[2], 100, '', '', u[6], 0, u[8], u[9], '')
                     await user_info.close_connection(conn)
 
 
-
-            else:      #  В сообщении присутствует ссылка, но это сообщение в канал
-
-                telo = text_e + '\n'  # Просто текст
-
-                #  Обрабатываем выделение жирным, нет проверки на ошибку
-                #  надо переписать это на str.find(), вместо index()
-                #  и разобраться с парностью
-                if round(telo.count('ьь') / 2) - telo.count('ьь') / 2 == 0.5 or telo.count('ьь') == 1:
-                    bot.send_message(message.chat.id, 'Вы неправильно оформили выделение жирным шрифтом',
-                                     parse_mode='html', disable_web_page_preview=True)
-                else:
-                    while (True):
-                        try:
-                            index = telo.index('ьь')
-                            telo = telo[:index] + '<b>' + telo[index + 2:]
-
-                            index = telo.index('ьь', index)
-                            telo = telo[:index] + '</b>' + telo[index + 2:]
-                        except ValueError:
-                            break
+            else:  # Читать далее
 
                 conn = await user_info.create_connection()
-                u = await user_info.find_user(conn, message.chat.id, '', 1)
-                await user_info.update_user(conn, u[0], u[1], u[2], 9, u[4], telo, u[6], u[7], u[8], u[9], '')
+                u = await user_info.find_user(conn, channel, '', 1)
+                if u[3] == 10:
+                    # telo = vkanal
+                    await user_info.update_user(conn, u[0], u[1], u[2], u[3], u[4], u[4], u[6], 0, u[8], u[9], '')
+                    await user_info.close_connection(conn)
+                else:
+                    await user_info.update_user(conn, u[0], u[1], u[2], u[3], text_e, u[5], u[6], 0, u[8], u[9], '')
+                    await user_info.close_connection(conn)
+
+
+                    # режим instant view 111111  555555
+
+                chat_id = channel
+                # message_id_Telo = message.message.id
+
+                await bot.send_message(channel, 'Нужен режим instant view?', buttons=[
+                    KeyboardButtonCallback(text="Да", data=b"iv_yes"),
+                    KeyboardButtonCallback(text="Нет", data=b"iv_no"),
+                ])
+
+                conn = await user_info.create_connection()
+                u = await user_info.find_user(conn, channel, '', 1)
+                await user_info.update_user(conn, u[0], u[1], u[2], u[3], text_e, u[5], u[6], u[7], u[8], U[9], u[10])
                 await user_info.close_connection(conn)
+
+
+
+        else:  # В сообщении присутствует ссылка, но это сообщение в канал
+
+            telo = text_e + '\n'  # Просто текст
+
+            #  Обрабатываем выделение жирным, нет проверки на ошибку
+            #  надо переписать это на str.find(), вместо index()
+            #  и разобраться с парностью
+            if round(telo.count('ьь') / 2) - telo.count('ьь') / 2 == 0.5 or telo.count('ьь') == 1:
+                bot.send_message(message.chat.id, 'Вы неправильно оформили выделение жирным шрифтом',
+                                 parse_mode='html', disable_web_page_preview=True)
+            else:
+                while (True):
+                    try:
+                        index = telo.index('ьь')
+                        telo = telo[:index] + '<b>' + telo[index + 2:]
+
+                        index = telo.index('ьь', index)
+                        telo = telo[:index] + '</b>' + telo[index + 2:]
+                    except ValueError:
+                        break
+
+            conn = await user_info.create_connection()
+            u = await user_info.find_user(conn, message.chat.id, '', 1)
+            await user_info.update_user(conn, u[0], u[1], u[2], 9, u[4], telo, u[6], u[7], u[8], u[9], '')
+            await user_info.close_connection(conn)
 
     else:  # Просто текст
         await user_info.just_text(event)
-
 
 
 if __name__ == '__main__':
