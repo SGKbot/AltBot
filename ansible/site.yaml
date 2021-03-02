@@ -17,6 +17,16 @@
          - wheel
          - docker
 
+    - name: ensure dirs
+      file:
+        path: /var/lib/altbot
+        state: directory
+
+    - name: ensure env config
+      copy:
+        src: altbot.env
+        dest: /etc/default/altbot
+
     - name: setup service file
       template:
         src: altbot.service
