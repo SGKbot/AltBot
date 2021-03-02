@@ -1,4 +1,4 @@
-#  token = '1219481769:AAFrlaSczx4xa0OtsBGp51dESfNmoJrH6zg'  # Токен бота sgk_work_bot
+# token = '1219481769:AAFrlaSczx4xa0OtsBGp51dESfNmoJrH6zg'  # Токен бота sgk_work_bot
 token = '930977876:AAFpDgzP81IKXIULREWXIeWbxTxHGydHg6s'  # Токен бота sgk_espace_bot
 
 
