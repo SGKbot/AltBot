@@ -457,3 +457,101 @@ photo_path = f'{u[10]}.jpeg'
 photo.save(photo_path, 'JPEG')
         with open(photo_path, 'rb') as fi:
             info = await bot.send_file(u[0], fi)
+
+while (True):
+    try:
+        if event.data.startswith(b"am") or event.data.startswith(b"pm"):
+            await update_info(conn, u[0], u[1], u[2], hr, u[4], u[5], u[6], u[7], u[8], u[9], u[10], u[11], u[12])
+        elif event.data.startswith(b"m"):
+            await update_info(conn, u[0], u[1], u[2], u[3], mnt, u[5], u[6], u[7], u[8], u[9], u[10], u[11], u[12])
+    except NameError:
+        break
+    except Exception:
+        if event.data.startswith(b"am") or event.data.startswith(b"pm"):
+            await add_mess_string(messagechat_id, senderid, mess_id, hr, 0, 0, 0, 0, 0, 0, 0, 0, '')
+    break
+
+async def update_info(conn, n0, n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12):  # Обновляем данные
+    user = (n0, n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12)
+    del_user = (n0, n1, n2)
+    await conn[0].execute('DELETE FROM projects WHERE bot_chat_id = ? and channel_chat_id = ?  and unic_mess_id = ?', del_user)
+    await conn[1].commit()
+    await conn[0].execute('INSERT INTO projects VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', user)
+    await conn[1].commit()   # Сохраняем изменения
+
+
+#  НЕ ОТПРАВЛЯЕТ ПОСЛЕ КОМБ ПОЧЕМУ ТО
+#  видео с каментом    pkanal = 11 mm=2
+#  Водяной знак        pkanal = 5     u[3]
+#  Работа со ссылками  pkanal = 6
+#  Картинка с каментом pkanal = 11 mm=1
+#  instant view        pkanal = 22
+#  просто сообщение    pkanal = 9
+# bot.delete_message(message.chat.id, message.message_id)
+#  await bot.delete_messages(channel, id_message)
+
+conn = await user_info.create_connection()
+u = await user_info.find_user(conn, channel, '', 1)
+
+if u[3] == 5 or u[3] == 6 or u[3] == 100:
+    await bot.send_message(channel, 'Пустые сообщения не отправляются в канал', parse_mode='html',
+                           link_preview=False)
+
+else:  # Выбираем стиль отправки
+
+    snd_but = types.ReplyInlineMarkup(
+        rows=[
+            KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Schedule", data=b"snd_s")]),
+            KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Schedule & Delete", data=b"snd_sd"), ]),
+            KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Immediately", data=b"snd_i"), ]),
+            KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Immediately & Delete", data=b"snd_id"), ]),
+        ]
+    )
+
+    await bot.send_message(channel, 'Выберите необходимое действие', buttons=snd_but)
+
+    calendar, step = DetailedTelegramCalendar(telethon=True, min_date=date.today()).build()
+    await event.respond(f"Select {LSTEP[step]}", buttons=calendar)
+
+    # await bot.send_message(channel, ' Введите время', buttons=sl_tm.tempAM_but)
+
+    conn = await user_info.create_connection()
+    u = await user_info.find_user(conn, sender.id, '', 1)
+    # await user_info.close_connection(conn)
+
+    if u[0] > 0:
+        if u[3] == 9 or u[3] == 10:  # u[4] u[5]
+            msg = await bot.send_message(u[1] * (-1), u[5], parse_mode='html', link_preview=False)
+            await sl_tm.un_mes(event, u[1], msg.id)
+            #  await bot.delete_messages(u[1] * (-1), msg.id)
+        elif u[3] == 11:  # Картинка или видео с каментом
+            if u[7] == 2:
+                await bot.send_video(u[1] * (-1), file_info_video.file_id, caption=u[5], parse_mode='html')  # 123
+            else:
+                await bot.send_file(u[1], u[10], caption=u[5], parse_mode='html')
+        elif u[3] == 22:
+            await bot.send_message(u[1], u[4], parse_mode='html', disable_web_page_preview=False)
+        else:
+            await bot.send_message(u[1] * (-1), u[4], parse_mode='html', link_preview=False)
+        await user_info.update_user(conn, u[0], u[1], u[2], 100, '', '', u[6], 0, u[8], u[9], '')
+    else:
+        await bot.send_message(u[0], 'Вы не являетесь Администратором канала', parse_mode='html',
+                               link_preview=False)
+
+await user_info.close_connection(conn)
+
+# 0 id бота          используется в имени мм файла
+# 1 id канала
+# 2 id  сообщения    используется в имени мм файла
+# 3 минуты отправки
+# 4 часы отправки
+# 5 дата отправки
+# 6 месяц отправки
+# 7 год отправки
+# 8 минуты удаления
+# 9 часы удаления
+# 10 дата удаления
+# 11 месяц удаления
+# 12 год удаления
+# 13 текст сообщения c хештегом
+# 14 кнопки url

@@ -7,3 +7,6 @@ ffmpeg==1.4
 telethon==1.20
 aiosqlite==0.17.0
 pyTelegramBotAPI==3.7.6
+python-telegram-bot-calendar==1.0.5
+apscheduler==3.7.0
+tzlocal==2.1

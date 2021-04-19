@@ -1,5 +1,11 @@
-
+from telethon.tl.custom import Button
 from telethon import TelegramClient
+from telethon.tl import types
+from telethon.tl.types import (
+    KeyboardButtonRow,
+    KeyboardButtonCallback,
+)
+
 
 import cfg
 # import user_info
@@ -9,7 +15,6 @@ def bot_bot():
     # bt = Bot(token=cfg.token)
     # dp = Dispatcher(bot)
     # bt = TelegramClient('BlAs12020', 1544232, '588b56542f3bde27c7d75eb8ba704cdc').start(bot_token=cfg.token)
-
     return bt
 
 client = TelegramClient('BlAs12020', 1544232, '588b56542f3bde27c7d75eb8ba704cdc')
@@ -90,3 +95,80 @@ HSK = '\n \n' \
     '\n' \
     'Все вопросы и предложения по работе бота только в чате моего канала.' \
     '<a href="https://t.me/joinchat/UxMjcxD8b7UY00vf"> Подписаться на канал</a>'
+
+
+markup1 = types.ReplyInlineMarkup(
+    rows=[
+        KeyboardButtonRow(
+            buttons=[
+                KeyboardButtonCallback(text="Tk", data="tk"),
+                KeyboardButtonCallback(text="Gs", data=b"/gs"),
+                KeyboardButtonCallback(text="Bal", data=b"/bal"),
+            ]
+        ),
+        KeyboardButtonRow(
+            buttons=[
+                KeyboardButtonCallback(text="Task", data=b"/task"),
+                KeyboardButtonCallback(text="Games", data=b"/games"),
+                KeyboardButtonCallback(text="Balance", data=b"/balance"),
+            ]
+        )
+    ]
+)
+
+Main_menu_btn_old = [
+        [
+            Button.text('News'),
+            Button.text('Think'),
+            Button.text('ADS'),
+            Button.text('Hands'),
+            Button.text('Help')
+        ],
+        [
+            Button.text('Humor', resize=True, single_use=True),
+            Button.text('Stolen'),
+            Button.text('Sight'),
+            Button.text('Comb'),
+            Button.text('Send')
+        ]
+    ]
+
+
+
+Main_menu_btn =  [
+            Button.text('Help', resize=True, single_use=True),
+            Button.text('hashtag'),
+            Button.text('Tools'),
+            Button.text('Send')
+                 ]
+
+
+
+hlp_but = types.ReplyInlineMarkup(
+            rows=[
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Выбрать канал", data=b"wrkchsel_c"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Удалить канал", data=b"wrkchdel_c"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Выйти из меню", data=b"wrkchotval"), ]),
+            ]
+        )
+
+
+hsht_but = types.ReplyInlineMarkup(
+            rows=[
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="News", data=b"hsht_n"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Hands", data=b"hsht_h"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Think", data=b"hsht_t"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Stolen", data=b"hsht_s"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="ADS", data=b"hsht_a"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Humor", data=b"hsht_hum"), ]),
+
+            ]
+        )
+
+tools_but = types.ReplyInlineMarkup(
+            rows=[
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Actions with channels", data=b"tools_ch"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Add buttons", data=b"tools_but"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Comb", data=b"tools_cmb"), ]),
+            ]
+        )

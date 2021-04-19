@@ -1,9 +1,9 @@
 import telebot
 from telebot import types
-from app import bl_as_modul
+# from app import bl_as_modul
 
-bot = bl_as_modul.bot_telebot()
-#  bot = telebot.TeleBot("token")
+# bot = bl_as_modul.bot_telebot()
+bot = telebot.TeleBot("1219481769:AAFrlaSczx4xa0OtsBGp51dESfNmoJrH6zg")
 
 data = [
     ("яблоки", 100, 10),  # Название, цена за кг, остаток
