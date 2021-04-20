@@ -58,7 +58,6 @@ async def find_user(cursor, n0, n2, n9):  # поиск юзера
     return user_string
 
 
-
 async def update_user(conn, n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13):  # Обновляем данные
     # cursor = conn.cursor()
     user = (n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13)
@@ -370,7 +369,7 @@ async def combo_f(event):
 
     else:
         await bot.send_message(channel, 'Нет медиафайла!', parse_mode='html',
-                               link_preview=False)  # reply_markup=markup
+                               link_preview=False)
 
     # await close_connection(conn)
 

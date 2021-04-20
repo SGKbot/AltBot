@@ -47,7 +47,7 @@ HS = "Здравствуйте." \
      "\n" \
      "<a href='https://t.me/joinchat/UxMjcxD8b7UY00vf'>Подписаться на мой канал</a>"     \
      "\n" \
-     "v2.0" \
+     "v3.0" \
 
 
 HSK = '\n \n' \
@@ -170,5 +170,7 @@ tools_but = types.ReplyInlineMarkup(
                 KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Actions with channels", data=b"tools_ch"), ]),
                 KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Add buttons", data=b"tools_but"), ]),
                 KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Comb", data=b"tools_cmb"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Info schedule", data=b"tools_inf"), ]),
             ]
         )
+

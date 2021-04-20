@@ -39,7 +39,6 @@ from moviepy.editor import *
 import sched_send_delete
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 scheduler = AsyncIOScheduler()
-#  scheduler.add_job(sched_send_delete.exampl_send, "interval", seconds=5)
 scheduler.add_job(sched_send_delete.exampl_send, "cron", minute='0,5,10,15,20,25,30,35,40,45,50,55')
 scheduler.start()
 
@@ -52,6 +51,7 @@ info_video = ''
 async def start_message(message):
     await bot.send_message(message.chat_id, bl_as_modul.HS, parse_mode='html', link_preview=False, buttons=bl_as_modul.Main_menu_btn)
     await bot.send_message(message.chat_id, cfg.Pr, parse_mode='html', link_preview=False)
+
     raise StopPropagation
 
 
@@ -82,11 +82,8 @@ async def sel_send(event):
 @bot.on(events.CallbackQuery(data=b"snd_id"))  # выбор метода отправки сообщения мнговенно и удалить
 async def sel_send(event):
     await user_info.snd_feature_choice(event, 'delimm')  # ставим признак выбора
-
     await event.edit("мнговенно и удалить")
-
     await user_info.run_dt(event)
-
 
 
 @bot.on(events.CallbackQuery(pattern=re.compile(b"time")))
@@ -111,7 +108,6 @@ async def send_text(message):
     new_link = (await bot(ExportChatInviteRequest(message.message.forward.chat_id))).link
     chat_from_forward = message.message.forward.chat.title
     title_from_forward = message.message.forward.chat_id
-
     conn = await user_info.create_connection()
     while (True):
         try:
@@ -124,7 +120,6 @@ async def send_text(message):
                                      new_link, 0, 0, 0, '', '', 0)
             await bot.send_message(message.chat_id, 'Данные о вашем канале успешно добавлены', parse_mode='html',
                                    link_preview=False)
-
     await user_info.close_connection(conn)
 
 
@@ -147,8 +142,7 @@ async def photo_detect(event):  # Водяной знак p=5
     await user_info.close_connection(conn)
     await bot.send_message(channel, 'Водяной знак нужен и картинка Вам принадлежит?', buttons=[
         KeyboardButtonCallback(text="Да", data=b"wmp_y"),
-        KeyboardButtonCallback(text="Нет", data=b"wmp_n"),
-    ])
+        KeyboardButtonCallback(text="Нет", data=b"wmp_n"), ])
 
 @bot.on(events.CallbackQuery(pattern=re.compile(b"iv_")))  # инстан вью
 async def ins_v(event):
@@ -232,10 +226,8 @@ async def photo_ex(event):
                 KeyboardButtonRow(buttons=[KeyboardButtonCallback(text=chaname[2], data=b"wrkchc3"), ]),
                 KeyboardButtonRow(buttons=[KeyboardButtonCallback(text=chaname[3], data=b"wrkchc4"), ]),
                 KeyboardButtonRow(buttons=[KeyboardButtonCallback(text=chaname[4], data=b"wrkchc5"), ]),
-                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text=chaname[5], data=b"wrkchc6"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text=chaname[5], data=b"wrkchc6"), ]), ])
 
-            ]
-        )
         await bot.send_message(channel, 'канал?', buttons=hlp_v)  # 444444
 
     if callbtn == b"wrkchc1":  # выбираем 1 канал
@@ -374,7 +366,6 @@ async def tools_w(event):
     channel = sender.id
     await bot.delete_messages(channel, event.original_update.msg_id)
     if event.data == b'tools_ch':
-
         await bot.send_message(channel, 'Выберите необходимое действие', buttons=bl_as_modul.hlp_but)
     elif event.data == b'tools_but':
         pkanal = 2000  # признак что кнопка
@@ -389,9 +380,27 @@ async def tools_w(event):
                                '\n' + 'ТЕКСТ КНОПКИ Url' +
                                '\n' + 'ТЕКСТ КНОПКИ Url')
 
-
     elif event.data == b'tools_cmb':
         await user_info.combo_f(event)
+
+    elif event.data == b'tools_inf':
+        spisok = await sched_send_delete.all_send_ch(event)
+        sp = await sched_send_delete.all_sd_keyb(spisok)
+        keyb_spisok = types.ReplyInlineMarkup(
+            rows=[
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text=sp[0], data=b"schinf1"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text=sp[1], data=b"schinf2"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text=sp[2], data=b"schinf3"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text=sp[3], data=b"schinf4"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text=sp[4], data=b"schinf5"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text=sp[5], data=b"schinf6"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text=sp[6], data=b"schinf7"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text=sp[7], data=b"schinf8"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text=sp[8], data=b"schinf9"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text=sp[9], data=b"schinf10"), ]),
+            ])
+
+        await bot.send_message(channel, 'Выберите необходимое действие', buttons=keyb_spisok)
 
 
 @bot.on(events.NewMessage(func=lambda e: e.is_private and getattr(e, 'text')))

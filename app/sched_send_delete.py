@@ -106,5 +106,34 @@ async def file_path_sch(pr):
         full_mm_path = mmf[0]
     except Exception:
         full_mm_path = ''
-
     return full_mm_path
+
+
+async def all_send_ch(event):  # ищем все отложенные сообщения и для удаления
+    sender = await event.get_sender()
+    channel = sender.id
+
+    conn = await user_info.create_connection()
+    u = await user_info.find_user(conn, channel, '', 1)
+    await user_info.close_connection(conn)
+
+    conn_d = await sl_tm.create_conn_date()
+    all_bc = (u[0], u[1])
+    await conn_d[0].execute('SELECT * FROM messdate WHERE bot_chat_id = ? and channel_chat_id = ?', all_bc)
+    spisok = await conn_d[0].fetchall()  # возвращается кортеж кортежей
+    await sl_tm.close_connection_d(conn_d)
+
+    return spisok
+
+
+async def all_sd_keyb(spisok):  # создаем клаву для вывода списка отложенных
+
+    k = len(spisok)
+    sp = ['', '', '', '', '', '', '', '', '', '']
+    i = 0
+    while i < k:
+        SS = spisok[i]
+        sp.insert(i, SS[13])
+        i = i + 1
+
+    return sp

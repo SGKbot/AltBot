@@ -345,7 +345,7 @@ async def sl_time(event):
         await event.edit(" 55 минут", buttons=min_but)
         mnt = 55
     elif event.data == b"timeok_tm":
-        await event.edit("ура")
+        await event.edit("Данные внесены")
         await user_info.snd_chl_s(event)
         # break
 
