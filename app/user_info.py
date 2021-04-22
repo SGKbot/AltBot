@@ -17,7 +17,7 @@ import os
 
 
 async def create_connection():
-    os.remove(cfg.user_db)
+    # os.remove(cfg.user_db)
     db = await aiosqlite.connect(cfg.user_db)
     cursor = await db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='projects';")
 
