@@ -133,7 +133,16 @@ async def all_sd_keyb(spisok):  # создаем клаву для вывода 
     i = 0
     while i < k:
         SS = spisok[i]
-        sp.insert(i, SS[13])
+        t = await time_info(SS[3], SS[4], SS[5], SS[6], SS[7])
+        t2 = ''
+        if SS[12] > 0:
+            t2 = await time_info(SS[8], SS[9], SS[10], SS[11], SS[12])
+        sp.insert(i, SS[13][:20] + t + t2)
         i = i + 1
 
     return sp
+
+async def time_info(t1, t2, t3, t4, t5):
+    t = ' ' + str(t2) + ':' + str(t1) + ' ' + str(t3) + '.' + str(t4) + '.' + str(t5-2000)
+    return t
+

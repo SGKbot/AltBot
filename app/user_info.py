@@ -13,9 +13,11 @@ import sl_tm
 from PIL import Image
 bot = bl_as_modul.client
 import shutil
+import os
 
 
 async def create_connection():
+    os.remove(cfg.user_db)
     db = await aiosqlite.connect(cfg.user_db)
     cursor = await db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='projects';")
 

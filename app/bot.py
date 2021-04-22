@@ -400,7 +400,21 @@ async def tools_w(event):
                 KeyboardButtonRow(buttons=[KeyboardButtonCallback(text=sp[9], data=b"schinf10"), ]),
             ])
 
-        await bot.send_message(channel, 'Выберите необходимое действие', buttons=keyb_spisok)
+        if spisok:
+            await bot.send_message(channel, 'Ваши сообщения', buttons=keyb_spisok)
+        else:
+            await bot.send_message(channel, 'У Вас нет отложенных сообщений')
+
+
+@bot.on(events.CallbackQuery(pattern=re.compile(b"schinf")))  # Выбрали отложенное сообщение
+async def schinf_(event):
+    number = event.data[6:]
+    if event.data == b'schinf1':
+        print(number)
+
+
+
+
 
 
 @bot.on(events.NewMessage(func=lambda e: e.is_private and getattr(e, 'text')))
