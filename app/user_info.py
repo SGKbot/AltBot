@@ -155,7 +155,7 @@ async def sel_chan(channel, id_message, s, od):
     await conn[1].commit()
 
     if od == 1:
-        visi = (vis[0], vis[1], vis[2], vis[3], vis[4], vis[5], vis[6], vis[7], 1, vis[9], '', n[11], vis[12])
+        visi = (vis[0], vis[1], vis[2], vis[3], vis[4], vis[5], vis[6], vis[7], 1, vis[9], '', vis[11], vis[12])
         await conn[0].execute('INSERT INTO projects VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', visi)
         await conn[1].commit()
 
