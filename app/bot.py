@@ -427,12 +427,12 @@ async def text_detect(event):
     u = await user_info.find_user(conn, channel, '', 1)
     await user_info.close_connection(conn)
 
-    if text_e == 'hashtag':
+    if text_e == '#️⃣ h-tag':  # hashtag
         await bot.send_message(channel, 'Выберите hashtag', buttons=bl_as_modul.hsht_but)
-    elif text_e == 'Tools':
+    elif text_e == '🛠  Tools':
         m = await bot.send_message(channel, 'Tools', buttons=bl_as_modul.tools_but)
         await bot.delete_messages(channel, m.id - 1)   # 11111111111
-    elif text_e == 'Help':  # Помощь
+    elif text_e == '🚑   Help':  # Помощь
         await bot.send_message(channel, bl_as_modul.HSK, parse_mode='html', link_preview=False)
         try:
             conn = await create_connection()
@@ -442,7 +442,7 @@ async def text_detect(event):
         except Exception:
             await bot.send_message(channel, 'У вас нет рабочего канала, выберете его', parse_mode='html',
                                    link_preview=False)
-    elif text_e == 'Send':  # Отправка в канал
+    elif text_e == '🏹   Send':  # Отправка в канал
         #  НЕ ОТПРАВЛЯЕТ ПОСЛЕ КОМБ ПОЧЕМУ ТО
         #  видео с каментом    pkanal = 11 mm=2
         #  Водяной знак        pkanal = 5     u[3]

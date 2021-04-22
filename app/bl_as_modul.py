@@ -136,10 +136,10 @@ Main_menu_btn_old = [
 
 
 Main_menu_btn =  [
-            Button.text('Help', resize=True, single_use=True),
-            Button.text('hashtag'),
-            Button.text('Tools'),
-            Button.text('Send')
+            Button.text('🚑   Help', resize=True, single_use=True),
+            Button.text('#️⃣ h-tag'),  # hashtag
+            Button.text('🛠  Tools'),
+            Button.text('🏹   Send')
                  ]
 
 
