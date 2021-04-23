@@ -423,17 +423,20 @@ async def text_detect(event):
     name = utils.get_display_name(sender)
     channel = sender.id
     text_e = event.message.text
+
     conn = await user_info.create_connection()
     u = await user_info.find_user(conn, channel, '', 1)
     await user_info.close_connection(conn)
 
     if text_e == '#️⃣ h-tag':  # hashtag
-        await bot.send_message(channel, 'Выберите hashtag', buttons=bl_as_modul.hsht_but)
+        m = await bot.send_message(channel, 'Выберите hashtag', buttons=bl_as_modul.hsht_but)
+        await bot.delete_messages(channel, m.id - 1)
     elif text_e == '🛠  Tools':
         m = await bot.send_message(channel, 'Tools', buttons=bl_as_modul.tools_but)
-        await bot.delete_messages(channel, m.id - 1)   # 11111111111
+        await bot.delete_messages(channel, m.id - 1)
     elif text_e == '🚑   Help':  # Помощь
-        await bot.send_message(channel, bl_as_modul.HSK, parse_mode='html', link_preview=False)
+        m = await bot.send_message(channel, bl_as_modul.HSK, parse_mode='html', link_preview=False)
+        await bot.delete_messages(channel, m.id - 1)
         try:
             conn = await create_connection()
             u = await user_info.find_user(conn, channel, '', 1)  # а если всего один
@@ -457,21 +460,23 @@ async def text_detect(event):
         u = await user_info.find_user(conn, channel, '', 1)
         await user_info.close_connection(conn)
         if u[3] == 5 or u[3] == 6 or u[3] == 100:
-            await bot.send_message(channel, 'Пустые сообщения не отправляются в канал', parse_mode='html',
+            m = await bot.send_message(channel, 'Пустые сообщения не отправляются в канал', parse_mode='html',
                                    link_preview=False)
+            await bot.delete_messages(channel, m.id - 1)
 
         else:  # Выбираем стиль отправки
 
             snd_but = types.ReplyInlineMarkup(
                 rows=[
-                    KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Schedule", data=b"snd_s")]),
-                    KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Schedule & Delete", data=b"snd_sd"), ]),
-                    KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Immediately", data=b"snd_i"), ]),
-                    KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Immediately & Delete", data=b"snd_id"), ]),
+                    KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="📦 Schedule", data=b"snd_s")]),
+                    KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="📦 Schedule & 💣 Delete", data=b"snd_sd"), ]),
+                    KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="⚡️ Immediately", data=b"snd_i"), ]),
+                    KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="⚡️ Immediately & 💣 Delete", data=b"snd_id"), ]),
                 ]
             )
 
-            await bot.send_message(channel, 'Выберите необходимое действие', buttons=snd_but)
+            m = await bot.send_message(channel, 'Выберите необходимое действие', buttons=snd_but)
+            await bot.delete_messages(channel, m.id - 1)
 
 
     elif text_e.find('://') > 0: # Работа со ссылками pkanal = 6  6666666

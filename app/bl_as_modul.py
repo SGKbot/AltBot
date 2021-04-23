@@ -155,22 +155,22 @@ hlp_but = types.ReplyInlineMarkup(
 
 hsht_but = types.ReplyInlineMarkup(
             rows=[
-                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="News", data=b"hsht_n"), ]),
-                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Hands", data=b"hsht_h"), ]),
-                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Think", data=b"hsht_t"), ]),
-                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Stolen", data=b"hsht_s"), ]),
-                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="ADS", data=b"hsht_a"), ]),
-                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Humor", data=b"hsht_hum"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="🗞  News", data=b"hsht_n"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="🚜  Hands", data=b"hsht_h"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="🤔  Think", data=b"hsht_t"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="🔭  Stolen", data=b"hsht_s"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="📢    ADS", data=b"hsht_a"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="🤹🏻‍️  Humor", data=b"hsht_hum"), ]),
 
             ]
         )
 
 tools_but = types.ReplyInlineMarkup(
             rows=[
-                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Actions with channels", data=b"tools_ch"), ]),
-                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Add buttons", data=b"tools_but"), ]),
-                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Comb", data=b"tools_cmb"), ]),
-                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Info schedule", data=b"tools_inf"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="🔛 Actions with channels", data=b"tools_ch"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="🔲 Add buttons", data=b"tools_but"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="🔀 Comb", data=b"tools_cmb"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="🧾 Info schedule", data=b"tools_inf"), ]),
             ]
         )
 
