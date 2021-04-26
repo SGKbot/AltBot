@@ -42,15 +42,17 @@ scheduler = AsyncIOScheduler()
 scheduler.add_job(sched_send_delete.exampl_send, "cron", minute='0,5,10,15,20,25,30,35,40,45,50,55')
 scheduler.start()
 
-pv = 0
-info = ''
-info_video = ''
+#  pv = 0
+#  info = ''
+#  info_video = ''
 
 
 @bot.on(events.NewMessage(pattern='/start'))
 async def start_message(message):
     await bot.send_message(message.chat_id, bl_as_modul.HS, parse_mode='html', link_preview=False, buttons=bl_as_modul.Main_menu_btn)
-    await bot.send_message(message.chat_id, cfg.Pr, parse_mode='html', link_preview=False)
+    m = await bot.send_message(message.chat_id, cfg.Pr, parse_mode='html', link_preview=False)
+    d = datetime.today()
+
 
     raise StopPropagation
 

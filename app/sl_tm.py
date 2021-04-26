@@ -1,4 +1,5 @@
 import user_info
+import bl_as_modul
 import aiosqlite
 from telethon.tl import types
 from telethon.tl.types import (
@@ -9,6 +10,7 @@ from telethon.tl.types import (
 from datetime import date, datetime, timedelta
 
 mdate_db = './mdate.db'
+bot = bl_as_modul.client
 
 tempAM_but = types.ReplyInlineMarkup(
     rows=[
@@ -226,7 +228,8 @@ min_but = types.ReplyInlineMarkup(
 
 
 async def sl_time(event):
-
+    sender = await event.get_sender()
+    channel = sender.id  # 275965108
     hr = 25
     mnt = 61
 
@@ -346,18 +349,14 @@ async def sl_time(event):
         mnt = 55
     elif event.data == b"timeok_tm":
         await event.edit("Данные внесены")
+        # m = await bot.send_message(channel, 'можно формировать следушее сообщение')
         await user_info.snd_chl_s(event)
         # break
 
-
     if not (hr == 25 and mnt == 61):
-
-        sender = await event.get_sender()
-        channel = sender.id  # 275965108
         conn = await user_info.create_connection()
         t = await user_info.find_user(conn, channel, '', 1)
         await user_info.close_connection(conn)
-
 
         conn_d = await create_conn_date()
         if t[12] == 0:
@@ -368,7 +367,10 @@ async def sl_time(event):
         while (True):
             try:
                 if event.data.startswith(b"timeam") or event.data.startswith(b"timepm"):
-                    if t[4] == 'sch' or t[4].startswith('sch'):  # не забыть schdel изменить на del
+                    bias_hour = datetime.now().hour - datetime.utcnow().hour
+                    hr = hr - bias_hour
+
+                    if t[4] == 'sch' or t[4].startswith('sch'):  #
                         await update_info(conn_d, u[0], u[1], u[2], u[3], hr, u[5], u[6], u[7], u[8], u[9], u[10],
                                           u[11], u[12], u[13], u[14], 0)
                         await close_connection_d(conn_d)
@@ -378,7 +380,7 @@ async def sl_time(event):
                         await close_connection_d(conn_d)
                     break
                 elif event.data.startswith(b"timem"):
-                    if t[4] == 'sch' or t[4].startswith('sch'):  # не забыть schdel изменить на del
+                    if t[4] == 'sch' or t[4].startswith('sch'):  #
                         await update_info(conn_d, u[0], u[1], u[2], mnt, u[4], u[5], u[6], u[7], u[8], u[9], u[10],
                                           u[11], u[12], u[13], u[14], 0)
                         await close_connection_d(conn_d)
@@ -393,6 +395,8 @@ async def sl_time(event):
                    # await add_mess_string(event.chat_id, event.chat_id, event.chat_id, hr, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '')
                     break
             break
+
+
 
 sql_create_mess_table = """ CREATE TABLE IF NOT EXISTS messdate (
                                         bot_chat_id integer,       
@@ -411,6 +415,8 @@ sql_create_mess_table = """ CREATE TABLE IF NOT EXISTS messdate (
                                         telo text,                 
                                         but_text                   
                                     ); """
+
+
 
 
 async def create_conn_date():
@@ -492,4 +498,7 @@ async def un_mes(event, rec, msg_id):  # вводим уникальный id с
                       u[13], u[14], u[2])
 
 
+
+async def local_time_utc(event):
+    utc_hour = datetime.utcnow().hour
 

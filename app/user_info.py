@@ -273,7 +273,6 @@ async def run_dt(event):  # запуск выбора времени даты
 
 async def snd_chl_s(event):  # Ok дата время
 
-
     sender = await event.get_sender()
     channel = sender.id
 
@@ -290,8 +289,6 @@ async def snd_chl_s(event):  # Ok дата время
         await update_user(conn, u[0], u[1], u[2], u[3], u[4], u[5], u[6], u[7], u[8], u[9],
                           u[10], u[11], event.original_update.msg_id)
         await close_connection(conn)
-
-
 
     # 0 id бота          используется в имени мм файла
     if len(u[10]) > 0:
