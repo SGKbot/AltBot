@@ -515,7 +515,8 @@ async def text_detect(event):
                 ]
             )
 
-            m = await bot.send_message(channel, 'Выберите необходимое действие', buttons=snd_but)
+            m = await bot.send_message(channel, 'Выберите необходимое действие \n <b>Время отправки по Москве</b>',
+                                       parse_mode='html', buttons=snd_but)
             await bot.delete_messages(channel, m.id - 1)
 
 
