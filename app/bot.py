@@ -410,12 +410,50 @@ async def tools_w(event):
 
 @bot.on(events.CallbackQuery(pattern=re.compile(b"schinf")))  # Выбрали отложенное сообщение
 async def schinf_(event):
-    number = event.data[6:]
-    if event.data == b'schinf1':
-        print(number)
+    sender = await event.get_sender()
+    channel = sender.id
+    number = int(event.data[6:])
+    # костыль
+    conn = await create_connection()
+    u = await user_info.find_user(conn, channel, '', 1)
+    await user_info.update_user(conn, u[0], u[1], u[2], u[3], u[4], u[5], u[6], u[7], u[8], number, u[10], u[11], u[12])
+    await user_info.close_connection(conn)
+    # костыль
 
+    spisok = await sched_send_delete.all_send_ch(event)
+    pr = spisok[number-1]
 
+    await sched_send_delete.snd_schl(pr, 2)
+    await event.edit('Ваше сообщение')
 
+@bot.on(events.CallbackQuery(pattern=re.compile(b"mschinf_")))  # Выбрали отложенное сообщение
+async def mschinf(event):
+    sender = await event.get_sender()
+    channel = sender.id
+    # костыль
+    conn = await create_connection()
+    u = await user_info.find_user(conn, channel, '', 1)
+    await user_info.close_connection(conn)
+    # костыль
+    spisok = await sched_send_delete.all_send_ch(event)
+    pr = spisok[u[9]-1]
+
+    if event.data == b'mschinf_ret':
+        await event.edit("Ну нет, так нет")
+        await bot.delete_messages(channel, event.message_id - 1)
+
+    if event.data == b'mschinf_del':
+        await event.edit('Удалено безвозвратно')
+        await bot.delete_messages(channel, event.message_id - 1)
+        del_user = (pr[0], pr[1], pr[2])
+        conn_d = await sl_tm.create_conn_date()
+        await conn_d[0].execute('DELETE FROM messdate WHERE '
+                                'bot_chat_id = ? and channel_chat_id = ?  and unic_mess_id = ?', del_user)
+        await conn_d[1].commit()
+        await sl_tm.close_connection_d(conn_d)
+
+    if event.data == b'mschinf_ed':
+        await event.edit('under construction')
 
 
 

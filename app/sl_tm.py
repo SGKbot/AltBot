@@ -497,8 +497,3 @@ async def un_mes(event, rec, msg_id):  # вводим уникальный id с
     await update_info(conn_d, event.chat_id, rec, msg_id, u[3], u[4], u[5], u[6], u[7], u[8], u[9], u[10], u[11], u[12],
                       u[13], u[14], u[2])
 
-
-
-async def local_time_utc(event):
-    utc_hour = datetime.utcnow().hour
-

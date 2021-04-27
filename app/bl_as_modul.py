@@ -174,3 +174,10 @@ tools_but = types.ReplyInlineMarkup(
             ]
         )
 
+schinf_but = types.ReplyInlineMarkup(
+            rows=[
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text=" Edit", data=b"mschinf_ed"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text=" Delete", data=b"mschinf_del"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text=" Return", data=b"mschinf_ret"), ]),
+            ]
+        )

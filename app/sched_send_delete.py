@@ -25,7 +25,7 @@ async def exampl_send():
         i = 0
         while i < len(u_send):
             pr = u_send[i]
-            msg = await snd_schl(pr)
+            msg = await snd_schl(pr, 1)
             i = i + 1
             del_user = (pr[0], pr[1], pr[2])
             conn_d = await sl_tm.create_conn_date()
@@ -71,7 +71,13 @@ async def find_cron(cursor, min_, hr, day, month, year, sd):  # поиск юз�
 
 
 
-async def snd_schl(pr):  # отправка отложенного
+async def snd_schl(pr, recipient):  # отправка отложенного, recipient 1 в канал, 2 в бот
+
+    if recipient == 1:
+        rcp = pr[1] * (-1)
+    elif recipient == 2:
+        rcp = pr[0]
+
 
     if len(pr[14]) > 0:
         x2, x3, x4, x5, x6, x7 = await user_info.processing_button_data(pr[14])
@@ -82,18 +88,22 @@ async def snd_schl(pr):  # отправка отложенного
 
     if not os.path.exists(full_mm_path):  # нет мм файла
         if not pr[14]:
-            msg = await bot.send_message(pr[1] * (-1), pr[13], parse_mode='html', link_preview=False)
+            msg = await bot.send_message(rcp, pr[13], parse_mode='html', link_preview=False)
         else:
-            msg = await bot.send_message(pr[1] * (-1), pr[13], parse_mode='html', link_preview=False,
+            msg = await bot.send_message(rcp, pr[13], parse_mode='html', link_preview=False,
                                              buttons=[[Button.url(x5, x4.strip()), Button.url(x7, x6.strip())],
                                                       [Button.url(x3, x2.strip())]])
     else:  # Картинка или видео с каментом
         if not pr[14]:
-            msg = await bot.send_file(pr[1], full_mm_path, caption=pr[13], parse_mode='html')
+            msg = await bot.send_file(rcp, full_mm_path, caption=pr[13], parse_mode='html')
         else:
-            msg = await bot.send_file(pr[1], full_mm_path, caption=pr[13], parse_mode='html',
+            msg = await bot.send_file(rcp, full_mm_path, caption=pr[13], parse_mode='html',
                                           buttons=[[Button.url(x5, x4.strip()), Button.url(x7, x6.strip())],
                                                   [Button.url(x3, x2.strip())]])
+
+    if recipient == 2:
+        await bot.send_message(rcp, 'Ваши действия', buttons=bl_as_modul.schinf_but)
+
     return msg
 
 
