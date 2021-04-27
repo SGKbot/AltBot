@@ -1,3 +1,4 @@
+import cfg
 import user_info
 import bl_as_modul
 import aiosqlite
@@ -9,7 +10,7 @@ from telethon.tl.types import (
 
 from datetime import date, datetime, timedelta
 
-mdate_db = './mdate.db'
+mdate_db = cfg.user_db      # './mdate.db'
 bot = bl_as_modul.client
 
 tempAM_but = types.ReplyInlineMarkup(
