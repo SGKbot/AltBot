@@ -1,4 +1,5 @@
 import bl_as_modul
+import shutil
 from telethon import events, Button
 from telethon.events import StopPropagation
 from telethon.tl import types
@@ -173,3 +174,24 @@ async def transf_sch(event):  # перенос из табл отложенны�
         conn = await user_info.create_connection()
         await user_info.update_user(conn, pr[0], pr[1], u[2], pkanal, u[4], pr[13], u[6], u[7], u[8], u[9], mmf, pr[14], pr[2])
         await user_info.close_connection(conn)
+
+
+async def update_corrected(event):
+    sender = await event.get_sender()
+    channel = sender.id
+    conn = await user_info.create_connection()
+    u = await user_info.find_user(conn, channel, '', 1)
+    await user_info.close_connection(conn)
+    if 0 < u[9] < 11:
+        spisok = await all_send_ch(event)
+        pr = spisok[u[9] - 1]
+        mmf = await file_path_sch(pr)
+        if mmf:
+            os.remove(mmf)
+        conn_d = await sl_tm.create_conn_date()
+        await sl_tm.update_info(conn_d, pr[0], pr[1], pr[2], pr[3], pr[4], pr[5], pr[6], pr[7], pr[8], pr[9], pr[10],
+                                pr[11], pr[12], u[5], u[11], 0)
+        await sl_tm.close_connection_d(conn_d)
+        if u[10]:
+            shutil.copyfile(u[10], mmf)  # создать файл
+

@@ -67,7 +67,7 @@ async def sel_send(event):
 
 
 @bot.on(events.CallbackQuery(data=b"snd_sd"))  # выбор метода отправки сообщения отложить и удалить
-async def sel_send(event):
+async def sel_sd(event):
     await user_info.snd_feature_choice(event, 'schdel')  # ставим признак выбора
     await event.edit("отложить и удалить")
 
@@ -75,17 +75,21 @@ async def sel_send(event):
 
 
 @bot.on(events.CallbackQuery(data=b"snd_i"))  # выбор метода отправки сообщения Immediately
-async def sel_send(event):
+async def sel_i(event):
     await user_info.snd_feature_choice(event, 'imm')  # ставим признак выбора
     await user_info.snd_chl_i(event)
     await user_info.snd_clear_info_cnl(event)  # чистим строку информации о канале
 
 
 @bot.on(events.CallbackQuery(data=b"snd_id"))  # выбор метода отправки сообщения мнговенно и удалить
-async def sel_send(event):
+async def sel_id(event):
     await user_info.snd_feature_choice(event, 'delimm')  # ставим признак выбора
     await event.edit("мнговенно и удалить")
     await user_info.run_dt(event)
+
+@bot.on(events.CallbackQuery(data=b"snd_S&D"))  # выбор метода отправки сообщения ubdate обновить отложенное
+async def sel_ubd(event):
+    await sched_send_delete.update_corrected(event)
 
 
 @bot.on(events.CallbackQuery(pattern=re.compile(b"time")))
@@ -513,6 +517,7 @@ async def text_detect(event):
                     KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="📦 Schedule & 💣 Delete", data=b"snd_sd"), ]),
                     KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="⚡️ Immediately", data=b"snd_i"), ]),
                     KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="⚡️ Immediately & 💣 Delete", data=b"snd_id"), ]),
+                    KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="🔁 Update S&D", data=b"snd_S&D"), ]),
                 ]
             )
 

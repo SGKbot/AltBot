@@ -448,10 +448,6 @@ async def find_date(cursor, n0, n1, n2):  # поиск юзера
         # raise StopPropagation
         return user_string
 
-
-
-
-
 async def add_mess_string(n0, n1, n2,  n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14):
     user = (n0, n1, n2,  n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14)
 
