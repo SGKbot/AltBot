@@ -181,3 +181,13 @@ schinf_but = types.ReplyInlineMarkup(
                 KeyboardButtonRow(buttons=[KeyboardButtonCallback(text=" Return", data=b"mschinf_ret"), ]),
             ]
         )
+
+edsch = types.ReplyInlineMarkup(
+            rows=[
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Photo / Video", data=b"edsch1"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Text", data=b"edsch2"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Buttons", data=b"edsch3"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Date Time", data=b"edsch4"), ]),
+                KeyboardButtonRow(buttons=[KeyboardButtonCallback(text="Exit menu", data=b"edsch5"), ]),
+            ]
+        )

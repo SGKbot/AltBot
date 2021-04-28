@@ -431,7 +431,7 @@ async def mschinf(event):
     sender = await event.get_sender()
     channel = sender.id
     # костыль
-    conn = await create_connection()
+    conn = await user_info.create_connection()
     u = await user_info.find_user(conn, channel, '', 1)
     await user_info.close_connection(conn)
     # костыль
@@ -453,8 +453,9 @@ async def mschinf(event):
         await sl_tm.close_connection_d(conn_d)
 
     if event.data == b'mschinf_ed':
-        await event.edit('under construction')
-
+        # await event.edit('under construction Edit', buttons=bl_as_modul.edsch)
+        await event.edit('Введите измененные данные')
+        await sched_send_delete.transf_sch(event)
 
 
 @bot.on(events.NewMessage(func=lambda e: e.is_private and getattr(e, 'text')))

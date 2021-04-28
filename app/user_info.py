@@ -232,29 +232,6 @@ async def snd_chl_i(event):  # Immediately
                                    link_preview=False)
 
 
-
-async def for_cron(event):  # для переноса в крон
-
-    sender = await event.get_sender()
-    channel = sender.id
-    conn = await create_connection()
-    u = await find_user(conn, channel, '', 1)
-    await close_connection(conn)
-
-    conn_d = await sl_tm.create_conn_date()
-    t = await sl_tm.find_date(conn_d, u[0], u[1], u[3])  # id берем для уникальности,
-
-    if u[4] == 'delimm':
-        await sl_tm.add_mess_string(u[0], u[1], u[2], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', msg.id)
-    else:
-        await sl_tm.update_info(conn_d, t[0], t[1], msg.id, t[3], t[4], t[5], t[6], t[7], t[8], t[9], t[10], t[11],
-                                t[12], t[13], t[14], 0)
-
-    await sl_tm.close_connection_d(conn_d)
-
-    # для переноса в крон
-
-
 async def snd_clear_info_cnl(event):  # чистим строку информации о канале
     sender = await event.get_sender()
     channel = sender.id
@@ -262,7 +239,6 @@ async def snd_clear_info_cnl(event):  # чистим строку информа
     u = await find_user(conn, channel, '', 1)
     await update_user(conn, u[0], u[1], u[2], 100, '', '', u[6], 0, u[8], 0, '', '', u[12])
     await close_connection(conn)
-
 
 
 async def run_dt(event):  # запуск выбора времени даты

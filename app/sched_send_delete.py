@@ -156,3 +156,20 @@ async def time_info(t1, t2, t3, t4, t5):
     t = ' ' + str(t2) + ':' + str(t1) + ' ' + str(t3) + '.' + str(t4) + '.' + str(t5-2000)
     return t
 
+async def transf_sch(event):  # перенос из табл отложенных в табл текущих
+    sender = await event.get_sender()
+    channel = sender.id
+    conn = await user_info.create_connection()
+    u = await user_info.find_user(conn, channel, '', 1)
+    await user_info.close_connection(conn)
+    if 0 < u[9] < 11:
+        spisok = await all_send_ch(event)
+        pr = spisok[u[9] - 1]
+        mmf = await file_path_sch(pr)
+        pkanal = 11
+        if not mmf:
+            mmf = ''
+            pkanal = 9
+        conn = await user_info.create_connection()
+        await user_info.update_user(conn, pr[0], pr[1], u[2], pkanal, u[4], pr[13], u[6], u[7], u[8], u[9], mmf, pr[14], pr[2])
+        await user_info.close_connection(conn)
