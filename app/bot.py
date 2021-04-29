@@ -135,11 +135,11 @@ async def photo_detect(event):  # Водяной знак p=5
     name = utils.get_display_name(sender)
     photo = event
     channel = sender.id  # 275965108
-    entity = await bot.get_entity(channel)
+    # entity = await bot.get_entity(channel)
     # await bot.send_message(entity=entity, file=photo, message=name)
     photo_id = photo.message.photo.id
     f = tempfile.NamedTemporaryFile(delete=False)
-    Input_file = photo
+    # Input_file = photo
     f.write(await event.download_media(bytes))
     f.close()
     conn = await user_info.create_connection()
@@ -290,15 +290,15 @@ async def photo_ex(event):
     if callbtn == b"wrkchotval":  # выйти из меню работы с каналами
         await bot.delete_messages(channel, id_message)
 
-@bot.on(events.CallbackQuery(pattern=re.compile(b"wmp_")))  # видео
+@bot.on(events.CallbackQuery(pattern=re.compile(b"wmp_")))  # фото
 async def treatment_video(event):
     sender = await event.get_sender()
     channel = sender.id
+    conn = await user_info.create_connection()
+    u = await user_info.find_user(conn, channel, '', 1)
+    await user_info.close_connection(conn)
     if event.data == b'wmp_y':
         # Водяной знак p=5
-        conn = await user_info.create_connection()
-        u = await user_info.find_user(conn, channel, '', 1)
-        await user_info.close_connection(conn)
         # bot.delete_message(chat_id, message_id_Photo)
         # bot.delete_message(chat_id, message_keyb_WM.message_id)
         photo = Image.open(u[10])
@@ -321,13 +321,28 @@ async def treatment_video(event):
         os.remove(u[10])
         # os.remove(photo_path)
         fip = info.photo.id
+        await bot.delete_messages(channel, fip - 1)
+        # await bot.delete_messages(channel, fip - 2)
         conn = await user_info.create_connection()
         u = await user_info.find_user(conn, u[0], '', 1)
         await user_info.update_user(conn, u[0], u[1], u[2], 5, u[4], u[5], u[6], 1, u[8], fip, photo_path, u[11], u[12])
         await user_info.close_connection(conn)
     if event.data == b'wmp_n':
-        # решить, что делать
-        r = 1
+        photo = Image.open(u[10])
+        photo_path = f'{u[10]}.jpeg'
+        photo.save(photo_path, 'JPEG')
+        os.remove(u[10])
+        with open(photo_path, 'rb') as fi:
+            info = await bot.send_file(u[0], fi)
+        # os.remove(photo_path)
+        fip = info.photo.id
+        await bot.delete_messages(channel, fip-1)
+        # await bot.delete_messages(channel, fip - 2)
+        conn = await user_info.create_connection()
+        u = await user_info.find_user(conn, u[0], '', 1)
+        await user_info.update_user(conn, u[0], u[1], u[2], 5, u[4], u[5], u[6], 1, u[8], fip, photo_path, u[11], u[12])
+        await user_info.close_connection(conn)
+
 
 @bot.on(events.NewMessage(func=lambda e: e.is_private and getattr(e, 'video')))  # видео делаем
 async def video_detect(event):
