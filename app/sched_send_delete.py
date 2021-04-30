@@ -186,12 +186,20 @@ async def update_corrected(event):
         spisok = await all_send_ch(event)
         pr = spisok[u[9] - 1]
         mmf = await file_path_sch(pr)
-        if mmf:
-            os.remove(mmf)
+
+        if not mmf == u[10]:
+            if mmf:
+                os.remove(mmf)
+
+        if len(u[10]) > 0:
+            name_mm_file = str(u[0]) + str(pr[2]) + u[10][(u[10].rindex('.')):]
+            full_mm_path = cfg.mm_file_path + name_mm_file
+            shutil.copyfile(u[10], full_mm_path)
+
         conn_d = await sl_tm.create_conn_date()
         await sl_tm.update_info(conn_d, pr[0], pr[1], pr[2], pr[3], pr[4], pr[5], pr[6], pr[7], pr[8], pr[9], pr[10],
                                 pr[11], pr[12], u[5], u[11], 0)
         await sl_tm.close_connection_d(conn_d)
-        if u[10]:
-            shutil.copyfile(u[10], mmf)  # создать файл
 
+
+        await user_info.snd_clear_info_cnl(event)

@@ -137,15 +137,17 @@ async def photo_detect(event):  # Водяной знак p=5
     channel = sender.id  # 275965108
     # entity = await bot.get_entity(channel)
     # await bot.send_message(entity=entity, file=photo, message=name)
-    photo_id = photo.message.photo.id
+    # photo_id = photo.message.photo.id
     f = tempfile.NamedTemporaryFile(delete=False)
     # Input_file = photo
     f.write(await event.download_media(bytes))
     f.close()
     conn = await user_info.create_connection()
     u = await user_info.find_user(conn, channel, '', 1)
-    await user_info.update_user(conn, u[0], u[1], u[2], 5, u[4], u[5], u[6], 1, u[8], photo_id, f.name, u[11], u[12])
+    await user_info.update_user(conn, u[0], u[1], u[2], 5, u[4], u[5], u[6], 1, u[8], u[9], f.name, u[11],
+                                u[12])
     await user_info.close_connection(conn)
+    # await bot.delete_messages(channel, event.id)
     await bot.send_message(channel, 'Водяной знак нужен и картинка Вам принадлежит?', buttons=[
         KeyboardButtonCallback(text="Да", data=b"wmp_y"),
         KeyboardButtonCallback(text="Нет", data=b"wmp_n"), ])
@@ -199,11 +201,12 @@ async def treatment_video(event):
         with open(video_path, 'rb') as fi:
             info_video = await bot.send_file(u[0], fi, supports_streaming=True, force_document=True)
         os.remove(u[10])
+        await bot.delete_messages(channel, info_video.id - 1)
         # os.remove(video_path)
-        fip = info_video.id
+        # fip = info_video.id
         conn = await user_info.create_connection()
         u = await user_info.find_user(conn, u[0], '', 1)
-        await user_info.update_user(conn, u[0], u[1], u[2], 5, u[4], u[5], u[6], 2, u[8], fip, video_path, u[11], u[12])
+        await user_info.update_user(conn, u[0], u[1], u[2], 5, u[4], u[5], u[6], 2, u[8], u[9], video_path, u[11], u[12])
         await user_info.close_connection(conn)
     if event.data == b'wv_n':
         r = 1
@@ -320,12 +323,12 @@ async def treatment_video(event):
             info = await bot.send_file(u[0], fi)
         os.remove(u[10])
         # os.remove(photo_path)
-        fip = info.photo.id
-        await bot.delete_messages(channel, fip - 1)
-        # await bot.delete_messages(channel, fip - 2)
+        # fip = info.photo.id
+        await bot.delete_messages(channel, info.id - 1)
+        await bot.delete_messages(channel, info.id - 2)
         conn = await user_info.create_connection()
         u = await user_info.find_user(conn, u[0], '', 1)
-        await user_info.update_user(conn, u[0], u[1], u[2], 5, u[4], u[5], u[6], 1, u[8], fip, photo_path, u[11], u[12])
+        await user_info.update_user(conn, u[0], u[1], u[2], 5, u[4], u[5], u[6], 1, u[8], u[9], photo_path, u[11], u[12])
         await user_info.close_connection(conn)
     if event.data == b'wmp_n':
         photo = Image.open(u[10])
@@ -335,12 +338,12 @@ async def treatment_video(event):
         with open(photo_path, 'rb') as fi:
             info = await bot.send_file(u[0], fi)
         # os.remove(photo_path)
-        fip = info.photo.id
-        await bot.delete_messages(channel, fip-1)
-        # await bot.delete_messages(channel, fip - 2)
+        # fip = info.photo.id
+        await bot.delete_messages(channel, info.id-1)
+        # await bot.delete_messages(channel, info.id - 2)
         conn = await user_info.create_connection()
         u = await user_info.find_user(conn, u[0], '', 1)
-        await user_info.update_user(conn, u[0], u[1], u[2], 5, u[4], u[5], u[6], 1, u[8], fip, photo_path, u[11], u[12])
+        await user_info.update_user(conn, u[0], u[1], u[2], 5, u[4], u[5], u[6], 1, u[8], u[9], photo_path, u[11], u[12])
         await user_info.close_connection(conn)
 
 

@@ -237,7 +237,7 @@ async def snd_clear_info_cnl(event):  # чистим строку информа
     channel = sender.id
     conn = await create_connection()
     u = await find_user(conn, channel, '', 1)
-    await update_user(conn, u[0], u[1], u[2], 100, '', '', u[6], 0, u[8], 0, '', '', u[12])
+    await update_user(conn, u[0], u[1], u[2], 100, '', '', u[6], 0, u[8], 0, '', '', 0)  # u[12]
     await close_connection(conn)
 
 
