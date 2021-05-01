@@ -205,12 +205,21 @@ async def treatment_video(event):
         # os.remove(video_path)
         # fip = info_video.id
         conn = await user_info.create_connection()
-        u = await user_info.find_user(conn, u[0], '', 1)
+        u = await user_info.find_user(conn, channel, '', 1)
         await user_info.update_user(conn, u[0], u[1], u[2], 5, u[4], u[5], u[6], 2, u[8], u[9], video_path, u[11], u[12])
         await user_info.close_connection(conn)
     if event.data == b'wv_n':
-        r = 1
+        conn = await user_info.create_connection()
+        u = await user_info.find_user(conn, channel, '', 1)
+        video_path = f'{u[10]}.mp4'
+        os.rename(u[10], video_path)
+        await user_info.update_user(conn, u[0], u[1], u[2], 5, u[4], u[5], u[6], 2, u[8], u[9], video_path, u[11],
+                                    u[12])
+        await user_info.close_connection(conn)
+        with open(video_path, 'rb') as fi:
+            info_video = await bot.send_file(u[0], fi, supports_streaming=True, force_document=True)
 
+        await bot.delete_messages(channel, info_video.id - 1)
 
 @bot.on(events.CallbackQuery(pattern=re.compile(b"wrkch")))
 async def photo_ex(event):
@@ -354,6 +363,7 @@ async def video_detect(event):
     f = tempfile.NamedTemporaryFile(delete=False)
     f.write(await event.download_media(bytes))
     f.close()
+
 
     conn = await user_info.create_connection()
     u = await user_info.find_user(conn, channel, '', 1)
