@@ -204,11 +204,6 @@ async def snd_chl_i(event):  # Immediately
                 #  await bot.delete_messages(u[1] * (-1), msg.id)
             elif u[3] == 11 or u[3]-2000 == 11:  # Картинка или видео с каментом
                 if u[7] == 2:
-                    msg = await bot.send_file(u[1] * (-1), u[10], caption=u[5], parse_mode='html',
-                    buttons=[
-                    [Button.url(x5, x4.strip()), Button.url(x7, x6.strip())],
-                    [Button.url(x3, x2.strip())]])
-                else:
                     if not u[11]:
                         msg = await bot.send_file(u[1], u[10], caption=u[5], parse_mode='html')
                     else:
@@ -327,16 +322,17 @@ async def combo_f(event):
                                                    [Button.url(x5, x4.strip()), Button.url(x7, x6.strip())],
                                                    [Button.url(x3, x2.strip())]
                                                ])
-
-
         elif u[7] == 2:  # mm == 2  video .file_id   # 123
-            with open(u[10], 'rb') as fi:
-                info = await bot.send_file(u[0], fi, caption=u[5], parse_mode='html',
-                    buttons=[
-                    [Button.url(x5, x4.strip()), Button.url(x7, x6.strip())],
-                    [Button.url(x3, x2.strip())]
-                            ])
-
+            if not u[11]:
+                with open(u[10], 'rb') as fi:
+                    info = await bot.send_file(u[0], fi, caption=u[5], parse_mode='html')
+            else:
+                with open(u[10], 'rb') as fi:
+                    info = await bot.send_file(u[0], fi, caption=u[5], parse_mode='html',
+                                               buttons=[
+                                                   [Button.url(x5, x4.strip()), Button.url(x7, x6.strip())],
+                                                   [Button.url(x3, x2.strip())]
+                                               ])
         conn = await create_connection()
         u = await find_user(conn, channel, '', 1)
         await update_user(conn, u[0], u[1], u[2], 11, u[4], u[5], u[6], u[7], u[8], u[9], u[10], u[11], u[12])
@@ -347,7 +343,6 @@ async def combo_f(event):
                                link_preview=False)
 
     # await close_connection(conn)
-
 
 async def processing_button_data(telo):
     count_but = telo.count('\n')
