@@ -194,7 +194,8 @@ async def update_corrected(event):
         if len(u[10]) > 0:
             name_mm_file = str(u[0]) + str(pr[2]) + u[10][(u[10].rindex('.')):]
             full_mm_path = cfg.mm_file_path + name_mm_file
-            shutil.copyfile(u[10], full_mm_path)
+            if not u[10] == full_mm_path:
+                shutil.copyfile(u[10], full_mm_path)
 
         conn_d = await sl_tm.create_conn_date()
         await sl_tm.update_info(conn_d, pr[0], pr[1], pr[2], pr[3], pr[4], pr[5], pr[6], pr[7], pr[8], pr[9], pr[10],
