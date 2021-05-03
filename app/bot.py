@@ -516,7 +516,7 @@ async def text_detect(event):
             await user_info.update_user(conn, u[0], u[1], u[2], 100, '', '', u[6], u[7], u[8], u[9], u[10], u[11], u[12])
             await user_info.close_connection(conn)
         except Exception:
-            await bot.send_message(channel, 'У вас нет рабочего канала, выберете его', parse_mode='html',
+            await bot.send_message(channel, 'У вас нет рабочего канала, выберите его', parse_mode='html',
                                    link_preview=False)
     elif text_e == '🏹   Send':  # Отправка в канал
         #  НЕ ОТПРАВЛЯЕТ ПОСЛЕ КОМБ ПОЧЕМУ ТО
