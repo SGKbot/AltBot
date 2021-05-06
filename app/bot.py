@@ -333,7 +333,7 @@ async def treatment_video(event):
         await bot.delete_messages(channel, info.id - 2)
         conn = await user_info.create_connection()
         u = await user_info.find_user(conn, u[0], '', 1)
-        await user_info.update_user(conn, u[0], u[1], u[2], 5, u[4], u[5], u[6], 1, u[8], u[9], photo_path, u[11], u[12])
+        await user_info.update_user(conn, u[0], u[1], u[2], 5, u[4], u[5], u[6], 2, u[8], u[9], photo_path, u[11], u[12])
         await user_info.close_connection(conn)
     if event.data == b'wmp_n':
         photo = Image.open(u[10])
@@ -348,7 +348,7 @@ async def treatment_video(event):
         # await bot.delete_messages(channel, info.id - 2)
         conn = await user_info.create_connection()
         u = await user_info.find_user(conn, u[0], '', 1)
-        await user_info.update_user(conn, u[0], u[1], u[2], 5, u[4], u[5], u[6], 1, u[8], u[9], photo_path, u[11], u[12])
+        await user_info.update_user(conn, u[0], u[1], u[2], 5, u[4], u[5], u[6], 2, u[8], u[9], photo_path, u[11], u[12])
         await user_info.close_connection(conn)
 
 
