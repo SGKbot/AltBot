@@ -369,27 +369,14 @@ async def sl_time(event):
             try:
                 if event.data.startswith(b"timeam") or event.data.startswith(b"timepm"):
                     # bias_hour = datetime.now().hour - datetime.utcnow().hour
-                    hr = hr - 3   # сделать проверку на переход на другие сутки / по мск
-
-                    if hr == -3:
-                        hr = 21  # date - 1
-                    if hr == -2:
-                        hr = 22  # date - 1
-                    if hr == -1:
-                        hr = 23  # date - 1
+                    # сделать проверку на переход на другие сутки / по мск
 
                     if t[4] == 'sch' or t[4].startswith('sch'):  #
-                        dat = u[5]
-                        if hr == 21 or hr == 22 or hr == 23:
-                            dat = dat - 1   # проверку на конец месяца сделать
-                        await update_info(conn_d, u[0], u[1], u[2], u[3], hr, dat, u[6], u[7], u[8], u[9], u[10],
+                        await update_info(conn_d, u[0], u[1], u[2], u[3], hr, u[5], u[6], u[7], u[8], u[9], u[10],
                                           u[11], u[12], u[13], u[14], 0)
                         await close_connection_d(conn_d)
                     elif t[4].startswith('del'):
-                        dat = u[10]
-                        if hr == 21 or hr == 22 or hr == 23:
-                            dat = dat - 1  # проверку на конец месяца сделать
-                        await update_info(conn_d, u[0], u[1], u[2], u[3], u[4], u[5], u[6], u[7], u[8], hr, dat,
+                        await update_info(conn_d, u[0], u[1], u[2], u[3], u[4], u[5], u[6], u[7], u[8], hr, u[10],
                                           u[11], u[12], u[13], u[14], 0)
                         await close_connection_d(conn_d)
                     break

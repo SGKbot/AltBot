@@ -51,19 +51,15 @@ scheduler.start()
 async def start_message(message):
     await bot.send_message(message.chat_id, bl_as_modul.HS, parse_mode='html', link_preview=False, buttons=bl_as_modul.Main_menu_btn)
     m = await bot.send_message(message.chat_id, cfg.Pr, parse_mode='html', link_preview=False)
-    d = datetime.today()
-
+    # d = datetime.today()
 
     raise StopPropagation
-
 
 
 @bot.on(events.CallbackQuery(data=b"snd_s"))  # выбор метода отправки сообщения отложить
 async def sel_send(event):
     await user_info.snd_feature_choice(event, 'sch')  # ставим признак выбора
     await user_info.run_dt(event)  # запуск выбора времени даты
-
-
 
 
 @bot.on(events.CallbackQuery(data=b"snd_sd"))  # выбор метода отправки сообщения отложить и удалить

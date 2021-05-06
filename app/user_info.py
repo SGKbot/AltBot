@@ -10,6 +10,7 @@ import aiosqlite
 import bl_as_modul
 import cfg
 import sl_tm
+import sched_send_delete
 from PIL import Image
 bot = bl_as_modul.client
 import shutil
@@ -251,7 +252,7 @@ async def snd_chl_s(event):  # Ok дата время
     u = await find_user(conn, channel, '', 1)
     conn_d = await sl_tm.create_conn_date()
 
-    if u[12] == 0:
+    if u[12] == 0:  # idmess
 
         t = await sl_tm.find_date(conn_d, u[0], u[1], u[3])   # тут ошибка
         await sl_tm.update_info(conn_d, t[0], t[1], event.original_update.msg_id, t[3], t[4], t[5], t[6], t[7], t[8],
@@ -265,19 +266,16 @@ async def snd_chl_s(event):  # Ok дата время
     if len(u[10]) > 0:
         name_mm_file = str(u[0]) + str(event.original_update.msg_id) + u[10][(u[10].rindex('.')):]
         full_mm_path = cfg.mm_file_path + name_mm_file
-        # cf = open(full_mm_path, 'w')
-        # cf.write(u[10])
-        # cf.close()
         shutil.copyfile(u[10], full_mm_path)
     # 2 id  сообщения    используется в имени мм файла
 
-    if u[4] == 'sch' or u[4] == 'del' or u[4] == 'delimm':
-        if u[4] == 'delimm':
-            await snd_chl_i(event)
-
-        conn = await create_connection()
+    if u[4] == 'sch':
+        conn = await create_connection()  # чистим за собой
         await update_user(conn, u[0], u[1], u[2], 100, '', '', u[6], 0, u[8], 0, '', '', 0)  # u[11] u[9]
         await close_connection(conn)
+    if u[4] == 'delimm':
+        await snd_chl_i(event)
+
 
     # это останется......................................
     conn = await create_connection()
@@ -287,6 +285,29 @@ async def snd_chl_s(event):  # Ok дата время
         await run_dt(event)
     await close_connection(conn)
     # это останется......................................
+
+    # меняем время чтобы по  мск
+
+    conn_d = await sl_tm.create_conn_date()
+    t = await sl_tm.find_date(conn_d, u[0], u[1], u[12])  # второй вход нужен другой критерий поиска
+
+    if t[12] == 0:
+       ds = datetime(t[7], t[6], t[5], t[4], t[3])
+       ds_msk = await sched_send_delete.date_utc_msk(ds)
+       await sl_tm.update_info(conn_d, t[0], t[1], event.original_update.msg_id, ds_msk.minute, ds_msk.hour, ds_msk.day,
+                               ds_msk.month, ds_msk.year, t[8], t[9], t[10], t[11], t[12], t[13], t[14], 0)
+       await sl_tm.close_connection_d(conn_d)
+    else:
+        dd = datetime(t[12], t[11], t[10], t[9], t[8])
+        dd_msk = await sched_send_delete.date_utc_msk(dd)
+        await sl_tm.update_info(conn_d, t[0], t[1], event.original_update.msg_id, t[3], t[4], t[5], t[6], t[7],
+                                dd_msk.minute, dd_msk.hour, dd_msk.day, dd_msk.month, dd_msk.year, t[13], t[14], 0)
+        await sl_tm.close_connection_d(conn_d)
+
+        conn = await create_connection()  # чистим за собой
+        await update_user(conn, u[0], u[1], u[2], 100, '', '', u[6], 0, u[8], 0, '', '', 0)  # u[11] u[9]
+        await close_connection(conn)
+
 
 
 async def combo_f(event):

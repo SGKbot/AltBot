@@ -204,3 +204,11 @@ async def update_corrected(event):
 
 
         await user_info.snd_clear_info_cnl(event)
+
+
+async def date_utc_msk(date_in):
+    date_in_sec = datetime.timestamp(date_in)
+    msk = 3*60*60
+    date_out = datetime.fromtimestamp(date_in_sec - msk)
+
+    return date_out
