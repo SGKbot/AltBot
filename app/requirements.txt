@@ -1,6 +1,6 @@
 wheel
 youtube_dl==2021.3.2
-pillow==8.1.1
+pillow==8.3.2
 pyyaml==5.4.1
 moviepy==1.0.3
 ffmpeg==1.4
