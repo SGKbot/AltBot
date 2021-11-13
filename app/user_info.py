@@ -1,4 +1,6 @@
 # from telebot.apihelper import send_message
+# import asyncio
+# from telethon import functions
 from telethon import events, Button
 from telethon.events import StopPropagation
 from telethon import TelegramClient

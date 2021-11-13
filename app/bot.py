@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+
+# import asyncio
+# from telethon import functions
+
 from telethon.events import StopPropagation
 from telethon.sync import events, utils
 
@@ -38,6 +42,7 @@ from moviepy.editor import *
 
 import sched_send_delete
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
 scheduler = AsyncIOScheduler()
 scheduler.add_job(sched_send_delete.exampl_send, "cron", minute='0,5,10,15,20,25,30,35,40,45,50,55')
 scheduler.start()
@@ -47,11 +52,13 @@ scheduler.start()
 #  info_video = ''
 
 
-@bot.on(events.NewMessage(pattern='/start'))
+@bot.on(events.NewMessage(pattern='/start'))  # outgoing=True
 async def start_message(message):
-    await bot.send_message(message.chat_id, bl_as_modul.HS, parse_mode='html', link_preview=False, buttons=bl_as_modul.Main_menu_btn)
-    m = await bot.send_message(message.chat_id, cfg.Pr, parse_mode='html', link_preview=False)
-    # d = datetime.today()
+    if message.chat_id > 0:
+        await bot.send_message(message.chat_id, bl_as_modul.HS, parse_mode='html', link_preview=False, buttons=bl_as_modul.Main_menu_btn)
+        await bot.send_message(message.chat_id, cfg.Pr, parse_mode='html', link_preview=False)
+
+    # active_sessions = await bot(functions.account.GetAuthorizationsRequest())
 
     raise StopPropagation
 
@@ -707,11 +714,12 @@ async def text_detect(event):
         await user_info.just_text(event)
 
 
-@bot.on(events.NewMessage(pattern='/inlb'))
+@bot.on(events.NewMessage(pattern='/inlb', outgoing=True))  # что это???????
 async def start_message(message):
-    await bot.send_message(message.chat_id, 'Добавляем кнопки в сообщение', parse_mode='html', link_preview=False)
+    h = 1
+    #  await bot.send_message(message.chat_id, 'Добавляем кнопки в сообщение', parse_mode='html', link_preview=False)
 
-    raise StopPropagation
+    # raise StopPropagation
 
 
 if __name__ == '__main__':
